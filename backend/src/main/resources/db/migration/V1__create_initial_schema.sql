@@ -2544,8 +2544,6 @@ CREATE TABLE profile_change_requests (
 
                                          target_id BIGINT NULL,
 
-                                         old_data JSON NULL,
-
                                          new_data JSON NOT NULL,
 
                                          status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
@@ -2570,13 +2568,27 @@ CREATE TABLE profile_change_requests (
                                                  ON DELETE SET NULL
                                                  ON UPDATE CASCADE,
 
-                                         INDEX idx_pcr_student_status (candidate_person_id, status),
-                                         INDEX idx_pcr_status (status),
-                                         INDEX idx_pcr_reviewer (reviewed_by_person_id)
-)
-    ENGINE=InnoDB
+                                         INDEX idx_pcr_student_status (
+        candidate_person_id,
+        status
+    ),
+
+                                         INDEX idx_pcr_status (
+        status
+    ),
+
+                                         INDEX idx_pcr_reviewer (
+        reviewed_by_person_id
+    ),
+
+                                         INDEX idx_pcr_target (
+        target_id
+    )
+
+) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci;
+
 
 CREATE TABLE contracts (
                            contract_id BIGINT PRIMARY KEY AUTO_INCREMENT,
