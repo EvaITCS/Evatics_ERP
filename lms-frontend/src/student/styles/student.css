@@ -1,0 +1,2101 @@
+/* ==========================================================================
+   STUDENT DASHBOARD PREMIUM ERP CSS
+   ========================================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family: cambria;
+    background:#f8fafc;
+    color: #1e293b;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================
+   TRAINING DASHBOARD — minimal, compact UI
+   ============================================ */
+
+.training-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: cambria;
+  color: #0f172a;
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+
+.training-hero {
+  background: #ffffff;
+  border: 1px solid #eef1f5;
+  border-radius: 14px;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.hero-label {
+  font-size: 10.5px;
+  letter-spacing: 1.2px;
+  font-weight: 700;
+  color: #2563eb;
+  text-transform: uppercase;
+}
+
+.training-hero h1 {
+  margin: 6px 0 6px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+}
+
+.training-hero h1 span {
+  color: #2563eb;
+}
+
+.training-hero p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+  max-width: 560px;
+  line-height: 1.55;
+}
+
+.week-chip {
+  flex-shrink: 0;
+  background: #2563eb;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+}
+
+/* ============================================
+   CARD (shared)
+   ============================================ */
+
+.training-card {
+  background: #ffffff;
+  border: 1px solid #eef1f5;
+  padding: 10px 20px;
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.card-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #2563eb;
+  text-transform: uppercase;
+}
+
+.card-header h2 {
+  margin: 2px 0 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.2px;
+}
+
+.week-goal {
+  font-size: 13.5px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+/* ============================================
+   TOPICS
+   ============================================ */
+
+.topic-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.topic {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  cursor: default;
+}
+
+.topic:hover {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+/* ============================================
+   TODAY'S LEARNING
+   ============================================ */
+
+.today-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.session-card {
+  background: #f8fafc;
+  border: 1px solid #eef1f5;
+  border-radius: 10px;
+  padding: 10px 10px;
+}
+
+.session-card h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.session-card h3::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2563eb;
+  flex-shrink: 0;
+}
+
+.session-card:nth-of-type(2) h3::before {
+  background: #f59e0b;
+}
+
+.session-card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.session-card li {
+  position: relative;
+  padding-left: 16px;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.session-card li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  background: #cbd5e1;
+}
+
+/* ============================================
+   FOCUS / ACCESSIBILITY
+   ============================================ */
+
+.topic:focus-visible,
+.training-card:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.card-header,
+.card-header > div,
+.card-label,
+.card-header h2 {
+  margin: 1;
+  padding: 0;
+  text-indent: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topic {
+    transition: none;
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 900px) {
+  .today-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .training-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px 20px;
+  }
+
+  .week-chip {
+    align-self: flex-start;
+  }
+
+  .training-hero h1 {
+    font-size: 19px;
+  }
+
+  .training-card {
+    padding: 16px 18px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.doc-link {
+    background: none;
+    border: none;
+    color: #0d6efd;
+    cursor: pointer;
+    font-size: inherit;
+    font-weight: 500;
+    text-decoration: underline;
+    padding: 0;
+}
+
+.doc-link:hover {
+    color: #084298;
+}
+/* Main Layout */
+.student-layout{
+    display:flex;
+    min-height:100vh;
+    background:#f8fafc;
+}
+
+
+
+
+.student-main{
+    flex:1;
+    padding:35px;
+    overflow-y:auto;
+    height: 100vh;
+}
+
+/* ================= Top Level Navbar (Full Flush Structure) ================= */
+
+.student-navbar {
+    background: rgba(255, 255, 255, 0.9); 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    height: 70px; 
+    padding: 0 55px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid #e2e8f0;
+
+    box-shadow:
+        0 1px 3px 0 rgba(0, 0, 0, 0.05),
+        0 1px 2px -1px rgba(0, 0, 0, 0.05);
+
+    margin-top: -35px;
+    margin-left: -35px;
+    margin-right: -35px;
+
+    /* REMOVE EXTRA GAP */
+    margin-bottom: 0;
+
+    width: calc(100% + 70px);
+    box-sizing: border-box;
+}
+
+
+/* ================= Cards ================= */
+.status-info{
+    margin-top:20px;
+}
+
+.status-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.status-label{
+    font-weight:600;
+    color:#475569;
+}
+
+.status-value{
+    font-weight:700;
+    color:#1e293b;
+}
+
+.student-card{
+    background: white;
+    padding: 32px;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 30px;
+}
+
+.student-card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+}
+
+.student-card h3{
+    margin-bottom:14px;
+    color:#0f172a;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing: -0.3px;
+}
+
+.student-card p{
+    color:#475569;
+    line-height:1.7;
+    font-size:15px;
+}
+
+
+
+
+/* Main Section Cards */
+/* =========================================================
+   APPLICATION VIEW — ERP MODULE THEME
+   Shares tokens with the student-form ERP theme so the
+   "view" page and the "edit" page feel like one system.
+   Education / Experience are brought up to the same visual
+   weight as Personal Information: same card chrome, same
+   label/value type scale, same divider treatment between
+   repeated entries.
+========================================================= */
+
+:root {
+    --erp-navy: #1e3a8a;
+    --erp-navy-soft: #1e40af;
+    --erp-primary: #2563eb;
+    --erp-text: #0f172a;
+    --erp-text-muted: #475569;
+    --erp-text-faint: #94a3b8;
+    --erp-border: #eef2f6;
+    --erp-border-strong: #e2e8f0;
+    --erp-surface: #ffffff;
+    --erp-surface-alt: #f8fafc;
+    --erp-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+    --erp-radius: 12px;
+}
+
+/* =========================================================
+   LAYOUT WRAPPERS
+========================================================= */
+
+.app-profile-grid.full-width-layout {
+    width: 100%;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin: 0 0 24px 0;
+}
+
+.app-details-row-wrapper {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    margin-bottom: 24px;
+    align-items: stretch;
+}
+
+@media (max-width: 992px) {
+    .app-details-row-wrapper {
+        flex-direction: column;
+    }
+}
+
+.app-col-span-2 {
+    grid-column: span 1;
+}
+@media (min-width: 992px) {
+    .app-col-span-2 {
+        grid-column: span 2;
+    }
+}
+
+/* =========================================================
+   CARD CHROME — one definition, shared by every card
+   (full-width sections AND the half-width education /
+   experience cards use the exact same shell now)
+========================================================= */
+
+.app-section-card,
+.app-half-width-card {
+    background: var(--erp-surface);
+    border-radius: var(--erp-radius);
+    padding: 24px;
+    box-shadow: var(--erp-shadow);
+    border: 1px solid var(--erp-border);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.app-half-width-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* allow long values to wrap instead of overflowing the flex item */
+}
+
+.app-section-card h3,
+.app-half-width-card h3 {
+    color: var(--erp-navy);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--erp-border);
+    width: 100%;
+}
+
+/* =========================================================
+   INFO GRIDS — one label/value type scale everywhere
+========================================================= */
+
+.app-info-grid,
+.app-info-grid-2cols,
+.app-info-grid-3cols {
+    display: grid;
+    gap: 20px 24px;
+    width: 100%;
+}
+
+.app-info-grid,
+.grid-4-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 768px) {
+    .grid-4-cols {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.app-info-grid-3cols {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+@media (max-width: 992px) {
+    .app-info-grid-3cols {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 576px) {
+    .app-info-grid-3cols {
+        grid-template-columns: 1fr;
+    }
+}
+
+.app-info-grid-2cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 480px) {
+    .app-info-grid-2cols {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Same label + value treatment for every card on the page,
+   so Education / Experience read exactly like Personal Info */
+.app-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.app-info-item label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--erp-text);
+    margin-bottom: 0;
+}
+
+/* Each Info Item turning into a Card Box (Dibba) */
+.app-info-item {
+    background-color: #f8fafc;        /* Soft light grey background */
+    border: 1px solid #e2e8f0;        /* Subtle border */
+    border-radius: 10px;               /* Rounded edges */
+    padding: 14px 18px;               /* Inner spacing */
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover Effect for boxes */
+.app-info-item:hover {
+    background-color: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+/* Label Inside Box (Top Header Text) */
+.app-info-item label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0f172a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+/* Value Inside Box (Bottom Main Text) */
+.app-info-item p {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: #334155;
+    word-break: break-word;
+}
+
+.app-info-item p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--erp-text-muted);
+    font-weight: 400;
+    word-break: break-word;
+    line-height: 1.4;
+}
+
+.app-email {
+    color: var(--erp-primary) !important;
+}
+
+.app-empty-text {
+    color: var(--erp-text-faint);
+    font-style: italic;
+    margin: 0;
+}
+
+/* =========================================================
+   REPEATED ENTRIES (multiple education / experience rows)
+   Consistent divider + rhythm instead of inline styles
+   guessing at spacing.
+========================================================= */
+
+.app-half-width-card .app-info-grid-2cols {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--erp-border);
+}
+.app-half-width-card .app-info-grid-2cols:last-child {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+/* Accent Tags */
+.proficiency-tag {
+    background: var(--erp-surface-alt);
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: var(--erp-text-muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* =========================================================
+   DOCUMENTS CARD
+========================================================= */
+
+.app-docs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.doc-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--erp-surface-alt);
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px dashed var(--erp-border-strong);
+}
+
+.doc-item span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--erp-text-muted);
+}
+
+.doc-item p {
+    margin: 0;
+}
+
+.doc-link {
+    color: var(--erp-primary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.no-doc {
+    color: var(--erp-text-faint);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+/* ================= Stats Grid ================= */
+
+.student-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    padding: 5px 0;
+}
+
+.stat-box {
+    background: #ffffff; 
+    border: 1px solid #e2e8f0; 
+    padding: 24px;
+    border-radius: 14px; 
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left; 
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    transition: all 0.25s ease;
+}
+
+.stat-box:hover {
+    border-color: #38bdf8; 
+    box-shadow: 0 12px 20px -8px rgba(56, 189, 248, 0.15);
+    transform: translateY(-2px);
+}
+
+.stat-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #64748b; 
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a; 
+}
+
+.status-active {
+    color: #10b981; /* Premium Emerald green */
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* ================= Responsive System Structure ================= */
+
+@media(max-width:900px){
+    .student-layout{
+        flex-direction:column;
+    }
+
+    .student-sidebar{
+        width:100%;
+        height: auto;
+    }
+    
+    .sidebar-btn.logout-btn {
+        margin-top: 20px;
+    }
+
+    .student-main{
+        padding:0px;
+    }
+
+    .student-navbar{
+        padding: 0 20px;
+        margin-top: -20px;   
+        margin-left: -20px;  
+        margin-right: -20px;
+        
+        width: calc(100% + 40px);
+    }
+    
+    .navbar-left {
+        max-width: 180px;
+    }
+}
+
+/* ==========================================================================
+   SUPPORT TICKET COMPONENT PREMIUM REDESIGN
+   ========================================================================== */
+
+/* Container Setup Layout */
+.support-card-container {
+    max-width: 680px; 
+     
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 35px !important;
+    border-radius: 16px !important;
+}
+
+.support-card-header {
+    margin-bottom: 25px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 18px;
+}
+
+.support-card-header h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 6px;
+    text-align: left;
+}
+
+.support-card-header p {
+    font-size: 14px;
+    color: #64748b !important;
+    line-height: 1.5;
+}
+
+/* Form Structure Grouping */
+.support-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.support-input-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    letter-spacing: 0.3px;
+}
+
+.support-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Form Fields Styling (Inputs & Textarea) */
+.support-text-input,
+.support-textarea-input {
+    width: 100%;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #0f172a;
+    font-family: cambria;
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.support-textarea-input {
+    resize: vertical; 
+    min-height: 120px;
+    line-height: 1.6;
+}
+
+/* Interactive States */
+.support-text-input:focus,
+.support-textarea-input:focus {
+    background-color: #ffffff;
+    border-color: #0ea5e9; /* EVA Active Sky Blue */
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12), inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.support-text-input::placeholder,
+.support-textarea-input::placeholder {
+    color: #94a3b8;
+    font-size: 13.5px;
+}
+
+.support-text-input:disabled,
+.support-textarea-input:disabled {
+    background-color: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+
+.support-action-zone {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.support-submit-btn {
+    background: #3b597f; 
+    color: #ffffff;
+    border: none;
+    padding: 13px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+    transition: all 0.2s ease-in-out;
+}
+
+.support-submit-btn:hover:not(:disabled) {
+    background: #2a395b;
+    box-shadow: 0 6px 16px rgba(14, 165, 233, 0.35);
+    transform: translateY(-1px);
+}
+
+.support-submit-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.support-submit-btn:disabled {
+    background: #94a3b8;
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Built-in Status Messages UI */
+.support-status-alert {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+    animation: fadeInSlide 0.3s ease-out forwards;
+}
+
+.support-status-alert.success {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
+}
+
+.support-status-alert.error {
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #b91c1c;
+}
+
+/* Smooth Spinner Animation for Loading State */
+.support-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #ffffff;
+    animation: spinRotate 0.8s linear infinite;
+}
+
+@keyframes spinRotate {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Screen Size Optimizations */
+@media (max-width: 600px) {
+    .support-card-container {
+        padding: 22px !important;
+    }
+    .support-submit-btn {
+        width: 100%; 
+    }
+}
+
+
+
+.erp-profile-wrapper {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+    font-family: cambria;
+}
+
+
+.erp-profile-header {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+.avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-avatar {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    background-color: #3b82f6;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+}
+
+.header-meta-details h2 {
+    margin: 0;
+    font-size: 22px;
+    color: #1e293b;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.student-sys-id {
+    margin: 4px 0 0 0;
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Operational Badges for Status Verification */
+.erp-badge {
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.status-active {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.status-pending {
+    background-color: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fef3c7;
+}
+
+.status-suspended {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+.status-inactive {
+    background-color: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+/* Master Bento System Design Grid */
+.erp-bento-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.bento-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bento-card:hover {
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.05);
+}
+
+.full-width-bento {
+    grid-column: span 2;
+}
+
+.card-header-icon h3 {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    color: #0f172a;
+    font-weight: 600;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 12px;
+}
+
+.card-content-fields {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.layout-3-columns {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.layout-4-columns {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.full-width-field {
+    grid-column: span 2;
+}
+
+.data-field-item label {
+    display: block;
+    font-size: 14px;
+    color: black;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.data-field-item p {
+    margin: 0;
+    font-size: 15px;
+    color: #334155;
+    font-weight: 500;
+}
+
+.selectable-text {
+    user-select: all;
+    color: #2563eb !important;
+}
+
+/*dashboard css */
+
+.program-dashboard {
+   background: linear-gradient(135deg, #ffffff 0%, #e4e5e7 45%, #f1f5f9 55%, #ffffff 100%);
+   border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 16px; 
+    padding: 32px; 
+    color: #1e293b;
+    text-align: center;
+   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.02);
+    border: 1px solid #e2e8f0; 
+}
+
+.program-logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.program-logo img {
+    width: 100px; 
+    height: 100px; 
+    object-fit: contain;
+    background: #f8fafc; 
+    border-radius: 14px;
+    padding: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.3s ease;
+}
+
+.program-logo img:hover {
+    transform: scale(1.05); 
+}
+
+.program-tag {
+    letter-spacing: 3px; 
+    font-size: 16px;
+
+    color: #2563eb; 
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.program-title {
+    font-size: 32px; 
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 20px;
+    letter-spacing: -0.5px;
+    color: #0f172a; 
+}
+
+.program-desc {
+    max-width: 720px; 
+    margin: 0 auto;
+    font-size: 16px; 
+    line-height: 1.6;
+    color: #475569; 
+}
+
+.program-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-top: 40px;
+}
+
+.program-box {
+    background: #ffffff; 
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.program-box:hover {
+    background: #f1f5f9; 
+    transform: translateY(-2px);
+}
+
+.program-box h2 {
+    font-size: 32px; 
+    margin: 0;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.program-box span {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px; 
+    letter-spacing: 1px;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 32px;
+}
+
+.tech-stack span {
+    padding: 6px 14px; 
+    border-radius: 20px;
+    background: #f1f5f9; 
+    border: 1px solid #e2e8f0;
+    font-weight: 500;
+    font-size: 13px;
+    color: #334155;
+}
+
+.student-info {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.student-card-box {
+    background: #f8fafc; 
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: left;
+}
+
+.student-card-box span {
+    display: block;
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.student-card-box strong {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.status-active {
+    color: #16a34a; 
+    font-weight: 600;
+}
+.start-application-btn {
+    position: relative;
+    overflow: hidden;
+
+    background: linear-gradient(
+        135deg,
+        #4facfe 0%,
+        #2f80ed 50%,
+        #1e5bb8 100%
+    );
+
+    color: #ffffff;
+    border: none;
+
+    padding: 15px 42px;
+    border-radius: 10px;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    letter-spacing: 0.2px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 20px rgba(47, 128, 237, 0.30),
+        0 3px 8px rgba(0, 45, 98, 0.15);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease;
+
+    /* Senior Dev Optimization: Smooth hardware-accelerated rendering */
+    will-change: transform, box-shadow;
+
+    /* Continuous float + pulse guidance animation */
+    animation: ctaGuidance 2.5s ease-in-out infinite;
+}
+
+/* Hover hone par guidance animation pause ho jayegi taaki interaction snappy lage */
+.start-application-btn:hover {
+    animation-play-state: paused;
+
+    background: linear-gradient(
+        135deg,
+        #63b3ff 0%,
+        #3788f5 50%,
+        #246bc9 100%
+    );
+
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 14px 32px rgba(47, 128, 237, 0.50),
+        0 6px 14px rgba(0, 45, 98, 0.22);
+}
+
+.start-application-btn::before {
+
+    content: "";
+
+    position: absolute;
+
+
+
+    top: 0;
+
+    left: -120%;
+
+
+
+    width: 70%;
+
+    height: 100%;
+
+
+
+    background: linear-gradient(
+
+        120deg,
+
+        transparent,
+
+        rgba(255, 255, 255, 0.35),
+
+        transparent
+
+    );
+
+
+
+    transform: skewX(-20deg);
+
+
+
+    animation: buttonShine 3s infinite;
+
+}
+/* Click */
+.start-application-btn:active {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 5px 12px rgba(47, 128, 237, 0.25);
+}
+
+/* Continuous Floating & Soft Glow Animation */
+@keyframes ctaGuidance {
+    0%, 100% {
+        transform: translateY(0);
+        box-shadow:
+            0 8px 20px rgba(47, 128, 237, 0.30),
+            0 3px 8px rgba(0, 45, 98, 0.15);
+    }
+    50% {
+        /* Subtle lift vertically upward */
+        transform: translateY(-6px);
+        /* Soft blue outer glow expansion */
+        box-shadow:
+            0 16px 30px rgba(47, 128, 237, 0.55),
+            0 0 18px rgba(79, 172, 254, 0.40);
+    }
+}
+
+.cta-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+
+    margin-right: 9px;
+
+    background: #ffffff;
+    border-radius: 50%;
+
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0.7);
+
+    animation: indicatorBlink 1.5s infinite;
+}
+
+@keyframes indicatorBlink {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    }
+
+    50% {
+        opacity: 0.55;
+        transform: scale(0.75);
+        box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.08);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+.btn-arrow {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 18px;
+    transition: transform 0.25s ease;
+}
+
+.start-application-btn:hover .btn-arrow {
+    transform: translateX(5px);
+}
+/* Shine animation */
+@keyframes buttonShine {
+    0% {
+        left: -120%;
+    }
+
+    45%,
+    100% {
+        left: 140%;
+    }
+}
+
+/* Responsive Overrides */
+@media (max-width: 992px) {
+    .program-title {
+        font-size: 28px;
+    }
+    .program-desc {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .program-dashboard {
+        padding: 24px 16px;
+    }
+    .program-title {
+        font-size: 24px;
+    }
+    .program-logo img {
+        width: 75px;
+        height: 75px;
+    }
+    .program-box h2 {
+        font-size: 26px;
+    }
+}
+/* Main Layout */
+.student-layout{
+    display:flex;
+    min-height:100vh;
+    background:#f8fafc;
+}
+@media (max-width: 768px) {
+    .erp-bento-grid {
+        grid-template-columns: 1fr;
+    }
+    .full-width-bento {
+        grid-column: span 1;
+    }
+    .card-content-fields, .layout-3-columns, .layout-4-columns {
+        grid-template-columns: 1fr;
+    }
+    .full-width-field {
+        grid-column: span 1;
+    }
+    .erp-profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+}
+
+
+
+/* notification */
+/* =========================================================
+   STUDENT NOTIFICATIONS PAGE
+========================================================= */
+
+.student-notifications-page {
+    width: 100%;
+    min-height: calc(100vh - 100px);
+    padding: 30px 34px 50px;
+    background: #f5f7fa;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.student-notifications-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #ffffff;
+
+    padding: 24px 28px;
+
+    margin-bottom: 22px;
+
+    border: 1px solid #e5e9ef;
+    border-radius: 14px;
+
+    box-shadow:
+        0 2px 8px rgba(15, 35, 55, 0.03);
+
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* subtle blue accent */
+
+.student-notifications-header::before {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 4px;
+
+    background: #1f5fae;
+}
+
+
+.student-notifications-header h2 {
+    margin: 0;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    color: #172b4d;
+
+    letter-spacing: -0.3px;
+}
+
+
+.student-notifications-header p {
+    margin: 7px 0 0;
+
+    color: #6b778c;
+
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   NOTIFICATION LIST
+========================================================= */
+
+.student-notifications-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    width: 100%;
+}
+
+
+/* =========================================================
+   NOTIFICATION CARD
+========================================================= */
+
+.student-notification-card {
+    position: relative;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 18px;
+
+    width: 100%;
+
+    padding: 20px 22px;
+
+    box-sizing: border-box;
+
+    background: #ffffff;
+
+    border: 1px solid #e2e7ee;
+
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease;
+
+    overflow: hidden;
+}
+
+
+.student-notification-card:hover {
+    transform: translateY(-1px);
+
+    border-color: #c9d7e8;
+
+    box-shadow:
+        0 7px 20px rgba(20, 45, 75, 0.08);
+}
+
+
+/* =========================================================
+   UNREAD NOTIFICATION
+========================================================= */
+
+.student-notification-card.unread {
+    background: #fafdff;
+
+    border-color: #cbdff5;
+
+    box-shadow:
+        0 2px 10px rgba(31, 95, 174, 0.04);
+}
+
+
+/* left indicator for unread */
+
+.student-notification-card.unread::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    width: 4px;
+
+    background: #1769aa;
+
+    border-radius: 14px 0 0 14px;
+}
+
+
+/* =========================================================
+   READ NOTIFICATION
+========================================================= */
+
+.student-notification-card.read {
+    background: #ffffff;
+
+    border-color: #e4e8ee;
+}
+
+
+/* =========================================================
+   NOTIFICATION ICON
+========================================================= */
+
+.student-notification-icon {
+    width: 44px;
+    height: 44px;
+
+    min-width: 44px;
+
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #edf4fc;
+
+    color: #1769aa;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    border: 1px solid #dce9f7;
+
+    box-sizing: border-box;
+
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease;
+}
+
+
+.student-notification-card:hover
+.student-notification-icon {
+    background: #e5f0fb;
+
+    transform: scale(1.03);
+}
+
+
+/* unread icon */
+
+.student-notification-card.unread
+.student-notification-icon {
+    background: #e8f2ff;
+
+    border-color: #cfe2f7;
+
+    color: #1769aa;
+}
+
+
+/* read icon */
+
+.student-notification-card.read
+.student-notification-icon {
+    background: #f1f3f5;
+
+    border-color: #e4e7eb;
+
+    color: #6c7785;
+}
+
+
+/* =========================================================
+   NOTIFICATION CONTENT
+========================================================= */
+
+.student-notification-content {
+    flex: 1;
+
+    min-width: 0;
+
+    padding-top: 1px;
+}
+
+
+/* =========================================================
+   TITLE ROW
+========================================================= */
+
+.student-notification-title-row {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    min-height: 22px;
+}
+
+
+.student-notification-title-row h3 {
+    margin: 0;
+
+    color: #172b4d;
+
+    font-size: 16px;
+
+    font-weight: 650;
+
+    line-height: 1.4;
+
+    letter-spacing: -0.1px;
+}
+
+
+/* unread title slightly stronger */
+
+.student-notification-card.unread
+.student-notification-title-row h3 {
+    font-weight: 700;
+
+    color: #102a43;
+}
+
+
+/* =========================================================
+   UNREAD DOT
+========================================================= */
+
+.student-notification-dot {
+    width: 8px;
+    height: 8px;
+
+    min-width: 8px;
+
+    border-radius: 50%;
+
+    background: #e53935;
+
+    box-shadow:
+        0 0 0 3px rgba(229, 57, 53, 0.10);
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.student-notification-content p {
+    margin: 7px 0 9px;
+
+    color: #596579;
+
+    font-size: 14px;
+
+    line-height: 1.6;
+
+    max-width: 950px;
+}
+
+
+/* unread message */
+
+.student-notification-card.unread
+.student-notification-content p {
+    color: #46566b;
+}
+
+
+/* =========================================================
+   DATE / TIME
+========================================================= */
+
+.student-notification-date {
+    display: inline-flex;
+
+    align-items: center;
+
+    color: #8994a5;
+
+    font-size: 12px;
+
+    line-height: 1.4;
+
+    letter-spacing: 0.1px;
+}
+
+
+/* =========================================================
+   EMPTY / LOADING / ERROR STATE
+========================================================= */
+
+.student-notifications-state {
+    width: 100%;
+
+    min-height: 260px;
+
+    box-sizing: border-box;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 50px 25px;
+
+    background: #ffffff;
+
+    border: 1px solid #e3e8ee;
+
+    border-radius: 14px;
+
+    text-align: center;
+
+    color: #6b778c;
+
+    box-shadow:
+        0 2px 8px rgba(15, 35, 55, 0.025);
+}
+
+
+.student-notifications-state h3 {
+    margin: 14px 0 5px;
+
+    color: #172b4d;
+
+    font-size: 18px;
+
+    font-weight: 650;
+}
+
+
+.student-notifications-state p {
+    margin: 0;
+
+    max-width: 400px;
+
+    color: #7a8699;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   EMPTY NOTIFICATION ICON
+========================================================= */
+
+.notification-empty-icon {
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #f0f4f8;
+
+    border: 1px solid #e0e6ed;
+
+    font-size: 25px;
+
+    filter: grayscale(15%);
+}
+
+
+/* =========================================================
+   ERROR STATE
+========================================================= */
+
+.student-notifications-state.error {
+    color: #c62828;
+
+    background: #fffafa;
+
+    border-color: #f0d6d6;
+}
+
+
+.student-notifications-state.error::before {
+    content: "!";
+    
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 10px;
+
+    border-radius: 50%;
+
+    background: #fdecec;
+
+    color: #c62828;
+
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .student-notifications-page {
+        padding: 24px 22px 40px;
+    }
+
+    .student-notifications-header {
+        padding: 21px 23px;
+    }
+
+    .student-notification-card {
+        padding: 18px;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .student-notifications-page {
+        padding: 18px 14px 30px;
+    }
+
+
+    .student-notifications-header {
+        padding: 20px;
+
+        margin-bottom: 16px;
+
+        border-radius: 12px;
+    }
+
+
+    .student-notifications-header h2 {
+        font-size: 21px;
+    }
+
+
+    .student-notifications-header p {
+        font-size: 13px;
+    }
+
+
+    .student-notifications-list {
+        gap: 10px;
+    }
+
+
+    .student-notification-card {
+        gap: 13px;
+
+        padding: 16px;
+
+        border-radius: 12px;
+    }
+
+
+    .student-notification-icon {
+        width: 40px;
+        height: 40px;
+
+        min-width: 40px;
+
+        border-radius: 10px;
+
+        font-size: 16px;
+    }
+
+
+    .student-notification-title-row h3 {
+        font-size: 15px;
+    }
+
+
+    .student-notification-content p {
+        font-size: 13px;
+
+        line-height: 1.5;
+    }
+
+
+    .student-notification-date {
+        font-size: 11px;
+    }
+
+
+    .student-notifications-state {
+        min-height: 220px;
+
+        padding: 40px 18px;
+    }
+
+}

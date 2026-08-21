@@ -1,0 +1,86 @@
+
+/* 1. Resetting margins on root body so layout fits screen edge-to-edge */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: cambria;
+    background-color: #f8fafc;
+}
+
+/* 2. Main Parent Flex Frame - Holds Sidebar and Main Content Area Side-by-Side */
+.trainer-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
+    background-color: #f8fafc; /* Slate 50 Background */
+}
+
+/* 3. Right Side Master Column - Stretches to fill the rest of the screen width */
+.trainer-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Prevents text overflow grid blowout */
+}
+
+/* 4. Content Panel Context Area below the Top Navbar */
+.create-task-content-wrapper {
+    flex: 1;
+    padding: 40px; /* Generous breathing room for components */
+    max-width: 800px; /* Clean line length for enterprise panels */
+    width: 100%;
+    margin: 0 auto; /* Horizontal auto-centering */
+    box-sizing: border-box;
+    animation: taskPageEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 5. Centralized Core View Component Panel */
+.create-task-main-heading {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a; /* Slate 900 */
+    margin-top: 0;
+    margin-bottom: 24px;
+    letter-spacing: -0.5px;
+}
+
+/* 6. Structural Card Grid Container */
+.create-task-glass-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.03), 
+                0 8px 16px -6px rgba(15, 23, 42, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* Distinct row separation without breaking components */
+}
+
+/* 7. Label Alignment Grid Mapping Rows */
+.create-task-form-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.create-task-field-label {
+    min-width: 120px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569; /* Slate 600 */
+}
+
+/* --- Smooth Entry Dynamic Keyframes --- */
+@keyframes taskPageEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

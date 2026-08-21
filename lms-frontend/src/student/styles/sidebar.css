@@ -1,0 +1,331 @@
+/* ==========================================================================
+   PRODUCTION READY STUDENT SIDEBAR (CLEAN SEPARATE ARCHITECTURE)
+   ========================================================================== */
+
+.student-sidebar {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Open State Rules */
+
+.student-sidebar.open {
+    width: 260px;
+    background-color: #0F172A;
+    padding: 24px 16px;
+    position: relative;
+}
+/* Collapsed State Rules */
+.student-sidebar.collapsed {
+    width: 60px;
+    height: 50px;
+    background-color: transparent;
+    padding: 12px 0 0 12px; 
+    position: absolute;
+}
+
+/* --- HEADER ZONE & HAMBURGER --- */
+.sidebar-header-zone {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    height: 40px;
+    padding-left: 0; 
+    transition: margin 0.3s ease;
+}
+
+.student-sidebar.open .sidebar-header-zone {
+    margin-bottom: 32px;
+}
+
+/* Clean Blue Square Hamburger without the extra text-cursor line */
+.sidebar-hamburger {
+    background-color: #2563eb; 
+    border: none;
+    border-radius: 8px; /* Perfectly sized rounded square corners */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* Horizontally centered the lines */
+    gap: 4px; /* Space between the lines */
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar-hamburger:hover {
+    background-color: #1d4ed8; 
+}
+
+/* Horizontal Micro Bars - Clean and Balanced */
+.hamburger-line {
+    width: 18px; 
+    height: 2px;
+    border-radius: 1px;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+}
+
+/* Dynamic color shifting sync */
+.student-sidebar.open .hamburger-line {
+    background-color: #ffffff;
+}
+
+.student-sidebar.collapsed .hamburger-line {
+    background-color: #ffffff; 
+}
+
+/* Brand Branding Text */
+.sidebar-logo-text {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ffffff; 
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s ease;
+}
+
+.student-sidebar.collapsed .sidebar-logo-text {
+    display: none;
+    opacity: 0;
+}
+
+/* --- NAVIGATION MENU LIST --- */
+.sidebar-menu-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    transition: display 0.2s ease;
+}
+
+.student-sidebar.open .sidebar-menu-list {
+    display: block;
+}
+
+.student-sidebar.collapsed .sidebar-menu-list {
+    display: none;
+}
+
+.sidebar-menu-item {
+    list-style-type: none;
+    margin-bottom: 8px;
+}
+
+/* Universal Button Design */
+.sidebar-menu-item .sidebar-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 12px 16px;
+    background-color: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #ffffff; 
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+    outline: none;
+    opacity: 0.9;
+}
+
+/* Standard Hover State */
+.sidebar-menu-item .sidebar-btn:hover {
+    background-color: #2563eb;
+    opacity: 1;
+    padding-left: 20px; 
+}
+
+/* Active Page Indication State */
+.sidebar-menu-item .sidebar-btn.active {
+    background-color: #2563eb;
+    font-weight: 600;
+    opacity: 1;
+    border-left: 4px solid #38bdf8;
+    border-radius: 0 8px 8px 0;
+    padding-left: 20px;
+}
+
+
+/* ===========================
+   Learning Zone
+=========================== */
+
+.learning-btn{
+
+    width:100% !important;
+
+    display:flex !important;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:12px 16px !important;
+
+    background:transparent;
+
+    border:none;
+
+    color:#ffffff;
+
+    border-radius:8px;
+
+    transition:.25s;
+
+}
+
+.learning-btn:hover{
+
+    background:#2563eb;
+
+    padding-left:20px !important;
+
+}
+
+/* Right Arrow */
+
+.arrow{
+
+    margin-left:auto;
+
+    font-size:11px;
+
+    color:#d1d5db;
+
+    transition:.25s ease;
+
+}
+
+.arrow.rotate{
+
+    transform:rotate(180deg);
+
+}
+
+/* ===========================
+   Submenu Container
+=========================== */
+
+.learning-submenu{
+
+    margin:8px 0 10px;
+
+    padding:10px 0;
+
+    background:#111827;
+
+    border-radius:10px;
+
+    overflow:hidden;
+
+}
+
+/* Remove default li spacing */
+
+.learning-submenu .submenu-item{
+
+    margin:0;
+
+}
+
+/* ===========================
+   Submenu Button
+=========================== */
+
+.submenu-btn{
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    background:transparent;
+
+    border:none;
+
+    color:#cbd5e1;
+
+    font-size:14px !important;
+
+    padding:12px 20px !important;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    text-align:left;
+
+}
+
+.submenu-btn:hover{
+
+    background:#1f2937;
+
+    color:#ffffff;
+
+    padding-left:28px !important;
+
+}
+
+.submenu-btn.active{
+
+    background:#2563eb;
+
+    color:#ffffff;
+
+    border-left:4px solid #38bdf8;
+
+}
+/* --- TARGET: PRO RED LOGOUT TRIGGER --- */
+.sidebar-logout-btn {
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: auto;
+    padding: 12px 16px;
+    background-color: #dc2626;
+    border: none;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.student-sidebar.open .sidebar-logout-btn {
+    display: flex;
+}
+
+.student-sidebar.collapsed .sidebar-logout-btn {
+    display: none;
+}
+
+.sidebar-logout-btn:hover {
+    background-color: #ef4444;
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.25);
+    transform: translateY(-1px);
+}
+
+.logout-icon {
+    margin-right: 10px;
+    flex-shrink: 0;
+}

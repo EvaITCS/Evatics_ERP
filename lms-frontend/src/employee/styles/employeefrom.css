@@ -1,0 +1,704 @@
+/* =====================================================
+   EMPLOYEE REVIEW SECTION - NO BLUE THEME (MULTICOLOR ACCENTS)
+   ===================================================== */
+
+:root {
+    --bg-primary: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+
+    /* Non-Blue Card Accent Colors */
+    --color-cyan: #0284c7;
+    --color-purple: #8b5cf6;
+    --color-teal: #14b8a6;
+    --color-orange: #f59e0b;
+    --color-green: #10b981;
+    --color-indigo: #6366f1;
+    --color-red: #ef4444;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --radius: 10px;
+}
+
+/* Base Wrapper */
+.employee-review {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding: 0.5rem 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* General Review Section Card */
+.employee-review section,
+.employee-review > div:first-child {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius) !important;
+    padding: 1.25rem 1.5rem !important;
+    box-shadow: var(--shadow-sm) !important;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    margin-bottom: 0 !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.employee-review section:hover {
+    box-shadow: var(--shadow-md) !important;
+}
+
+/* Top Banner - Purple to Indigo Linear Gradient (Replaced Blue) */
+.employee-review > div:first-child {
+    background: linear-gradient(135deg, var(--color-purple) 0%, var(--color-indigo) 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+.employee-review > div:first-child h2 {
+    color: #ffffff !important;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.employee-review > div:first-child p {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 0.875rem;
+}
+
+/* =====================================================
+   SECTION-SPECIFIC COLOR ACCENTS (NO BLUE USED)
+   ===================================================== */
+
+/* Personal Information - Purple */
+.employee-review section:nth-of-type(1) {
+    border-top: 4px solid var(--color-purple) !important;
+}
+
+/* Contact Information - Cyan */
+.employee-review section:nth-of-type(2) {
+    border-top: 4px solid var(--color-cyan) !important;
+}
+
+/* Address Information - Orange */
+.employee-review section:nth-of-type(3) {
+    border-top: 4px solid var(--color-orange) !important;
+}
+
+/* Education - Teal */
+.employee-review section:nth-of-type(4) {
+    border-top: 4px solid var(--color-teal) !important;
+}
+
+/* Work Experience - Indigo */
+.employee-review section:nth-of-type(5) {
+    border-top: 4px solid var(--color-indigo) !important;
+}
+
+/* Visa Information - Green */
+.employee-review section:nth-of-type(6) {
+    border-top: 4px solid var(--color-green) !important;
+}
+
+/* Documents - Cyan */
+.employee-review section:nth-of-type(7) {
+    border-top: 4px solid var(--color-cyan) !important;
+}
+
+/* Emergency Contacts - Red */
+.employee-review section:nth-of-type(8) {
+    border-top: 4px solid var(--color-red) !important;
+}
+
+/* Employment Details - Purple */
+.employee-review section:nth-of-type(9) {
+    border-top: 4px solid var(--color-purple) !important;
+}
+
+/* Section Headings */
+.employee-review h3 {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: var(--text-main) !important;
+    margin-top: 0 !important;
+    margin-bottom: 1rem !important;
+    padding-bottom: 0.5rem !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Grid Layout */
+.employee-review section > div[style*="display: grid"],
+.employee-review section > div[style*="grid"] {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+    gap: 1rem 1.25rem !important;
+}
+
+/* Item Labels and Values */
+.employee-review span[style*="fontWeight: 600"],
+.employee-review span[style*="font-weight: 600"] {
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    color: var(--text-muted) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.employee-review span[style*="color: #222"],
+.employee-review span[style*="color: rgb(34, 34, 34)"] {
+    font-size: 0.925rem !important;
+    font-weight: 600 !important;
+    color: var(--text-main) !important;
+    background-color: var(--bg-primary);
+    padding: 0.4rem 0.65rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    min-height: 20px;
+    display: inline-block;
+}
+
+/* Document Links - Teal Theme (Replaced Blue) */
+.employee-review a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-teal) !important;
+    background-color: #f0fdfa;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #99f6e4;
+    text-decoration: none !important;
+    transition: all 0.2s ease;
+}
+
+.employee-review a:hover {
+    background-color: var(--color-teal);
+    color: #ffffff !important;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+    .employee-review section {
+        padding: 1rem !important;
+    }
+    .employee-review section > div[style*="grid"] {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+
+/* =====================================================
+   1. PAGE CONTAINER & HEADER (Clean Pure White Background)
+   ===================================================== */
+.update-employee-page,
+.add-employee-page {
+    background-color: #ffffff !important; /* Clean Pure White Background */
+    min-height: 100vh;
+    padding: 8px 16px !important;
+    box-sizing: border-box;
+    font-family: Cambria, serif;
+}
+
+.update-employee-page .page-header,
+.add-employee-page .page-header {
+    margin-bottom: 6px !important;
+}
+
+.update-employee-page .page-header h1,
+.update-employee-page .page-header h2,
+.add-employee-page .page-header h1,
+.add-employee-page .page-header h2 {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+}
+
+/* =====================================================
+   2. MAIN COMBINED CARD WITH BLUE GRADIENT TOP ACCENT
+   ===================================================== */
+.update-employee-page .employee-form-container,
+.update-employee-page form,
+.add-employee-page .employee-form-container,
+.add-employee-page form {
+    background-color: #ffffff !important;
+    border-radius: 10px !important;
+    padding: 10px 18px !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid #e2e8f0 !important;
+    position: relative;
+    overflow: hidden;
+    margin: 0 !important;
+}
+
+/* Linear Gradient Border Top Accent */
+.update-employee-page .employee-form-container::before,
+.update-employee-page form::before,
+.add-employee-page .employee-form-container::before,
+.add-employee-page form::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    z-index: 10;
+}
+
+/* =====================================================
+   3. COMPACT STEPPER INSIDE CARD
+   ===================================================== */
+.employee-stepper-card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 0 6px 0 !important;
+    margin-bottom: 6px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    position: relative;
+}
+
+.employee-stepper-badge {
+    display: none !important; /* Hide STEP X OF Y Badge */
+}
+
+.employee-stepper-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0 0 0 !important;
+}
+
+.employee-step-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    flex: 0 0 50px;
+}
+
+.employee-step {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    color: #94a3b8;
+}
+
+.employee-step.completed {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    border-color: transparent !important;
+    color: #ffffff !important;
+}
+
+.employee-step.active {
+    background-color: #ffffff !important;
+    border: 2.5px solid #2563eb !important;
+    color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+}
+
+.employee-step-label {
+    margin-top: 3px !important;
+    font-size: 11px !important;
+    font-weight: 500;
+    color: #64748b;
+    text-align: center;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.employee-step-label.active {
+    color: #1e40af !important;
+    font-weight: 700;
+}
+
+.employee-step-line {
+    flex: 1;
+    height: 2.5px;
+    background-color: #e2e8f0;
+    margin: 0 -8px;
+    margin-bottom: 15px;
+    z-index: 1;
+}
+
+.employee-step-line.completed {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+}
+
+/* =====================================================
+   4. FORM GRID & SECTION TITLE
+   ===================================================== */
+.form-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10px 16px !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+.form-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+    margin-top: 0;
+    margin-bottom: 8px;
+    padding-left: 8px;
+    border-left: 3.5px solid #2563eb;
+    line-height: 1.2;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0 !important;
+}
+
+/* =====================================================
+   5. FORM LABELS & HELPER TEXT
+   ===================================================== */
+.form-group label {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #000000 !important; /* Pure Dark Black */
+    margin-bottom: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+}
+
+.form-group label span {
+    color: #dc2626 !important;
+    font-weight: 800 !important;
+    font-size: 14px !important;
+}
+
+.form-group small {
+    font-size: 11px;
+    color: #a0aec0;
+    margin-top: 2px;
+}
+
+/* =====================================================
+   6. INPUTS, DROPDOWNS & TEXTAREA
+   ===================================================== */
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="date"],
+.form-group select {
+    width: 100%;
+    height: 36px !important;
+    padding: 6px 12px !important;
+    font-size: 13.5px !important;
+    color: #1e293b;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+    box-sizing: border-box;
+}
+
+.form-group input::placeholder {
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12) !important;
+}
+
+.form-group input:disabled {
+    background-color: #f7fafc;
+    color: #a0aec0;
+    cursor: not-allowed;
+    border-color: #edf2f7;
+}
+
+.form-group textarea {
+    width: 100% !important;
+    padding: 6px 12px !important;
+    font-size: 13px !important;
+    color: #1e293b !important;
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    outline: none !important;
+    resize: vertical !important;
+    box-sizing: border-box !important;
+    font-family: inherit !important;
+}
+
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%23718096' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 28px;
+}
+
+.form-group input[type="number"]::-webkit-inner-spin-button,
+.form-group input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* =====================================================
+   7. FILE UPLOAD STYLING
+   ===================================================== */
+.form-group input[type="file"] {
+    width: 100% !important;
+    height: 36px !important;
+    padding: 3px 6px !important;
+    font-size: 12.5px !important;
+    background-color: #f8fafc !important;
+    border: 1px dashed #cbd5e1 !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+}
+
+.form-group input[type="file"]:hover {
+    border-color: #2563eb !important;
+    background-color: #f0f7ff !important;
+}
+
+.form-group input[type="file"]::file-selector-button {
+    background-color: #ffffff !important;
+    color: #334155 !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 3px 10px !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+    margin-right: 8px !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.form-group input[type="file"]::file-selector-button:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+}
+
+/* =====================================================
+   8. DYNAMIC SECTION BUTTONS (+ Add, Remove, View)
+   ===================================================== */
+.btn-primary,
+.btn.btn-primary {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    color: #ffffff !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    padding: 7px 16px !important;
+    border-radius: 6px !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    box-shadow: 0 2px 6px rgba(30, 64, 175, 0.2) !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.btn-primary:hover,
+.btn.btn-primary:hover {
+    opacity: 0.92 !important;
+    box-shadow: 0 4px 10px rgba(30, 64, 175, 0.3) !important;
+}
+
+.btn-danger,
+.btn.btn-danger {
+    background-color: #fee2e2 !important;
+    color: #dc2626 !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    padding: 6px 14px !important;
+    border-radius: 6px !important;
+    border: 1px solid #fca5a5 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.btn-danger:hover,
+.btn.btn-danger:hover {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
+    border-color: #dc2626 !important;
+}
+
+.view-btn {
+    background-color: #f0fdf4 !important;
+    color: #16a34a !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    padding: 6px 14px !important;
+    border-radius: 6px !important;
+    border: 1px solid #bbf7d0 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.view-btn:hover:not(:disabled) {
+    background-color: #16a34a !important;
+    color: #ffffff !important;
+}
+
+/* =====================================================
+   9. CHECKBOX & BOTTOM WIZARD NAVIGATION BUTTONS
+   ===================================================== */
+.form-group input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+    accent-color: #2563eb;
+    border-radius: 4px;
+}
+
+.form-group div span {
+    font-size: 13.5px !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+}
+
+.form-group:last-child {
+    justify-content: flex-end;
+}
+
+.form-group:last-child > div {
+    margin-top: 0 !important;
+    height: 36px;
+}
+
+.form-actions,
+.stepper-navigation,
+.wizard-buttons {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-top: 10px !important;
+    padding-top: 8px !important;
+    border-top: 1px solid #f1f5f9 !important;
+    width: 100% !important;
+    box-sizing: border-box;
+}
+
+.wizard-buttons button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 7px 20px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+/* Previous Button */
+.wizard-buttons button[type="button"]:first-child {
+    background-color: #ffffff !important;
+    color: #475569 !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+.wizard-buttons button[type="button"]:first-child:hover:not(:disabled) {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+}
+
+.wizard-buttons button:disabled {
+    background-color: #f8fafc !important;
+    color: #cbd5e1 !important;
+    border-color: #e2e8f0 !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
+/* Next Button with Gradient */
+.wizard-buttons button[type="button"]:last-child {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(30, 64, 175, 0.25) !important;
+}
+
+.wizard-buttons button[type="button"]:last-child:hover:not(:disabled) {
+    opacity: 0.92 !important;
+}
+
+/* Save / Submit Button */
+.wizard-buttons button[type="submit"] {
+    background-color: #16a34a !important;
+    color: #ffffff !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(22, 163, 74, 0.2) !important;
+}
+
+.wizard-buttons button[type="submit"]:hover {
+    background-color: #15803d !important;
+}
+
+/* Saving Notification Toast */
+.update-employee-page div[style*="fixed"] {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    color: #ffffff !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3) !important;
+    border-radius: 6px !important;
+}
+
+/* =====================================================
+   10. RESPONSIVE FALLBACK
+   ===================================================== */
+@media (max-width: 900px) {
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+}
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+    .employee-review section {
+        padding: 1rem !important;
+    }
+    .employee-review section > div[style*="grid"] {
+        grid-template-columns: 1fr !important;
+    }
+}

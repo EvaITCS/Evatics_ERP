@@ -1,0 +1,114 @@
+backend/src/main/java/com/lms_erp/AdminInitializer.java
+backend/src/main/java/com/lms_erp/auth/dto/LoginRequest.java
+backend/src/main/java/com/lms_erp/auth/service/AuthService.java
+backend/src/main/java/com/lms_erp/dashboard/service/DashboardService.java
+backend/src/main/java/com/lms_erp/employee/repository/EmployeeRepository.java
+backend/src/main/java/com/lms_erp/lead/dto/LeadResponse.java
+backend/src/main/java/com/lms_erp/lead/scheduler/FollowupRetryScheduler.java
+backend/src/main/java/com/lms_erp/lead/service/FollowupService.java
+backend/src/main/java/com/lms_erp/lead/service/LeadImportService.java
+backend/src/main/java/com/lms_erp/person/entity/Person.java
+backend/src/main/java/com/lms_erp/person/repository/ContactTypeMasterRepository.java
+backend/src/main/java/com/lms_erp/person/repository/PersonContactRepository.java
+backend/src/main/java/com/lms_erp/security/CurrentUserService.java
+backend/src/main/java/com/lms_erp/student/controller/StudentApplicationController.java
+backend/src/main/java/com/lms_erp/student/controller/StudentDashboardController.java
+backend/src/main/java/com/lms_erp/student/controller/StudentProfileController.java
+backend/src/main/java/com/lms_erp/student/dto/StudentApplicationRequest.java
+backend/src/main/java/com/lms_erp/student/dto/StudentApplicationResponse.java
+backend/src/main/java/com/lms_erp/student/dto/StudentDashboardResponse.java
+backend/src/main/java/com/lms_erp/student/service/AdminStudentApplicationService.java
+backend/src/main/java/com/lms_erp/student/service/AdminStudentService.java
+backend/src/main/java/com/lms_erp/student/service/StudentApplicationService.java
+backend/src/main/java/com/lms_erp/student/service/StudentDashboardService.java
+backend/src/main/java/com/lms_erp/student/service/StudentProfileService.java
+backend/src/main/java/com/lms_erp/trainer/repository/TrainerRepository.java
+backend/src/main/java/com/lms_erp/trainer/service/impl/TrainerServiceImpl.java
+backend/src/main/java/com/lms_erp/user/service/UserService.java
+backend/src/main/resources/application-dev.properties
+backend/src/main/resources/application.properties
+backend/src/main/resources/db/migration/V1__create_initial_schema.sql
+backend/src/main/resources/db/migration/V5__create_student_application_invitation_tokens.sql
+backend/uploads/04d0053a-80de-4802-a6fb-ec0e71f75ee8.pdf
+backend/uploads/0bec76d4-11c9-4d41-8cc9-d94373d2069b.pdf
+backend/uploads/1780557424651_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1780565521344_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781078867647_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781079283536_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781332519929_phase1_database_design.pdf
+backend/uploads/1781332519992_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781332520040_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781332520056_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781332520087_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781332806148_phase1_database_design.pdf
+backend/uploads/1781332806162_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781332806194_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781332806225_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781332806242_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781334724308_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781690788883_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781691945701_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781692202157_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781693335608_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1781694737788_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782203107079_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782286704218_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782286717405_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782288328458_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782294347692_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782378586176_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782382840951_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782553345599_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782554974374_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782804654858_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782894827410_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782895108717_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782896813743_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1782896835490_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1783058125398_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1783151683555_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1783169307276_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1783593304910_New Doc 04-28-2025 13.49.pdf
+backend/uploads/1783598058277_New Doc 04-28-2025 13.49.pdf
+backend/uploads/2ca6885f-e56e-4d8d-b76f-6abb150ef428.pdf
+backend/uploads/50f2af4c-b2b6-488f-ab7a-1fb65f5333ae.pdf
+backend/uploads/6adc3ba8-3664-4b8f-9fe9-00383c674337.pdf
+backend/uploads/b87a43ac-d77f-4833-8f86-a49a3ee0308a.pdf
+backend/uploads/f39a274a-7f1f-461c-b413-cf9d5a48e723.pdf
+lms-frontend/public/book/EvaITCS-Full_Stack_Java_Interview_Guide.html
+lms-frontend/public/book/Full_Stack_Java_Training_Book.html
+lms-frontend/src/auth/pages/LoginPage.jsx
+lms-frontend/src/lead/pages/AdminApplicationDetails.jsx
+lms-frontend/src/lead/pages/CounselorApplicationDetails.jsx
+lms-frontend/src/lead/pages/StudentSupportPage.jsx
+lms-frontend/src/lead/routes/AdminLeadRoutes.jsx
+lms-frontend/src/lead/routes/ConsultantLeadRoutes.jsx
+lms-frontend/src/lead/styles/studentCredentials.css
+lms-frontend/src/lead/styles/studentForm.css
+lms-frontend/src/routes/AppRoutes.jsx
+lms-frontend/src/shared/components/Sidebar.jsx
+lms-frontend/src/student/components/AcademicSections.jsx
+lms-frontend/src/student/components/FormSections.jsx
+lms-frontend/src/student/components/FormStepper.jsx
+lms-frontend/src/student/components/ReviewSection.jsx
+lms-frontend/src/student/components/StudentDetailedDashboard.jsx
+lms-frontend/src/student/components/StudentNavbar.jsx
+lms-frontend/src/student/components/StudentProfileCard.jsx
+lms-frontend/src/student/components/StudentSidebar.jsx
+lms-frontend/src/student/layouts/StudentLayout.jsx
+lms-frontend/src/student/pages/ApplicationLandingPage.jsx
+lms-frontend/src/student/pages/CurriculumPage.jsx
+lms-frontend/src/student/pages/InterviewQuestionsPage.jsx
+lms-frontend/src/student/pages/MyBatchPage.jsx
+lms-frontend/src/student/pages/StudentApplicationPage.jsx
+lms-frontend/src/student/pages/StudentDashboardPage.jsx
+lms-frontend/src/student/pages/WeeklyPlanPage.jsx
+lms-frontend/src/student/services/studentService.js
+lms-frontend/src/student/styles/curriculum.css
+lms-frontend/src/student/styles/formStepper.css
+lms-frontend/src/student/styles/myForm.css
+lms-frontend/src/student/styles/student.css
+lms-frontend/src/student/styles/studentProfile.css
+lms-frontend/src/student/styles/weeklyPlan.css
+lms-frontend/src/student/utils/studentFormUtils.js
+lms-frontend/src/student/utils/weeklyPlan.js

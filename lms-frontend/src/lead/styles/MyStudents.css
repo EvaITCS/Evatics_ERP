@@ -1,0 +1,172 @@
+/* Container Layout Restructuring */
+.container-fluid {
+    background-color: #f4f6f9;
+    min-height: 100vh;
+    font-family: cambria;
+    box-sizing: border-box;
+}
+
+/* Premium Main Wrapper Structure */
+.card.shadow {
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-top: 4px solid #2563eb !important; /* Top Blue Line Add kar di hai */
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+/* Header Component Configuration */
+.card-header {
+    background: #ffffff;
+    border-bottom: 1px solid #edf2f7;
+    padding: 1.25rem 1.75rem;
+}
+.card-header h4 {
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 1.40rem;
+    letter-spacing: -0.02em;
+    margin: 0;
+    border-left: none !important; /* Yeh vertical blue line hata dega */
+    padding-left: 5px !important;   /* Extra space bhi clear kar dega */
+}
+
+.card-body {
+    padding: 0 !important;
+}
+
+/* --- Pixel-Perfect Alignments Architecture --- */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 0 !important;
+    border-collapse: collapse !important;
+}
+
+/* Explicit clean override to strip baseline bootstrap styles */
+.table-bordered,
+.table-bordered th,
+.table-bordered td {
+    border: none !important;
+}
+
+/* Universal Padding Distribution for Perfect Grid Lock */
+.table th,
+.table td {
+    padding: 1rem 1.75rem !important; /* Fixed proportional bounding padding */
+    text-align: left !important;      /* Forces exact absolute left alignment hook */
+    vertical-align: middle !important;
+    box-sizing: border-box;
+}
+
+/* Corporate Column Headers Setup */
+.table thead th {
+    background-color: #f8fafc !important;
+    color: #475569;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.90rem;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+/* Table Body Dynamic Transitions */
+.table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8fafc !important;
+}
+
+.table tbody td {
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #334155;
+    font-size: 1rem;
+}
+
+/* Core Student Column Style Match */
+.table tbody tr td:first-child {
+    font-weight: 600;
+    color: #0f172a;
+}
+
+/* Secondary Typography Tones */
+.text-muted-custom {
+    color: #64748b;
+}
+
+/* Uniform Application Stage Treatment */
+.stage-text {
+    font-weight: 500;
+    color: #334155;
+    background-color: #f1f5f9;
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    display: inline-block;
+    white-space: nowrap; /* Elements content won't wrap breaks */
+}
+
+/* --- Responsive Status Badges Layout --- */
+.badge-custom {
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
+}
+
+.badge-meeting-pending {
+    background-color: #fffbeb !important;
+    color: #d97706 !important;
+    border: 1px solid #fde68a;
+}
+
+.badge-enrolled {
+    background-color: #f0fdf4 !important;
+    color: #16a34a !important;
+    border: 1px solid #bbf7d0;
+}
+
+.badge-recheck {
+    background-color: #fff5f5 !important;
+    color: #e11d48 !important;
+    border: 1px solid #fecdd3;
+}
+
+.view-app-btn {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 6px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+    display: inline-flex;
+    align-items: center;
+}
+
+.view-app-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.view-app-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}

@@ -1,0 +1,167 @@
+/* Container Layout */
+.admin-list-container {
+    padding: 24px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    margin: 20px auto;
+    max-width: 1200px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Heading Styling */
+.admin-list-container h2 {
+    color: #1e293b;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 12px;
+}
+
+/* Modern Search Input Bar */
+.student-search-input {
+    width: 100%;
+    max-width: 360px;
+    padding: 10px 16px;
+    font-size: 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    margin-bottom: 24px;
+    transition: all 0.2s ease-in-out;
+    background-color: #f8fafc;
+}
+
+.student-search-input:focus {
+    border-color: #2563eb;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Premium Table UI Wrapper */
+.student-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 8px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+/* Table Headers */
+.student-table th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: left;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Table Rows and Data Cells */
+.student-table td {
+    color: #334155;
+    font-size: 14px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+/* Hover effect on rows */
+.student-table tbody tr:hover {
+    background-color: #f8fafc;
+    transition: background-color 0.2s ease;
+}
+
+/* Remove border from last row */
+.student-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Enrolled Status Badge */
+.status-badge.enrolled {
+    display: inline-block;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 50px;
+    background-color: #d1fae5;
+    color: #065f46;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* Center aligned Loading Screen */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #64748b;
+}
+.view-btn1 {
+    width: 100%;                      /* Card ke hisab se responsive full width */
+    box-sizing: border-box;            /* Alignment aur padding maintain rakhne ke liye */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: #ffffff;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: -0.01em;
+
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover State */
+.view-btn1:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Active / Click State */
+.view-btn1:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+/* Focus State (Accessibility) */
+.view-btn1:focus-visible {
+    outline: 2px solid #93c5fd;
+    outline-offset: 2px;
+}
+/* Responsive Handling for Small Screens */
+@media (max-width: 768px) {
+    .admin-list-container {
+        padding: 16px;
+    }
+
+    .student-search-input {
+        max-width: 100%;
+    }
+
+    .student-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

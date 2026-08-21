@@ -1,0 +1,117 @@
+name: Deploy backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+
+# AWS-related config comes from repo Variables (Settings -> Secrets and
+# variables -> Actions -> Variables), not hardcoded:
+#   PROJECT_NAME          e.g. "lms-erp" - must match the terraform `project` var
+#   AWS_REGION             e.g. "us-east-1"
+#   AWS_DEPLOY_ROLE_ARN     bootstrap output `github_deploy_role_arn`
+env:
+  PROJECT_NAME: ${{ vars.PROJECT_NAME || 'lms-erp' }}
+  AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+
+permissions:
+  id-token: write # OIDC
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.tag.outputs.value }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: tag
+        run: echo "value=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: ecr
+
+      # Built once, promoted from dev to prod below - not rebuilt per env.
+      - name: Build and push
+        working-directory: backend
+        run: |
+          IMAGE="${{ steps.ecr.outputs.registry }}/${PROJECT_NAME}-backend:${{ steps.tag.outputs.value }}"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+
+  deploy-dev:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: dev
+    env:
+      TF_ENV: dev
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: ecr
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition ${PROJECT_NAME}-${TF_ENV}-backend \
+            --query taskDefinition > task-definition.json
+
+      - id: render
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: backend
+          image: ${{ steps.ecr.outputs.registry }}/${{ env.PROJECT_NAME }}-backend:${{ needs.build.outputs.image_tag }}
+
+      - uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }}
+          service: ${{ env.PROJECT_NAME }}-${{ env.TF_ENV }}-backend
+          cluster: ${{ env.PROJECT_NAME }}-${{ env.TF_ENV }}
+          wait-for-service-stability: true
+
+  deploy-prod:
+    needs: [build, deploy-dev]
+    runs-on: ubuntu-latest
+    environment: prod # GitHub Environment protection rule gates this - configure a required reviewer in repo settings
+    env:
+      TF_ENV: prod
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: ecr
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition ${PROJECT_NAME}-${TF_ENV}-backend \
+            --query taskDefinition > task-definition.json
+
+      - id: render
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: backend
+          image: ${{ steps.ecr.outputs.registry }}/${{ env.PROJECT_NAME }}-backend:${{ needs.build.outputs.image_tag }}
+
+      - uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }}
+          service: ${{ env.PROJECT_NAME }}-${{ env.TF_ENV }}-backend
+          cluster: ${{ env.PROJECT_NAME }}-${{ env.TF_ENV }}
+          wait-for-service-stability: true

@@ -1,0 +1,1176 @@
+/* ==========================================================================
+   1. ROOT VARIABLES & GLOBAL RESET
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Fonts */
+  --font-main: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Colors - Core */
+  --bg-main: #ffffff;
+  --bg-surface: #ffffff;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --border-input: #cbd5e1;
+
+  /* Accent & Actions */
+  --primary: #3c38d1;
+  --primary-hover: #2d2aab;
+  --primary-active: #211e8a;
+  --primary-light: #f5f3ff;
+  --primary-border: #ddd6fe;
+
+  /* Status Colors */
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --success-border: #bbf7d0;
+
+  --warning: #f59e0b;
+  --warning-bg: #fffbeb;
+  --warning-border: #fde68a;
+
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
+  --danger-bg: #fff5f5;
+  --danger-border: #fecaca;
+
+  /* Transitions & Shadows */
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.03);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
+
+  /* Spacing Scale */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 40px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Base Horizontal Divider */
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--border-color);
+  margin: var(--space-lg) 0;
+  grid-column: 1 / -1;
+}
+
+/* Fade In Animation */
+@keyframes hrmsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   2. PAGE CONTAINERS & HEADER
+   ========================================================================== */
+.add-employee-page,
+.apply-leave-page,
+.departments-page,
+.designations-page,
+.employee-details-page,
+.employee-documents-page,
+.employee-holidays-page,
+.employee-leave-page,
+.employee-list-page,
+.employee-notes-page,
+.employees-page,
+.employee-status-page,
+.employment-types-page,
+.holidays-page,
+.leave-types-page,
+.locations-page,
+.my-leaves-page,
+.employee-profile-page,
+.shifts-page,
+.update-employee-page,
+.work-modes-page {
+  width: 100%;
+  max-width: 100%;
+  padding: 0px var(--space-xl) var(--space-lg) var(--space-xl) !important;
+  margin-top: 0px !important;
+  background-color: var(--bg-main);
+  animation: hrmsFadeIn var(--transition-normal);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0px !important;
+  padding-top: 0px !important;
+  margin-bottom: var(--space-lg) !important;
+  padding-bottom: var(--space-sm) !important;
+  border-bottom: 1px solid var(--border-color);
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.page-header h2,
+.admin-page-title,
+.admin-details-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-top: 0px !important;
+  padding-top: 0px !important;
+  line-height: 1.2 !important;
+}
+
+/* Left Aligned Page Header Container */
+.page-header-container {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  margin-bottom: 20px !important;
+  width: 100% !important;
+}
+
+.header-left {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+}
+
+/* ==========================================================================
+   3. MASTER FORMS & INPUT CONTROLS (Department, Location, Shift, Master)
+   ========================================================================== */
+.employee-form,
+.department-form,
+.location-form,
+.shift-form,
+.master-form,
+.document-upload-form {
+  background: var(--bg-surface);
+  padding: var(--space-lg);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  border-top: 4px solid var(--primary);
+  box-shadow: var(--shadow-sm);
+  margin-top: var(--space-xs) !important;
+  margin-bottom: var(--space-lg) !important;
+}
+
+.department-form,
+.location-form,
+.shift-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: var(--space-md) !important;
+  column-gap: var(--space-lg);
+  align-items: end;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-xs);
+  width: 100%;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #000000 !important;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea,
+.master-form input,
+.master-form select,
+.master-form textarea,
+.employee-search-section input,
+.employee-filters input,
+.employee-filters select {
+  width: 100%;
+  height: 42px;
+  padding: 0 var(--space-md);
+  border: 1px solid var(--border-input);
+  border-radius: 6px;
+  background-color: var(--bg-surface);
+  font-family: var(--font-main);
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-group textarea,
+.master-form textarea {
+  height: auto;
+  min-height: 80px;
+  padding: var(--space-sm) var(--space-md);
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.master-form input:focus,
+.master-form select:focus,
+.master-form textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(60, 56, 209, 0.12);
+}
+
+.master-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.master-form input,
+.master-form select {
+  flex: 1;
+  min-width: 200px;
+}
+
+.submit-btn,
+.master-form button[type="submit"] {
+  height: 40px;
+  padding: 0 var(--space-lg);
+  border-radius: 6px;
+  background: linear-gradient(135deg, #3c38d1 0%, #3b82f6 100%) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  box-shadow: 0 2px 6px rgba(60, 56, 209, 0.2);
+}
+
+.submit-btn:hover,
+.master-form button[type="submit"]:hover {
+  opacity: 0.92;
+  box-shadow: 0 4px 10px rgba(60, 56, 209, 0.3);
+}
+
+/* Full Width Search Area */
+.lead-filters {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-bottom: 20px !important;
+  box-sizing: border-box !important;
+}
+
+.lead-filters input[type="text"],
+.lead-filters input[type="search"] {
+  width: 100% !important;
+  height: 42px !important;
+  border-radius: 8px !important;
+  border: 1px solid #cbd5e1 !important;
+  padding: 8px 14px 8px 38px !important;
+  font-size: 14px !important;
+  outline: none !important;
+}
+
+.lead-filters input:focus {
+  border-color: #3c38d1 !important;
+  box-shadow: 0 0 0 3px rgba(60, 56, 209, 0.12) !important;
+}
+
+/* ==========================================================================
+   4. DATA TABLES & ACTIONS (Employees, Leaves, Masters)
+   ========================================================================== */
+.employee-table-wrapper,
+.my-leaves-table-container,
+.leave-table-container {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--bg-surface);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  margin-top: var(--space-lg);
+  position: relative;
+}
+
+.employee-table,
+.my-leaves-table,
+.leave-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+.employee-table thead,
+.my-leaves-table thead,
+.leave-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #f8fafc !important;
+  color: #1e293b !important;
+}
+
+/* Light Background Header with Dark Text */
+.employee-table th,
+.my-leaves-table th,
+.leave-table th {
+  background-color: #f8fafc !important;
+  background-image: none !important;
+  color: #1e293b !important;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--border-color) !important;
+  border-right: 1px solid var(--border-color) !important;
+}
+
+.employee-table th:last-child,
+.my-leaves-table th:last-child,
+.leave-table th:last-child {
+  border-right: none !important;
+}
+
+.employee-table tbody tr,
+.my-leaves-table tbody tr,
+.leave-table tbody tr {
+  background-color: var(--bg-surface);
+  transition: background-color var(--transition-fast);
+}
+
+.employee-table tbody tr:nth-child(even),
+.my-leaves-table tbody tr:nth-child(even),
+.leave-table tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+.employee-table tbody tr:hover,
+.my-leaves-table tbody tr:hover,
+.leave-table tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.employee-table td,
+.my-leaves-table td,
+.leave-table td {
+  padding: var(--space-sm) var(--space-md);
+  font-size: 13px;
+  color: var(--text-primary) !important;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap !important;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  vertical-align: middle;
+  border-right: 1px solid var(--border-color);
+}
+
+.employee-table td:last-child,
+.my-leaves-table td:last-child,
+.leave-table td:last-child {
+  border-right: none;
+}
+
+.employee-table tbody tr:last-child td,
+.my-leaves-table tbody tr:last-child td,
+.leave-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   5. LEAVE STATUS BADGES & APPROVE/REJECT ACTIONS
+   ========================================================================== */
+.leave-status-approved {
+  background-color: var(--success-bg) !important;
+  color: #166534 !important;
+  border: 1px solid var(--success-border) !important;
+  padding: 3px 10px !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.leave-status-rejected {
+  background-color: var(--danger-bg) !important;
+  color: #c53030 !important;
+  border: 1px solid var(--danger-border) !important;
+  padding: 3px 10px !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.leave-status-pending {
+  background-color: #fff7ed !important;
+  color: #c2410c !important;
+  border: 1px solid #fed7aa !important;
+  padding: 3px 10px !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+/* Leave Actions: Approve & Reject Buttons */
+.approve-btn {
+  background-color: #f0fdf4 !important;
+  color: #16a34a !important;
+  border: 1px solid #bbf7d0 !important;
+  padding: 4px 12px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  height: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.approve-btn:hover:not(:disabled) {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+}
+
+.reject-btn {
+  background-color: var(--danger-bg) !important;
+  color: var(--danger) !important;
+  border: 1px solid var(--danger-border) !important;
+  padding: 4px 12px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  height: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.reject-btn:hover:not(:disabled) {
+  background-color: var(--danger) !important;
+  color: #ffffff !important;
+}
+
+.approve-btn:disabled,
+.reject-btn:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+}
+
+/* ==========================================================================
+   6. EMPLOYEE MODAL (LEAVE MODAL & GENERIC MODALS)
+   ========================================================================== */
+.modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 1000 !important;
+  padding: 16px !important;
+}
+
+.employee-modal {
+  background: var(--bg-surface) !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--border-color) !important;
+  border-top: 4px solid var(--primary) !important;
+  padding: 24px !important;
+  width: 100% !important;
+  max-width: 520px !important;
+  box-shadow: var(--shadow-lg) !important;
+  animation: hrmsFadeIn var(--transition-normal) !important;
+}
+
+.employee-modal h2 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  margin-bottom: 16px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.employee-modal form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.employee-modal button[type="submit"] {
+  flex: 1 !important;
+  height: 38px !important;
+  background: linear-gradient(135deg, #3c38d1 0%, #3b82f6 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  transition: opacity var(--transition-fast) !important;
+}
+
+.employee-modal button[type="submit"]:hover:not(:disabled) {
+  opacity: 0.92 !important;
+}
+
+.employee-modal button[type="button"] {
+  flex: 1 !important;
+  height: 38px !important;
+  background-color: #ffffff !important;
+  border: 1px solid var(--border-input) !important;
+  color: var(--text-secondary) !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  cursor: pointer !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.employee-modal button[type="button"]:hover:not(:disabled) {
+  background-color: #f8fafc !important;
+  color: var(--text-primary) !important;
+}
+
+/* ==========================================================================
+   7. TABLE ACTION BUTTONS (View, Edit, Delete, Documents)
+   ========================================================================== */
+.employee-table td button,
+.employee-table td a {
+  border: 1px solid transparent !important;
+  padding: var(--space-2xs) var(--space-sm) !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-decoration: none !important;
+  margin: 0 3px !important;
+  height: 28px !important;
+  transition: all var(--transition-fast) !important;
+  font-family: var(--font-main) !important;
+}
+
+/* View Action Button */
+.employee-table td a:first-of-type,
+.employee-table td button.view,
+.employee-table td button:contains("View"),
+.employee-table td .view-btn {
+  background-color: #f0f9ff !important;
+  color: #0284c7 !important;
+  border-color: #bae6fd !important;
+}
+
+.employee-table td a:first-of-type:hover,
+.employee-table td button.view:hover,
+.employee-table td .view-btn:hover {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+/* Edit Action Button */
+.employee-table td button:nth-of-type(1),
+.employee-table td button.edit,
+.employee-table td .edit-btn,
+.employee-table td a[href*="/update/"] {
+  background-color: #f0fdf4 !important;
+  color: #16a34a !important;
+  border-color: #bbf7d0 !important;
+}
+
+.employee-table td button:nth-of-type(1):hover,
+.employee-table td button.edit:hover,
+.employee-table td .edit-btn:hover,
+.employee-table td a[href*="/update/"]:hover {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+}
+
+/* Documents Link */
+.employee-table td a.documents,
+.employee-table td a[href*="/documents"] {
+  background-color: #faf5ff !important;
+  color: #8b5cf6 !important;
+  border-color: #e9d5ff !important;
+}
+
+.employee-table td a.documents:hover,
+.employee-table td a[href*="/documents"]:hover {
+  background-color: #8b5cf6 !important;
+  color: #ffffff !important;
+}
+
+/* Delete Action Button */
+.employee-table td button:last-of-type,
+.employee-table td button.delete {
+  background-color: var(--danger-bg) !important;
+  color: var(--danger) !important;
+  border-color: var(--danger-border) !important;
+}
+
+.employee-table td button:last-of-type:hover,
+.employee-table td button.delete:hover {
+  background-color: var(--danger) !important;
+  color: #ffffff !important;
+}
+
+/* ==========================================================================
+   8. WORK MODE BADGES & STATUS INDICATORS
+   ========================================================================== */
+.badge,
+.table-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.remote-badge {
+  background-color: #eff6ff !important;
+  color: #2563eb !important;
+  border: 1px solid #bfdbfe !important;
+}
+
+.hybrid-badge {
+  background-color: #faf5ff !important;
+  color: #7c3aed !important;
+  border: 1px solid #e9d5ff !important;
+}
+
+.office-badge {
+  background-color: #f0fdf4 !important;
+  color: #16a34a !important;
+  border: 1px solid #bbf7d0 !important;
+}
+
+.active-badge,
+.active {
+  background-color: var(--success-bg);
+  color: #166534;
+  border: 1px solid var(--success-border);
+}
+
+.inactive-badge,
+.inactive {
+  background-color: var(--danger-bg);
+  color: #c53030;
+  border: 1px solid #feb2b2;
+}
+
+/* Header & Secondary Buttons */
+.add-btn-blue {
+  background-color: #3c38d1 !important;
+  color: #ffffff !important;
+  padding: 8px 18px !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+  font-size: 13.5px !important;
+  text-decoration: none !important;
+  box-shadow: 0 2px 6px rgba(60, 56, 209, 0.25) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.add-btn-blue:hover {
+  background-color: #0b57d0 !important;
+  box-shadow: 0 4px 10px rgba(11, 87, 208, 0.3) !important;
+}
+
+.back-btn-secondary {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+  padding: 7px 16px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.back-btn-secondary:hover {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+/* ==========================================================================
+   9. EMPLOYEE DETAILS & PROFILE PAGES
+   ========================================================================== */
+.employee-details-page,
+.employee-profile-page {
+  padding: 16px 32px 32px 32px !important;
+  background-color: #ffffff !important;
+}
+
+.details-cards-grid,
+.profile-section-grid,
+.profile-tab-content {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+}
+
+.employee-details-page .profile-card,
+.employee-profile-page .profile-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-top: 4px solid #3c38d1 !important;
+  border-radius: 10px !important;
+  padding: 20px 24px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+  margin-bottom: 0 !important;
+}
+
+.employee-details-page .profile-card h3,
+.employee-profile-page .profile-card h3,
+.employee-profile-page .profile-tab-content h3 {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin-top: 0 !important;
+  margin-bottom: 16px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 2px solid #f1f5f9 !important;
+}
+
+.employee-details-page .profile-info-grid,
+.employee-profile-page .profile-info-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 16px !important;
+}
+
+.employee-details-page .profile-info-grid > div,
+.employee-profile-page .profile-info-grid > div {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+}
+
+.employee-details-page .profile-info-grid label,
+.employee-profile-page .profile-info-grid label {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #000000 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.03em !important;
+}
+
+.employee-details-page .profile-info-grid span,
+.employee-profile-page .profile-info-grid span {
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: #1e293b !important;
+  background-color: #f8fafc !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-sizing: border-box !important;
+  min-height: 38px !important;
+  display: flex !important;
+  align-items: center !important;
+  word-break: break-word !important;
+}
+
+/* Profile Header Card */
+.employee-details-page .profile-header-card,
+.employee-profile-page .profile-header-card {
+  display: flex !important;
+  align-items: center !important;
+  gap: 18px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-left: 5px solid #3c38d1 !important;
+  border-radius: 10px !important;
+  padding: 16px 20px !important;
+  margin-bottom: 20px !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03) !important;
+}
+
+.employee-details-page .profile-avatar,
+.employee-profile-page .profile-avatar {
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #3c38d1 0%, #3b82f6 100%) !important;
+  color: #ffffff !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 3px 8px rgba(60, 56, 209, 0.25) !important;
+  flex-shrink: 0 !important;
+}
+
+.employee-details-page .profile-header-info,
+.employee-profile-page .profile-header-info {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  width: 100% !important;
+}
+
+.employee-details-page .profile-name-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.employee-details-page .profile-header-info h2,
+.employee-profile-page .profile-header-info h2 {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.employee-details-page .profile-designation,
+.employee-profile-page .profile-header-info p {
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: #475569 !important;
+  margin: 0 !important;
+}
+
+.employee-details-page .employee-code-badge {
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #3c38d1 !important;
+  background-color: #f0f3ff !important;
+  border: 1px solid #dbe2fe !important;
+  padding: 2px 10px !important;
+  border-radius: 20px !important;
+  display: inline-block !important;
+}
+
+/* Tabs */
+.employee-profile-page .profile-tabs {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 24px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding-bottom: 10px !important;
+  overflow-x: auto !important;
+}
+
+.employee-profile-page .profile-tabs button {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+  padding: 8px 18px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out !important;
+  white-space: nowrap !important;
+  outline: none !important;
+}
+
+.employee-profile-page .profile-tabs button:hover {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+.employee-profile-page .profile-tabs button.active {
+  background: linear-gradient(135deg, #3c38d1 0%, #3b82f6 100%) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(60, 56, 209, 0.25) !important;
+}
+
+/* Empty & Error States */
+.employee-profile-page .profile-loading,
+.employee-profile-page .profile-empty {
+  text-align: center !important;
+  padding: 40px 20px !important;
+  background-color: #f8fafc !important;
+  border: 1px dashed #cbd5e1 !important;
+  border-radius: 8px !important;
+  color: #64748b !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.employee-profile-page .profile-error {
+  text-align: center !important;
+  padding: 30px 20px !important;
+  background-color: #fff5f5 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 8px !important;
+  color: #dc2626 !important;
+}
+
+.employee-profile-page .profile-error button {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 8px 18px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  margin-top: 12px !important;
+  transition: background-color 0.2s ease-in-out !important;
+}
+
+.employee-profile-page .profile-error button:hover {
+  background-color: #b91c1c !important;
+}
+
+/* ==========================================================================
+   10. EMPLOYEE DOCUMENTS PAGE STYLING
+   ========================================================================== */
+.employee-documents-page {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 24px 24px 24px !important;
+  margin-top: 0 !important;
+  background-color: #ffffff !important;
+  box-sizing: border-box;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.employee-documents-page .page-header,
+.employee-documents-page .page-header-container {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-bottom: 16px !important;
+  padding-bottom: 10px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+.employee-documents-page .employee-info {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-left: 4px solid #3c38d1 !important;
+  border-radius: 8px !important;
+  padding: 14px 18px !important;
+  margin-bottom: 20px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 16px 24px !important;
+}
+
+.employee-documents-page .employee-info h3 {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.employee-documents-page .employee-info p {
+  font-size: 12.5px !important;
+  color: #475569 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.employee-documents-page .employee-info p strong {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+.employee-documents-page .employee-table-wrapper {
+  width: 100% !important;
+  overflow-x: auto !important;
+  background: #ffffff !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+}
+
+.employee-documents-page .employee-table {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  text-align: left !important;
+}
+
+.employee-documents-page .employee-table th {
+  background-color: #f8fafc !important;
+  background-image: none !important;
+  color: #1e293b !important;
+  padding: 10px 14px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  border-bottom: 2px solid #e2e8f0 !important;
+  border-right: 1px solid #e2e8f0 !important;
+}
+
+.employee-documents-page .employee-table th:last-child {
+  border-right: none !important;
+}
+
+.employee-documents-page .employee-table tbody tr {
+  background-color: #ffffff !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.employee-documents-page .employee-table tbody tr:nth-child(even) {
+  background-color: #f8fafc !important;
+}
+
+.employee-documents-page .employee-table tbody tr:hover {
+  background-color: #f1f5f9 !important;
+}
+
+.employee-documents-page .employee-table td {
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  color: #0f172a !important;
+  font-weight: 500 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-right: 1px solid #e2e8f0 !important;
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+}
+
+.employee-documents-page .employee-table td:last-child {
+  border-right: none !important;
+}
+
+.employee-documents-page .employee-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+.employee-documents-page .view-btn {
+  background-color: #f0f9ff !important;
+  color: #0284c7 !important;
+  border: 1px solid #bae6fd !important;
+  padding: 4px 12px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  height: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.employee-documents-page .view-btn:hover {
+  background-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+/* ==========================================================================
+   11. RESPONSIVE LAYOUT FALLBACKS
+   ========================================================================== */
+@media (max-width: 900px) {
+  .employee-profile-page .profile-info-grid,
+  .employee-details-page .profile-info-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .master-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .master-form input,
+  .master-form select {
+    width: 100%;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .employee-profile-page .profile-info-grid,
+  .employee-details-page .profile-info-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .employee-profile-page .profile-header-card,
+  .employee-details-page .profile-header-card {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+}

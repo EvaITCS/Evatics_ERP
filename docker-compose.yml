@@ -1,0 +1,66 @@
+services:
+  mysql:
+    image: mysql:8.4.10
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME:-lms_erp}
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: ${DATABASE_USER:-default}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD:-password}
+    ports:
+      - "${DATABASE_PORT:-3306}:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+#      - ./infrastructure/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf:ro
+#      - ./backend/src/main/resources/db/migration:/docker-entrypoint-initdb.d:ro
+    networks:
+      - mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/lms-erp-backend:development
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DATABASE_NAME: ${DATABASE_NAME:-lms_erp}
+      DATABASE_USER: ${DATABASE_USER:-default}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-password}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      ADMIN_TEMP_USERNAME: ${ADMIN_TEMP_USERNAME}
+      ADMIN_TEMP_PASSWORD: ${ADMIN_TEMP_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env}
+      SECURITY_CORS_ALLOWED_ORIGINS: "http://localhost:3000"
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    volumes:
+      - backend-uploads:/app/uploads
+    networks:
+      - mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    image: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/lms-erp-frontend:development
+    build:
+      context: ./lms-frontend
+      args:
+        REACT_APP_BACKEND_API_URL: ${REACT_APP_BACKEND_API_URL:-http://localhost:8080}
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    restart: unless-stopped
+
+volumes:
+  mysql:
+  backend-uploads:
+
+networks:
+  mysql:
+    driver: bridge

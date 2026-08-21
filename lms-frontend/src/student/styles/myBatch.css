@@ -1,0 +1,210 @@
+/* ==========================================================================
+   EVAITCS ENTERPRISE - MY BATCH PAGE ARCHITECTURE (STATIC PREMIUM BENTO)
+   ========================================================================== */
+
+.my-batch-page {
+    background-color: #f8fafc; /* Clean, crisp professional layout background */
+    min-height: calc(100vh - 80px);
+    font-family: cambria;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* --- PREMIUM CONTAINER CARD --- */
+.batch-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03), 0 1px 3px rgba(15, 23, 42, 0.02);
+    width: 100%;
+    max-width: 1050px;
+    padding: 32px;
+    box-sizing: border-box;
+}
+
+.batch-card:hover {
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+/* --- BATCH HEADER ZONE --- */
+.batch-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1px;
+    margin-bottom: 22px;
+}
+
+.batch-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 6px 0;
+    letter-spacing: -0.5px;
+}
+
+.program-subtitle {
+    font-size: 14.5px;
+    color: #64748b;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* --- STATUS BADGES SYSTEM --- */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+}
+
+/* Active State Design */
+.status-badge.active {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid rgba(22, 163, 74, 0.15);
+}
+.status-badge.active .status-dot {
+    background-color: #16a34a;
+    box-shadow: 0 0 8px #16a34a;
+}
+
+/* Upcoming/Pending/Other State Design */
+.status-badge.upcoming, .status-badge.pending {
+    background-color: #fef3c7;
+    color: #d97706;
+    border: 1px solid rgba(217, 119, 6, 0.15);
+}
+.status-badge.upcoming .status-dot, .status-badge.pending .status-dot {
+    background-color: #d97706;
+}
+
+/* --- BENTO INFORMATION GRID --- */
+.batch-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 11fr));
+    gap: 20px;
+}
+
+/* Individual Bento Box - Animating translations removed */
+.info-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px 24px;
+}
+
+/* Hover effects kept purely to static color transitions */
+.info-box:hover {
+    background: #ffffff;
+    border-color: #3b82f6; /* Premium brand accent highlighters on focus */
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.05);
+}
+
+.info-box label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+}
+
+.info-box h4 {
+    font-size: 15px;
+    font-weight: 530;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Special styling for Tech Codes */
+.code-value {
+    color: #2563eb !important;
+    font-family: 'Fira Code', monospace, sans-serif;
+    letter-spacing: -0.3px;
+}
+
+/* --- EMPTY ASSIGNMENT STATE --- */
+.no-batch-card {
+    background: #ffffff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+    text-align: center;
+    padding: 60px 40px;
+    max-width: 550px;
+    margin-top: 40px;
+}
+
+.empty-state-icon {
+    font-size: 44px;
+    margin-bottom: 20px;
+}
+
+.no-batch-card h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+}
+
+.no-batch-card p {
+    font-size: 14px;
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* --- MODERN SHIMMER LOADING LAYER --- */
+.batch-shimmer-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 1050px;
+    padding: 32px;
+    box-sizing: border-box;
+}
+
+.shimmer-header {
+    height: 36px;
+    width: 40%;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: loadingShimmer 1.5s infinite;
+    border-radius: 6px;
+    margin-bottom: 48px;
+}
+
+.shimmer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.shimmer-box {
+    height: 85px;
+    background: linear-gradient(90deg, #f8fafc 25%, #edf2f7 50%, #f8fafc 75%);
+    background-size: 200% 100%;
+    animation: loadingShimmer 1.5s infinite;
+    border-radius: 12px;
+}
+
+/* --- ANIMATION KEYFRAMES --- */
+@keyframes loadingShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}

@@ -1,0 +1,497 @@
+/* ==========================================================================
+   Drop Request Flow Layout Styles — Enhanced
+   Same class names as before (drop-in replacement). Adds: design tokens,
+   scoped resets (h2/hr no longer leak globally), hover/focus/disabled/
+   empty states, responsive rules, and a bit more visual polish.
+   ========================================================================== */
+
+:root {
+    --drop-ink-900: #1e293b;
+    --drop-ink-700: #334155;
+    --drop-ink-500: #64748b;
+    --drop-ink-400: #94a3b8;
+
+    --drop-border: #e2e8f0;
+    --drop-border-strong: #cbd5e1;
+    --drop-surface: #ffffff;
+    --drop-canvas: #f8fafc;
+
+    --drop-blue-600: #2563eb;
+    --drop-blue-700: #1d4ed8;
+    --drop-blue-100: rgba(59, 130, 246, 0.1);
+
+    --drop-radius-sm: 6px;
+    --drop-radius-md: 8px;
+    --drop-radius-lg: 12px;
+
+    --drop-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --drop-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --drop-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    --drop-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ==========================================================================
+   Page Container
+   ========================================================================== */
+
+.page,
+.trainer-drop-request-page {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: var(--drop-font);
+    color: var(--drop-ink-700);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Scoped instead of global — a bare `h2`/`hr` selector was previously
+   affecting every h2/hr on the page, not just this flow. */
+.page h2,
+.trainer-drop-request-page h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 20px;
+    color: var(--drop-ink-900);
+    letter-spacing: -0.01em;
+}
+
+.page hr,
+.trainer-drop-request-page hr {
+    border: 0;
+    border-top: 1px solid var(--drop-border);
+    margin: 16px 0;
+}
+
+/* ==========================================================================
+   Data Table
+   ========================================================================== */
+
+.drop-request-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--drop-surface);
+    border: 1px solid var(--drop-border);
+    border-radius: var(--drop-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--drop-shadow-md);
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.drop-request-table th {
+    background-color: var(--drop-canvas);
+    color: var(--drop-ink-500);
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--drop-border);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.drop-request-table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--drop-border);
+    font-size: 0.925rem;
+    color: var(--drop-ink-700);
+    vertical-align: middle;
+}
+
+.drop-request-table tbody tr {
+    transition: background-color 0.12s ease;
+}
+
+.drop-request-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.drop-request-table tbody tr:nth-child(even) {
+    background-color: #fbfcfe;
+}
+
+.drop-request-table tbody tr:hover {
+    background-color: var(--drop-canvas);
+}
+
+/* Empty state — add a single row like:
+   <tr><td colSpan={N} className="drop-table-empty">No drop requests found</td></tr> */
+.drop-table-empty {
+    padding: 40px 16px !important;
+    text-align: center;
+    color: var(--drop-ink-400);
+    font-size: 0.9rem;
+    background-color: var(--drop-surface);
+}
+
+/* ==========================================================================
+   Status Badges
+   ========================================================================== */
+
+.drop-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.4;
+}
+
+.drop-status-badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.85;
+    flex-shrink: 0;
+}
+
+.status-pending {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.status-assigned {
+    background-color: #e0f2fe;
+    color: #0284c7;
+}
+
+.status-completed {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+}
+
+.status-approved {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.status-rejected {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.status-cancelled {
+    background-color: #f1f5f9;
+    color: #64748b;
+}
+
+.status-default {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+/* ==========================================================================
+   Interactive Modals & Overlays
+   ========================================================================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    animation: drop-fade-in 0.15s ease;
+}
+
+@keyframes drop-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes drop-pop-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Main container for all standard pop-up forms */
+.drop-modal,
+.drop-details-modal,
+.modal {
+    background: var(--drop-surface);
+    width: 100%;
+    max-width: 550px;
+    border-radius: var(--drop-radius-lg);
+    padding: 24px;
+    box-shadow: var(--drop-shadow-lg);
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    animation: drop-pop-in 0.18s ease;
+}
+
+/* Scrollbar polish for long modal content (WebKit) */
+.drop-modal::-webkit-scrollbar,
+.drop-details-modal::-webkit-scrollbar,
+.modal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.drop-modal::-webkit-scrollbar-thumb,
+.drop-details-modal::-webkit-scrollbar-thumb,
+.modal::-webkit-scrollbar-thumb {
+    background-color: var(--drop-border-strong);
+    border-radius: 999px;
+}
+
+/* Form controls inside modals */
+.drop-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.drop-form label,
+.modal p strong {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--drop-ink-500);
+    margin-bottom: 2px;
+}
+
+.drop-form input[readonly],
+.drop-form textarea[readonly] {
+    background-color: var(--drop-canvas);
+    color: var(--drop-ink-500);
+    border-color: var(--drop-border-strong);
+    cursor: not-allowed;
+}
+
+.drop-form select:disabled,
+.drop-form input:disabled,
+.drop-form textarea:disabled {
+    background-color: var(--drop-canvas);
+    color: var(--drop-ink-400);
+    border-color: var(--drop-border);
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.drop-form input,
+.drop-form textarea,
+.drop-form select,
+.modal textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--drop-border-strong);
+    border-radius: var(--drop-radius-sm);
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--drop-ink-900);
+    background-color: var(--drop-surface);
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.drop-form input:hover,
+.drop-form textarea:hover,
+.drop-form select:hover {
+    border-color: var(--drop-ink-400);
+}
+
+.drop-form input:focus,
+.drop-form textarea:focus,
+.drop-form select:focus,
+.modal textarea:focus {
+    outline: none;
+    border-color: var(--drop-blue-600);
+    box-shadow: 0 0 0 3px var(--drop-blue-100);
+}
+
+.drop-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Details presentation rules */
+.drop-details-modal p,
+.modal p {
+    margin: 12px 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--drop-ink-700);
+}
+
+/* Radio buttons container alignment */
+.modal div label {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--drop-ink-900);
+    cursor: pointer;
+    padding: 4px 0;
+}
+
+.modal div input[type="radio"] {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--drop-blue-600);
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   Action Buttons
+   ========================================================================== */
+
+.view-btn,
+.save-btn,
+.cancel-btn,
+.close-btn {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--drop-radius-sm);
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    border: 1px solid transparent;
+    font-family: inherit;
+}
+
+.view-btn:active,
+.save-btn:active:not(:disabled),
+.cancel-btn:active,
+.close-btn:active {
+    transform: translateY(1px);
+}
+
+/* View / Assign secondary styling */
+.view-btn {
+    background-color: #f1f5f9;
+    color: var(--drop-ink-700);
+    border-color: var(--drop-border-strong);
+}
+
+.view-btn:hover {
+    background-color: #e2e8f0;
+    color: #0f172a;
+}
+
+/* Success / Submit interactive operations */
+.save-btn {
+    background-color: var(--drop-blue-600);
+    color: #ffffff;
+    box-shadow: 0 2px 6px -2px rgba(37, 99, 235, 0.5);
+}
+
+.save-btn:hover:not(:disabled) {
+    background-color: var(--drop-blue-700);
+    box-shadow: 0 4px 10px -2px rgba(29, 78, 216, 0.5);
+}
+
+.save-btn:disabled {
+    background-color: #93c5fd;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* Secondary closing / abort pathways */
+.cancel-btn,
+.close-btn {
+    background-color: #ffffff;
+    color: var(--drop-ink-500);
+    border-color: var(--drop-border-strong);
+}
+
+.cancel-btn:hover,
+.close-btn:hover {
+    background-color: var(--drop-canvas);
+    color: var(--drop-ink-700);
+    border-color: var(--drop-ink-400);
+}
+
+.view-btn:focus-visible,
+.save-btn:focus-visible,
+.cancel-btn:focus-visible,
+.close-btn:focus-visible {
+    outline: 2px solid var(--drop-blue-600);
+    outline-offset: 2px;
+}
+
+/* Positioning containers for modal action footers */
+.drop-actions,
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.close-btn {
+    width: 100%;
+    margin-top: 16px;
+    padding: 10px;
+    text-align: center;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+    .page,
+    .trainer-drop-request-page {
+        padding: 16px;
+    }
+
+    .drop-request-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+
+    .drop-modal,
+    .drop-details-modal,
+    .modal {
+        padding: 18px;
+        max-height: 85vh;
+    }
+
+    .drop-actions,
+    .modal-actions {
+        justify-content: stretch;
+    }
+
+    .drop-actions .view-btn,
+    .drop-actions .save-btn,
+    .drop-actions .cancel-btn,
+    .modal-actions .view-btn,
+    .modal-actions .save-btn,
+    .modal-actions .cancel-btn {
+        flex: 1;
+        text-align: center;
+    }
+}
+
+/* ==========================================================================
+   Reduced Motion
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .modal-overlay,
+    .drop-modal,
+    .drop-details-modal,
+    .modal,
+    .view-btn,
+    .save-btn,
+    .cancel-btn,
+    .close-btn {
+        animation: none;
+        transition: none;
+    }
+}

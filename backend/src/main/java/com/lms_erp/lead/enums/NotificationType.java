@@ -1,0 +1,18 @@
+package com.lms_erp.lead.enums;
+
+public enum NotificationType {
+
+    FOLLOWUP_PENDING,
+    CALLBACK_DUE,
+    LEAD_ASSIGNED,
+    LEAD_REASSIGNED,
+    LEAD_CONVERTED,
+    REMINDER,
+    SYSTEM_ALERT,
+    FOLLOWUP,
+    STATUS_CHANGED,
+    LEAD_ARCHIVED,
+    FOLLOWUP_ESCALATED,
+    CONTRACT_UPLOADED,
+    CONTRACT_SIGNED
+}

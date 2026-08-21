@@ -1,0 +1,178 @@
+/* ==========================================================================
+   EVA ERP ENTERPRISE FORM MANAGEMENT STYLING
+   ========================================================================== */
+
+.create-batch-container {
+    padding: 0px 10px;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Cambria';
+}
+
+.form-header-zone {
+    margin-bottom: 24px;
+}
+
+.form-header-zone h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.form-subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin: 4px 0 0 0;
+}
+
+/* Glassmorphic White Layout Content Card with Top Accent Border */
+.form-card-wrapper {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #2563eb; /* Top Accent Blue Line Added */
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.01), 0 4px 12px rgba(15, 23, 42, 0.02);
+    padding: 30px;
+    max-width: 800px; /* Safe readable desktop boundaries */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Grid alignment maps into standard clean columns */
+.form-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Utility to override column system for primary rows */
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569; /* Slate 600 subtle title indicator text */
+    margin-bottom: 8px;
+}
+
+/* Premium smooth border inputs design */
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #0f172a;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #0ea5e9; /* Sky blue branding focus */
+    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+}
+
+.form-group input::placeholder {
+    color: #94a3b8;
+}
+
+/* Dynamic State Alerts (No Alert Popups) */
+.form-status-alert {
+    max-width: 800px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    animation: alertSlideIn 0.2s ease-out;
+    font-family: inherit;
+}
+
+.form-status-alert.success {
+    background: #f0fdf4;
+    border: 1px solid rgba(22, 163, 74, 0.2);
+    color: #16a34a;
+}
+
+.form-status-alert.error {
+    background: #fef2f2;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    color: #dc2626;
+}
+
+/* Action Trigger Row */
+.form-actions-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.submit-form-btn {
+    background: #3b597f; /* Slate Executive dark button */
+    color: #ffffff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    font-family: inherit;
+}
+
+.submit-form-btn:hover {
+    background: #2a395b;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+}
+
+.submit-form-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.auto-date-badge {
+    background: #eef7ff;
+    color: #0d6efd;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    margin-top: 4px;
+    display: inline-block;
+}
+
+/* Responsive Fallbacks */
+@media (max-width: 640px) {
+    .form-fields-grid {
+        grid-template-columns: 1fr;
+    }
+    .form-group.full-width {
+        grid-column: span 1;
+    }
+    .create-batch-container {
+        padding: 20px;
+    }
+}
+
+@keyframes alertSlideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}

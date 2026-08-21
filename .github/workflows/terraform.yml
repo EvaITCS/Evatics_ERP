@@ -1,0 +1,106 @@
+name: Terraform
+
+on:
+  pull_request:
+    paths:
+      - "infrastructure/terraform/**"
+  push:
+    branches: [main]
+    paths:
+      - "infrastructure/terraform/**"
+
+# AWS-related config is injected as env vars (repo Variables, Settings ->
+# Secrets and variables -> Actions -> Variables), not hardcoded here or in
+# any .tfvars file:
+#   PROJECT_NAME            e.g. "lms-erp" - must match bootstrap's -var=project
+#   AWS_REGION               e.g. "us-east-1"
+#   AWS_TERRAFORM_ROLE_ARN    bootstrap output `github_terraform_role_arn`,
+#                              set once after the one-time bootstrap apply
+env:
+  PROJECT_NAME: ${{ vars.PROJECT_NAME || 'lms-erp' }}
+  AWS_REGION: ${{ vars.AWS_REGION || 'us-east-1' }}
+  TF_VAR_project: ${{ vars.PROJECT_NAME || 'lms-erp' }}
+  TF_VAR_region: ${{ vars.AWS_REGION || 'us-east-1' }}
+
+permissions:
+  id-token: write # OIDC
+  contents: read
+
+jobs:
+  plan:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tf_env: [dev, prod]
+    defaults:
+      run:
+        working-directory: infrastructure/terraform/envs/${{ matrix.tf_env }}
+    env:
+      TF_VAR_environment: ${{ matrix.tf_env }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_TERRAFORM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: terraform init
+        run: |
+          terraform init \
+            -backend-config="bucket=${PROJECT_NAME}-terraform-state" \
+            -backend-config="region=${AWS_REGION}" \
+            -backend-config="dynamodb_table=${PROJECT_NAME}-terraform-locks"
+
+      - name: terraform plan
+        run: terraform plan -no-color -out=tfplan | tee plan.txt
+
+      - name: Summarize plan
+        if: always()
+        run: |
+          echo "### Terraform plan - ${{ matrix.tf_env }}" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          tail -n 200 plan.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+  apply:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    strategy:
+      # Sequential, not parallel: prod should never apply ahead of / instead
+      # of dev finishing, and both share the same state-locking backend.
+      max-parallel: 1
+      matrix:
+        tf_env: [dev, prod]
+    environment: ${{ matrix.tf_env }} # GitHub Environment protection rules gate prod approval
+    defaults:
+      run:
+        working-directory: infrastructure/terraform/envs/${{ matrix.tf_env }}
+    env:
+      TF_VAR_environment: ${{ matrix.tf_env }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_TERRAFORM_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: terraform init
+        run: |
+          terraform init \
+            -backend-config="bucket=${PROJECT_NAME}-terraform-state" \
+            -backend-config="region=${AWS_REGION}" \
+            -backend-config="dynamodb_table=${PROJECT_NAME}-terraform-locks"
+
+      - name: terraform apply
+        run: terraform apply -auto-approve

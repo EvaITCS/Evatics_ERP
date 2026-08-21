@@ -1,0 +1,171 @@
+/* ===============================
+   LOCKED USERS PAGE WRAPPER (SCOPED)
+=================================*/
+
+.locked-users-page .security-page {
+    padding: 0px;
+    background: #f4f6f9;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+/* ===============================
+   HEADER
+=================================*/
+
+.locked-users-page .security-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+.locked-users-page .security-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #1f2d3d;
+}
+
+.locked-users-page .security-header p {
+    margin: 5px 0 0;
+    font-size: 13px;
+    color: #6b7b8c;
+}
+
+/* ===============================
+   REFRESH BUTTON
+=================================*/
+
+.locked-users-page .refresh-btn {
+    background: #2d7ff9;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+.locked-users-page .refresh-btn:hover {
+    background: #1b66d6;
+}
+
+/* ===============================
+   SUMMARY CARD
+=================================*/
+
+.locked-users-page .security-summary {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.locked-users-page .summary-card {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    min-width: 160px;
+    text-align: center;
+}
+
+.locked-users-page .summary-card h3 {
+    margin: 0;
+    font-size: 26px;
+    color: #346ba9;
+}
+
+.locked-users-page .summary-card span {
+    font-size: 13px;
+    color: #6b7b8c;
+}
+
+/* ===============================
+   TABLE CONTAINER
+=================================*/
+
+.locked-users-page .table-container {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    overflow-x: auto;
+}
+
+/* ===============================
+   TABLE STYLE
+=================================*/
+
+.locked-users-page .security-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+.locked-users-page .security-table th {
+    background: #f0f2f5;
+    text-align: left;
+    padding: 12px;
+    font-size: 13px;
+    color: #34495e;
+    border-bottom: 1px solid #ddd;
+}
+
+.locked-users-page .security-table td {
+    padding: 12px;
+    font-size: 13px;
+    color: #2c3e50;
+    border-bottom: 1px solid #eee;
+}
+
+.locked-users-page .security-table tr:hover {
+    background: #f9fbff;
+}
+
+/* ===============================
+   STATUS BADGE
+=================================*/
+
+.locked-users-page .status-badge.locked {
+    background: #ffe6e6;
+    color: #e74c3c;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ===============================
+   UNLOCK BUTTON
+=================================*/
+
+.locked-users-page .unlock-btn {
+    background: #278aae;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.3s;
+}
+
+.locked-users-page .unlock-btn:hover {
+    background: #1e6487;
+}
+
+/* ===============================
+   ERROR MESSAGE
+=================================*/
+
+.locked-users-page .security-error {
+    color: #e74c3c;
+    background: #ffecec;
+    padding: 10px;
+    border-radius: 6px;
+    display: inline-block;
+}

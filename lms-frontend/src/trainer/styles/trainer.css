@@ -1,0 +1,311 @@
+/* ==========================================================================
+   THEMED ROOT CONFIGURATION & MODERN VARIABLES (EXACT MATCH MULTI-COLOUR SYSTEM)
+   ========================================================================== */
+:root {
+    /* Color Palette System Tokens */
+    --bg-surface-canvas: #f8fafc;  
+    --bg-card-panel: #ffffff;      
+    --text-main-title: #0f172a;    
+    --text-body-para: #334155;     
+    --text-muted-gray: #64748b;    
+    --border-subtle: #e2e8f0;      
+
+    /* Executive Top Navbar Color (From your reference image) */
+    --nav-dark-bg: #0f172a;        
+
+    /* Dynamic Distinct Module Color Accents (From your card modules image) */
+    --accent-blue: #3b82f6;
+    --accent-orange: #f97316;
+    --accent-red: #ef4444;
+    --accent-teal: #14b8a6;
+    --accent-purple: #a855f7;
+    --accent-gold: #eab308;
+
+    /* Base Actions Config */
+    --primary-action: #2563eb;
+    --primary-action-hover: #1d4ed8;
+
+    /* Interface Physics Systems */
+    --transition-standard: all 0.2s ease-in-out;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   1. FLEX WORKSPACE ENGINE WITH DYNAMIC OFFSET RESIZING
+   ========================================================================== */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-surface-canvas);
+    color: var(--text-main-title);
+    -webkit-font-smoothing: antialiased;
+}
+
+.trainer-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+    overflow-x: hidden;
+    background-color: var(--bg-surface-canvas);
+}
+
+/* Adjacent layout shifts based on sidebar toggle states */
+.trainer-layout .sidebar.open + .trainer-main {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+}
+
+.trainer-layout .sidebar.closed + .trainer-main {
+    margin-left: 0;
+    width: 100%;
+}
+
+.trainer-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; 
+    min-width: 0;
+    transition: margin-left 0.25s ease, width 0.25s ease;
+    box-sizing: border-box;
+}
+
+/* Fixed positioning override: No more overlaps, natural content flow placement */
+.navbar, .trainer-navbar {
+    flex-shrink: 0;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 10;
+}
+
+/* COMPACT SPACING CONFIGURATION */
+.trainer-content {
+    flex: 1;
+    padding: 1.5rem 2rem; /* Tightened container gaps */
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto; 
+    overflow-x: auto; 
+}
+
+/* ==========================================================================
+   2. REUSABLE COMPACT SAAS CONTAINER PANELS & ACCENT BORDERS
+   ========================================================================== */
+.page-header {
+    margin-bottom: 1.25rem;
+}
+
+.page-header h2, .create-task-main-heading {
+    margin: 0;
+    font-size: 1.5rem; /* Slightly smaller cleaner text styling */
+    font-weight: 700;
+    color: var(--text-main-title);
+    letter-spacing: -0.02em;
+}
+
+.page-header p {
+    margin: 4px 0 0 0;
+    color: var(--text-muted-gray);
+    font-size: 0.9rem;
+}
+
+/* Clean, crisp card structure mimicking your image rules */
+.dashboard-card-section, .create-task-glass-card {
+    background: var(--bg-card-panel);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+    padding: 1.5rem; /* Tightened interior padding */
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Top dynamic module accent colors from the reference app image */
+.dashboard-card-section::before, .create-task-glass-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px; 
+    background: var(--accent-blue); /* Default blue fallback strip */
+}
+
+/* MAPPED SECTION HIGHLIGHT COLOR CODES */
+/* Add these classes directly to different page component cards to alternate colors */
+.card-blue::before   { background: var(--accent-blue); }
+.card-orange::before { background: var(--accent-orange); }
+.card-red::before    { background: var(--accent-red); }
+.card-teal::before   { background: var(--accent-teal); }
+.card-purple::before { background: var(--accent-purple); }
+.card-gold::before   { background: var(--accent-gold); }
+
+/* ==========================================================================
+   3. TIGHTENED INPUT CONTRlOLS & SAAS COMPACT FORMS
+   ========================================================================== */
+.create-task-glass-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Reduced field-to-field spaces */
+    max-width: 500px; /* Slimmed down width bounds so it looks sleek */
+    border-top: 4px solid var(--accent-orange) !important; /* Set Create Task specifically to Orange just like Module 1 in your image! */
+}
+
+.create-task-input-field, .create-task-textarea-field, .student-toolbar input {
+    width: 100%;
+    padding: 10px 14px; /* Highly compact text fields padding boundaries */
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    font-size: 13.5px;
+    background-color: #ffffff;
+    color: var(--text-main-title);
+    outline: none;
+    box-sizing: border-box;
+    transition: var(--transition-standard);
+}
+
+.create-task-input-field:focus, .create-task-textarea-field:focus, .student-toolbar input:focus {
+    border-color: var(--primary-action);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.create-task-form-row {
+    display: flex;
+    flex-direction: column; /* Stacks label on top of input for a much modern look */
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.create-task-field-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-body-para);
+}
+
+.create-task-submit-btn, .action-link-btn, .trainer-table button {
+    background-color: var(--nav-dark-bg); /* Elegant dark slate action button */
+    color: #ffffff;
+    border: 1px solid transparent;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-standard);
+}
+
+.create-task-submit-btn:hover, .action-link-btn:hover, .trainer-table button:hover {
+    background-color: #1e293b;
+}
+
+.action-link-btn {
+    background-color: #ffffff;
+    border: 1px solid var(--border-subtle);
+    color: var(--primary-action);
+    padding: 5px 12px;
+    font-size: 13px;
+}
+.action-link-btn:hover {
+    background-color: var(--primary-action);
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   4. DATA TABLES (CLEAN, MODERNISED CLEAN SAAS LOOK)
+   ========================================================================== */
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-card-panel);
+}
+
+.trainer-table, .premium-trainer-table, .student-table, .task-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 13.5px;
+}
+
+.trainer-table th, .premium-trainer-table th, .student-table th, .task-table th {
+    background-color: #f8fafc;
+    color: var(--text-muted-gray);
+    font-weight: 600;
+    padding: 10px 16px; /* Highly compact table spacing */
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.trainer-table td, .premium-trainer-table td, .student-table td, .task-table td {
+    padding: 12px 16px; /* Clean rows space compression */
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-body-para);
+    vertical-align: middle;
+}
+
+.trainer-table tbody tr:hover, .premium-trainer-table tbody tr:hover, .student-table tbody tr:hover, .task-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.trainer-table tbody tr:last-child td, .premium-trainer-table tbody tr:last-child td, .student-table tbody tr:last-child td, .task-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ==========================================================================
+   5. COMPACT METRICS & MATCHING MULTI-COLOR BADGES
+   ========================================================================== */
+.student-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    gap: 1rem;
+}
+
+.student-count, .count-pill {
+    font-size: 12.5px;
+    color: var(--primary-action);
+    background-color: rgba(37, 99, 235, 0.05);
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-weight: 600;
+}
+
+.status, .status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Dynamic color badges mapped from your card themes */
+.status.ONGOING, .badge-success, .status.ACTIVE, .status.COMPLETED {
+    background-color: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid rgba(22, 163, 74, 0.1);
+}
+
+.status.PLANNED, .badge-warning, .status.PENDING {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid rgba(217, 119, 6, 0.1);
+}
+
+.status.INACTIVE {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.1);
+}

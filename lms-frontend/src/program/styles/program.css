@@ -1,0 +1,502 @@
+/* ==========================================================================
+   1. Design System & Tokens
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-color: #2563eb;
+  --primary-gradient: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  --primary-hover: #1d4ed8;
+  --accent-color: #3b82f6;
+  --bg-main: #f8fafc;
+  --surface-card: #ffffff;
+  --border-color: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  
+  --radius-lg: 16px;
+  --radius-md: 10px;
+  --radius-sm: 6px;
+
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
+  --shadow-glow: 0 0 16px rgba(37, 99, 235, 0.18);
+  
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  margin: 0;
+  font-family: cambria;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   2. Main Layout Structure
+   ========================================================================== */
+.program-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.program-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-main);
+}
+
+.program-content {
+  max-width: 1200px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 0px;
+}
+
+.form-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+/* Page Header Spacing */
+.page-header {
+  margin: 0;
+}
+
+.page-header p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.925rem;
+}
+
+/* ==========================================================================
+   3. Eye-Catcher Form Components
+   ========================================================================== */
+.program-form {
+  margin-top: -15px;
+  background: var(--surface-card);
+  padding: 30px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-top: 1px solid #2563eb; /* Top Blue Line Accent */
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.program-form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--primary-gradient);
+}
+
+.program-form:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Form Field Styling */
+.program-form input,
+.program-form textarea,
+.program-form select {
+  padding: 12px 16px;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: #ffffff;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.925rem;
+  font-weight: 500;
+  transition: var(--transition);
+  outline: none;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.program-form input::placeholder,
+.program-form textarea::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+/* Focus & Interactive States */
+.program-form input:focus,
+.program-form textarea:focus,
+.program-form select:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+  background-color: #ffffff;
+}
+
+/* Auto-generated / Disabled Field Styling */
+.program-form input:disabled {
+  background-color: #f8fafc;
+  color: #64748b;
+  cursor: not-allowed;
+  border: 1.5px dashed #cbd5e1;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.program-form textarea {
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.5;
+}
+
+/* Enhanced Select Styling */
+.program-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  padding-right: 42px;
+  cursor: pointer;
+}
+
+.program-form select:hover {
+  border-color: var(--border-hover);
+}
+
+.program-form select option {
+  padding: 12px;
+  background-color: #ffffff;
+  color: var(--text-main);
+}
+
+/* Gradient Primary Button */
+.program-form button[type="submit"] {
+  padding: 13px 28px;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: var(--transition);
+  align-self: flex-start;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.program-form button[type="submit"]:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3);
+}
+
+.program-form button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   4. High-End Enterprise Data Table
+   ========================================================================== */
+.table-container {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  border-top: 4px solid #2563eb; /* Top Blue Line Accent for Table Container */
+  width: 100%;
+  margin-top: 10px;
+}
+
+.program-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.program-table thead {
+  background: #f8fafc;
+  color: #475569;
+  border-bottom: 1.5px solid var(--border-color);
+}
+
+.program-table th {
+  padding: 16px 22px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.program-table td {
+  padding: 18px 22px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  font-size: 0.9rem;
+  vertical-align: middle;
+  transition: var(--transition);
+}
+
+.program-table tbody tr {
+  transition: var(--transition);
+}
+
+.program-table tbody tr:hover {
+  background: rgba(241, 245, 249, 0.7);
+}
+
+.program-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ==========================================================================
+   Badges and Identifiers
+   ========================================================================== */
+.code-badge {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  padding: 5px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: 'Courier New', Courier, monospace;
+  display: inline-block;
+}
+
+.status-active {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-active::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #22c55e;
+}
+
+.status-inactive {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-inactive::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #ef4444;
+}
+
+.td-id {
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.td-name {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.td-duration {
+  color: #475569;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Actions & Dropdown Menu
+   ========================================================================== */
+.launch-batch-btn {
+  background: #2563eb; /* Matching Primary Blue Theme */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+}
+
+.launch-batch-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+}
+
+.action-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-right: 28px !important;
+  position: relative;
+}
+
+.action-dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.action-menu-btn {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  color: #64748b;
+  font-size: 16px;
+  font-weight: bold;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.action-menu-btn:hover,
+.action-menu-btn.active {
+  background: #f8fafc;
+  color: var(--text-main);
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.dropdown-content-menu {
+  position: absolute;
+  right: 0;
+  top: 42px;
+  background: #ffffff;
+  min-width: 160px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  overflow: hidden;
+  animation: fadeInDropdown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInDropdown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.dropdown-content-menu button {
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #334155;
+  transition: background 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-content-menu button:hover {
+  background: #f1f5f9;
+  color: var(--text-main);
+}
+
+.dropdown-content-menu .delete-dropdown-item {
+  color: #dc2626;
+  border-top: 1px solid #f1f5f9;
+}
+
+.dropdown-content-menu .delete-dropdown-item:hover {
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+/* Empty State */
+.table-empty {
+  background: #ffffff;
+  padding: 60px 20px;
+  text-align: center;
+  border-radius: var(--radius-lg);
+  border: 2px dashed #cbd5e1;
+}
+
+.table-empty h3 {
+  margin: 0 0 8px 0;
+  color: var(--text-main);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.table-empty p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+/* ==========================================================================
+   5. Responsive Adapters
+   ========================================================================== */
+@media (max-width: 768px) {
+  .program-content {
+    padding: 16px;
+  }
+
+  .program-form {
+    padding: 20px;
+  }
+
+  .program-form button[type="submit"] {
+    width: 100%;
+  }
+
+  .table-container {
+    overflow-x: auto;
+  }
+}

@@ -1,0 +1,5 @@
+# cp to backend.hcl (gitignored) for local use, or pass the same values as
+# -backend-config flags in CI. Values match bootstrap's outputs.
+bucket         = "lms-erp-terraform-state"
+region         = "us-east-1"
+dynamodb_table = "lms-erp-terraform-locks"

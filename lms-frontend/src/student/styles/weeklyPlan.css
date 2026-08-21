@@ -1,0 +1,805 @@
+/* ==========================
+   PAGE
+========================== */
+
+.weekly-plan-page{
+    background:#f6f8ff;
+    min-height:100vh;
+    padding:0;
+    font-family:Cambria, serif;
+    box-sizing:border-box;
+}
+
+/* ==========================
+   HEADER
+========================== */
+
+.weekly-header{
+    width:100%;
+    margin-bottom:20px;
+}
+
+.weekly-header h1{
+    margin:0;
+    font-size:24px;
+    font-weight:700;
+    color:#162848;
+}
+
+.weekly-header p{
+    margin-top:10px;
+    font-size:15px;
+    color:#4b5c7b;
+    line-height:1.5;
+}
+
+/* ==========================
+   CARD
+========================== */
+
+.week-card{
+    width:100%;
+    box-sizing:border-box;
+    background:#fff;
+    border-top:6px solid #4b64f0;
+    border-radius:16px;
+    padding:22px;
+    box-shadow:0 2px 12px rgba(0,0,0,.06);
+    margin-bottom: 30px;
+}
+
+/* ==========================
+   TOP
+========================== */
+
+.week-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+}
+
+.week-badge{
+    background:#4b64f0;
+    color:#fff;
+    padding:8px 18px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:700;
+}
+
+.phase-badge{
+    background:#edf2ff;
+    color:#4b64f0;
+    border:1px solid #cdd7ff;
+    padding:8px 18px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:700;
+}
+
+/* ==========================
+   TITLE
+========================== */
+
+.week-title{
+    margin:0 0 14px;
+    font-size:24px;
+    font-weight:700;
+    color:#162848;
+}
+
+/* ==========================
+   GOAL
+========================== */
+
+.week-goal{
+    margin-bottom:20px;
+    font-size:16px;
+    color:#44587a;
+    line-height:1.6;
+}
+
+/* ==========================
+   TABLE
+========================== */
+
+.table-wrapper{
+    width:100%;
+    overflow-x:hidden;
+    border:1px solid #dfe5f2;
+    border-radius:10px;
+    box-sizing:border-box;
+}
+
+.week-table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+}
+
+.week-table thead th{
+    background:#edf2ff;
+    color:#162848;
+    text-align:left;
+    font-size:16px;
+    font-weight:700;
+    padding:14px;
+    border:1px solid #dfe5f2;
+}
+
+.day-column{
+    width:60px;
+}
+
+.week-table th:nth-child(2),
+.week-table td:nth-child(2){
+    width:46%;
+}
+
+.week-table th:nth-child(3),
+.week-table td:nth-child(3){
+    width:46%;
+}
+
+.week-table td{
+    padding:14px;
+    border:1px solid #dfe5f2;
+    vertical-align:top;
+    font-size:15px;
+    color:#44587a;
+    line-height:1.6;
+
+    white-space:normal;
+    word-break:break-word;
+    overflow-wrap:anywhere;
+}
+
+
+/* ==========================
+   WEEK 1
+========================== */
+
+.week1{
+    border-top:6px solid #4b64f0;
+}
+
+.week1-badge{
+    background:#4b64f0;
+}
+
+.week1-phase{
+    background:#edf2ff;
+    color:#4b64f0;
+    border:1px solid #cdd7ff;
+}
+
+/* ==========================
+   WEEK 2
+========================== */
+
+.week2{
+    border-top:6px solid #8a56d8;
+}
+
+.week2-badge{
+    background:#8a56d8;
+}
+
+.week2-phase{
+    background:#f2ebff;
+    color:#8a56d8;
+    border:1px solid #d8c2ff;
+}
+
+/* ==========================
+   WEEK 3
+========================== */
+
+.week3{
+    border-top:6px solid #eb7d12;
+}
+
+.week3-badge{
+
+    background:#eb7d12;
+    color:#fff;
+}
+
+.week3-phase{
+
+    background:#fff3e7;
+    color:#eb7d12;
+    border:1px solid #ffd3a5;
+}
+
+.milestone-badge{
+
+    background:#fff3e7;
+
+    color:#eb7d12;
+
+    border-radius:10px;
+
+    padding:8px 16px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    border:1px solid #ffe2bf;
+}
+
+.week3 .week-table th{
+
+    background:#fff5ea;
+}
+
+.week3 .week-table tbody td.day.week3-day{
+
+    color:#eb7d12 !important;
+}
+
+.week3 .week-table tbody tr:hover{
+
+    background:#fffaf4;
+}
+
+/* ==========================
+   WEEK 4
+========================== */
+
+.week4{
+
+    border-top:6px solid #e54b4b;
+}
+
+.week4-badge{
+
+    background:#e54b4b;
+
+    color:#fff;
+}
+
+.week4-phase{
+
+    background:#fff0f0;
+
+    color:#e54b4b;
+
+    border:1px solid #ffc7c7;
+}
+
+.week4 .week-table th{
+
+    background:#fff2f2;
+}
+
+.week4 .week-table tbody td.day.week4-day{
+
+    color:#e54b4b !important;
+}
+
+.week4 .week-table tbody tr:hover{
+
+    background:#fffafa;
+}
+
+/* ==========================
+   INTERVIEW BOX
+========================== */
+
+.interview-box{
+
+    margin-top:14px;
+
+    padding:12px 16px;
+
+    background:#fff8f8;
+
+    border:1px dashed #ffb8b8;
+
+    border-radius:10px;
+
+    color:#4b5c7b;
+
+    font-size:15px;
+
+    line-height:1.6;
+}
+
+.interview-box strong{
+
+    color:#e54b4b;
+}
+
+/* ==========================
+   WEEK 5
+========================== */
+
+.week5{
+    border-top:6px solid #37a344;
+}
+
+.week5-badge{
+    background:#37a344;
+}
+
+.week5-phase{
+    color:#37a344;
+    background:#edf8ef;
+    border:1px solid #b8dfbf;
+}
+
+.week5-milestone{
+    background:#edf8ef;
+    color:#2f8d3c;
+    border:1px solid #b8dfbf;
+}
+
+.week5 .week-table thead th{
+    background:#edf8ef;
+}
+
+.week-card.week5 .week-table tbody td.day{
+    color:#37a344;
+}
+
+.week5-interview{
+    margin-top:14px;
+    padding:12px 16px;
+    background:#f4fcf5;
+    border:1px dashed #9fd5a8;
+    border-radius:10px;
+    color:#2f8d3c;
+}
+
+
+/* ==========================
+   WEEK 6
+========================== */
+
+.week6{
+    border-top:6px solid #0ca9b7;
+}
+
+.week6-badge{
+    background:#0ca9b7;
+}
+
+.week6-phase{
+    color:#0ca9b7;
+    background:#ecfbfd;
+    border:1px solid #b7e8ed;
+}
+
+.week6 .week-table thead th{
+    background:#ecfbfd;
+}
+
+.week-card.week6 .week-table tbody td.day{
+    color:#0ca9b7;
+}
+
+.week6-interview{
+    margin-top:14px;
+    padding:12px 16px;
+    background:#f2fdff;
+    border:1px dashed #94dce6;
+    border-radius:10px;
+    color:#0ca9b7;
+}
+
+/* ==========================
+   WEEK 7
+========================== */
+
+.week7{
+
+    border-top:6px solid #1e88e5;
+}
+
+.week7-badge{
+
+    background:#1e88e5;
+}
+
+.week7-phase{
+
+    background:#edf7ff;
+
+    color:#1e88e5;
+
+    border:1px solid #bfdfff;
+}
+
+.week7-milestone{
+
+    background:#edf7ff;
+
+    color:#1976d2;
+
+    border:1px solid #bfdfff;
+}
+
+.week7 .week-table thead th{
+
+    background:#edf7ff;
+}
+
+.week-card.week7 .week-table tbody td.day{
+
+    color:#1e88e5;
+}
+
+.week7-interview{
+
+    margin-top:14px;
+
+    padding:12px 16px;
+
+    border-radius:10px;
+
+    background:#f5fbff;
+
+    border:1px dashed #9fd0ff;
+
+    color:#1976d2;
+}
+
+/* ===========================
+   WEEK 8
+=========================== */
+
+.week8-card{
+
+    border-top:6px solid #b22fa4;
+
+}
+
+.week8-badge{
+
+    background:#b22fa4;
+
+    color:#fff;
+
+}
+
+.week8-phase{
+
+    background:#faeef9;
+
+    color:#b22fa4;
+
+    border:1px solid #efc5eb;
+
+}
+
+.week8-card .week-table th{
+
+    background:#f9eef8;
+
+}
+
+.week-card.week8-card .week-table tbody td.day.week8-day{
+
+    color:#b22fa4;
+
+    font-weight:700;
+
+}
+
+.week8-interview{
+
+    margin-top:12px;
+
+    background:#fff4fc;
+
+    border:1px dashed #e7b8df;
+
+    color:#b22fa4;
+
+    border-radius:10px;
+
+    padding:12px 14px;
+
+    line-height:1.7;
+
+    font-size:15px;
+
+}
+
+/* ===========================
+   WEEK 9
+=========================== */
+
+.week9-card{
+
+    border-top:6px solid #c88a05;
+
+}
+
+.week9-badge{
+
+    background:#c88a05;
+
+    color:#fff;
+
+}
+
+.week9-phase{
+
+    background:#fff6e6;
+
+    color:#c88a05;
+
+    border:1px solid #f2d58d;
+
+}
+
+.week9-card .week-table th{
+
+    background:#fff7e8;
+
+}
+
+.week9-card .week-table tbody td.day.week9-day{
+
+    color:#c88a05;
+
+    font-weight:700;
+
+}
+
+.week9-interview{
+
+    margin-top:12px;
+
+    background:#fffaf0;
+
+    border:1px dashed #e5c57d;
+
+    color:#b87700;
+
+    border-radius:10px;
+
+    padding:12px 14px;
+
+    line-height:1.7;
+
+    font-size:15px;
+
+}
+
+.week-table tbody td.day{
+    width:60px;
+    text-align:center;
+    font-weight:700;
+    font-size:15px;
+    color:#4b64f0;
+    background:#fff;
+}
+
+.week-table tbody tr:hover{
+    background:#fafcff;
+}
+
+.week-table strong{
+    color:#162848;
+}
+
+/* ==========================
+   SCROLLBAR
+========================== */
+
+.table-wrapper::-webkit-scrollbar{
+    height:0;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb{
+    background:transparent;
+}
+
+
+/* ===========================
+   MILESTONE SECTION
+=========================== */
+.milestone-section {
+    margin-top: 50px;
+    margin-bottom: 40px;
+}
+
+.milestone-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2a44;
+}
+
+.milestone-desc {
+    margin-top: 14px;
+    margin-bottom: 30px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #556583;
+}
+
+.milestone-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+
+.milestone-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 18px;
+    min-height: 240px; 
+    box-shadow: 0 3px 15px rgba(0, 0, 0, .06);
+    border: 1px solid #e5e9f3;
+    display: flex;
+    flex-direction: column;
+}
+
+.milestone-card h3 {
+    margin: 14px 0 10px;
+    font-size: 18px;     
+    font-weight: 700;
+    color: #1f2a44;
+}
+
+.milestone-card p {
+    margin: 0;
+    font-size: 14px;  
+    line-height: 1.6;
+    color: #556583;
+}
+
+/* week label */
+.milestone-week {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+/* top border colors & label dynamic matching */
+.milestone-orange {
+    border-top: 6px solid #e57a12; 
+}
+
+.milestone-orange .milestone-week {
+    color: #e57a12;
+}
+
+.milestone-green {
+    border-top: 6px solid #3b9d3b;
+}
+
+.milestone-green .milestone-week {
+    color: #3b9d3b;
+}
+
+.milestone-blue {
+    border-top: 6px solid #2286d2;
+}
+
+.milestone-blue .milestone-week {
+    color: #2286d2;
+}
+
+.milestone-gold {
+    border-top: 6px solid #c58b00;
+}
+
+.milestone-gold .milestone-week {
+    color: #c58b00;
+}
+
+
+.active-week {
+    border: 3px solid #2563eb !important;
+    box-shadow: 0 0 25px rgba(37, 99, 235, .25) !important;
+    transform: scale(1.01);
+}
+
+.current-badge {
+    display: inline-block;
+    background: #22c55e;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+/* ===========================
+   MOBILE
+=========================== */
+
+@media(max-width:1100px){
+
+    .milestone-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .milestone-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .milestone-title{
+
+        font-size:30px;
+
+    }
+
+    .milestone-desc{
+
+        font-size:17px;
+
+    }
+
+    .milestone-card{
+
+        min-height:auto;
+
+    }
+
+}
+/* ==========================
+   MOBILE
+========================== */
+
+@media(max-width:768px){
+
+    .weekly-plan-page{
+        padding:10px;
+    }
+
+    .week-card{
+        padding:15px;
+    }
+
+    .weekly-header h1{
+        font-size:20px;
+    }
+
+    .week-title{
+        font-size:20px;
+    }
+
+    .weekly-header p,
+    .week-goal{
+        font-size:14px;
+    }
+
+    .week-badge,
+    .phase-badge{
+        font-size:12px;
+        padding:6px 14px;
+    }
+
+    .week-table th,
+    .week-table td{
+        font-size:13px;
+        padding:10px;
+    }
+
+   
+
+    .day-column{
+        width:55px;
+    }
+}

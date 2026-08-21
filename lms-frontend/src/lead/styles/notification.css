@@ -1,0 +1,665 @@
+/* ==========================================================================
+   NOTIFICATIONS, REMINDERS & ESCALATIONS - COMPLETE STYLING
+   ========================================================================== */
+
+:root {
+    --neutral-900: #0f172a;
+    --neutral-800: #1e293b;
+    --neutral-700: #334155;
+    --neutral-500: #64748b;
+    --neutral-300: #cbd5e1;
+    --neutral-200: #e2e8f0;
+    --neutral-100: #f8fafc;
+    --neutral-50: #ffffff;
+
+    --accent-blue: #2563eb;
+    --accent-blue-hover: #1d4ed8;
+    --accent-blue-light: #eff6ff;
+
+    --accent-green: #16a34a;
+    --accent-orange: #ea580c;
+    --accent-orange-light: #fff7ed;
+    --accent-red: #dc2626;
+    --accent-red-light: #fef2f2;
+
+    --border-color: #e2e8f0;
+    --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   1. OUTER CONTAINER & LAYOUT
+   ========================================================================== */
+.notifications-page {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 24px 24px 24px !important;
+    margin-top: 0 !important;
+    background-color: var(--neutral-50) !important;
+    box-sizing: border-box;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.notifications-card-wrapper {
+    background: var(--neutral-50) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+}
+
+/* ==========================================================================
+   2. CARD HEADER & TOP ACTION BUTTONS
+   ========================================================================== */
+.notifications-card-wrapper .card-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding-bottom: 14px !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    gap: 12px !important;
+}
+
+.notifications-card-wrapper .subtitle-text {
+    font-size: 12.5px !important;
+    color: var(--neutral-500) !important;
+    margin: 3px 0 0 0 !important;
+}
+
+.notifications-card-wrapper .header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+/* Top Buttons */
+.notifications-card-wrapper .refresh-btn {
+    height: 34px !important;
+    padding: 0 14px !important;
+    background: var(--accent-blue) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: background-color 0.15s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.notifications-card-wrapper .refresh-btn:hover:not(:disabled) {
+    background: var(--accent-blue-hover) !important;
+}
+
+.notifications-card-wrapper .refresh-btn:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
+
+.notifications-card-wrapper .back-btn {
+    height: 34px !important;
+    padding: 0 14px !important;
+    background-color: var(--neutral-50) !important;
+    border: 1px solid var(--neutral-300) !important;
+    color: var(--neutral-700) !important;
+    border-radius: 6px !important;
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.notifications-card-wrapper .back-btn:hover {
+    background-color: var(--neutral-100) !important;
+    border-color: var(--neutral-500) !important;
+}
+
+/* ==========================================================================
+   3. NOTIFICATION SUMMARY STAT CARDS
+   ========================================================================== */
+.notification-summary {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: 12px !important;
+}
+
+.notification-summary .summary-card {
+    background: var(--neutral-50) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 14px 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    transition: all 0.15s ease !important;
+}
+
+.notification-summary .summary-card:hover {
+    border-color: var(--neutral-300) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.notification-summary .summary-icon {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 8px !important;
+    background-color: var(--neutral-100) !important;
+    color: var(--neutral-700) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+}
+
+.notification-summary .summary-label {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: var(--neutral-500) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.03em !important;
+}
+
+.notification-summary .summary-content h2 {
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    color: var(--neutral-900) !important;
+    margin: 2px 0 !important;
+    line-height: 1 !important;
+}
+
+.notification-summary .summary-content p {
+    font-size: 11.5px !important;
+    color: var(--neutral-500) !important;
+    margin: 0 !important;
+}
+
+/* Category Accent Theme for Summary Cards */
+.today-card .summary-icon {
+    background-color: var(--accent-blue-light) !important;
+    color: var(--accent-blue) !important;
+}
+
+.pending-card .summary-icon {
+    background-color: var(--accent-orange-light) !important;
+    color: var(--accent-orange) !important;
+}
+
+.total-card .summary-icon {
+    background-color: var(--neutral-100) !important;
+    color: var(--neutral-900) !important;
+}
+
+.escalation-card .summary-icon {
+    background-color: var(--accent-red-light) !important;
+    color: var(--accent-red) !important;
+}
+
+/* ==========================================================================
+   4. SECTIONS & COMMON HEADERS
+   ========================================================================== */
+.notification-section {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+}
+
+.notification-section .section-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding-bottom: 8px !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.notification-section .section-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.notification-section .section-title h2 {
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    color: var(--neutral-900) !important;
+    margin: 0 !important;
+}
+
+.notification-section .status-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background-color: var(--neutral-500) !important;
+}
+
+.notification-section .status-dot.green {
+    background-color: var(--accent-green) !important;
+}
+
+.notification-section .status-dot.orange {
+    background-color: var(--accent-orange) !important;
+}
+
+.notification-section .status-dot.red {
+    background-color: var(--accent-red) !important;
+}
+
+.notification-section .count-badge {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+    background-color: var(--neutral-100) !important;
+    color: var(--neutral-700) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.notification-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 14px !important;
+}
+
+.empty-card {
+    background-color: var(--neutral-100) !important;
+    border: 1px dashed var(--neutral-300) !important;
+    border-radius: 8px !important;
+    padding: 28px 16px !important;
+    text-align: center !important;
+}
+
+.empty-card h3 {
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    color: var(--neutral-900) !important;
+    margin: 0 0 4px 0 !important;
+}
+
+.empty-card p {
+    font-size: 12px !important;
+    color: var(--neutral-500) !important;
+    margin: 0 !important;
+}
+
+/* ==========================================================================
+   5. REMINDER CARD (TODAY & PENDING)
+   ========================================================================== */
+.reminder-card {
+    background: var(--neutral-50) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    transition: all 0.15s ease !important;
+}
+
+.reminder-card:hover {
+    border-color: var(--neutral-300) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+/* Header */
+.reminder-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+}
+
+.reminder-header h3 {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: var(--neutral-900) !important;
+    margin: 0 0 2px 0 !important;
+}
+
+.reminder-header small {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    color: var(--neutral-500) !important;
+}
+
+.notification-overdue {
+    color: var(--accent-red) !important;
+    font-weight: 600 !important;
+}
+
+.reminder-header .status-chip {
+    font-size: 9.5px !important;
+    font-weight: 700 !important;
+    padding: 2px 7px !important;
+    border-radius: 4px !important;
+    text-transform: uppercase !important;
+    background-color: var(--neutral-100) !important;
+    color: var(--neutral-700) !important;
+    border: 1px solid var(--border-color) !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+/* Body */
+.reminder-body {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    background-color: var(--neutral-100) !important;
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+}
+
+.reminder-body .info-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: 11.5px !important;
+}
+
+.reminder-body .info-row strong {
+    font-weight: 500 !important;
+    color: var(--neutral-500) !important;
+}
+
+.reminder-body .info-row span {
+    font-weight: 600 !important;
+    color: var(--neutral-900) !important;
+    word-break: break-all !important;
+}
+
+.reminder-body .lead-status {
+    background-color: #ffffff !important;
+    color: var(--neutral-700) !important;
+    border: 1px solid var(--border-color) !important;
+    padding: 1px 6px !important;
+    border-radius: 3px !important;
+    font-size: 10.5px !important;
+}
+
+/* Footer Buttons */
+.reminder-footer {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.reminder-footer button {
+    flex: 1 !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+}
+
+.reminder-footer .secondary-btn {
+    background-color: var(--neutral-50) !important;
+    border: 1px solid var(--neutral-300) !important;
+    color: var(--neutral-700) !important;
+}
+
+.reminder-footer .secondary-btn:hover:not(:disabled) {
+    background-color: var(--neutral-100) !important;
+    color: var(--neutral-900) !important;
+}
+
+.reminder-footer .primary-btn {
+    background-color: var(--accent-blue) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+.reminder-footer .primary-btn:hover:not(:disabled) {
+    background-color: var(--accent-blue-hover) !important;
+}
+
+.reminder-footer button:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
+
+/* ==========================================================================
+   6. ADMIN 48-HOUR ESCALATION CARDS & INLINE REASSIGN
+   ========================================================================== */
+.admin-escalation-card {
+    background: var(--neutral-50) !important;
+    border: 1px solid var(--border-color) !important;
+    border-left: 4px solid var(--accent-red) !important;
+    border-radius: 8px !important;
+    padding: 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    transition: all 0.15s ease !important;
+}
+
+.admin-escalation-card:hover {
+    border-color: var(--neutral-300) !important;
+    border-left-color: var(--accent-red) !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.admin-escalation-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+}
+
+.admin-escalation-header h3 {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: var(--neutral-900) !important;
+    margin: 0 0 3px 0 !important;
+}
+
+.escalation-label {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    color: var(--accent-red) !important;
+    background-color: var(--accent-red-light) !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.02em !important;
+}
+
+.escalation-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    background-color: var(--neutral-100) !important;
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+}
+
+.escalation-info-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    font-size: 11.5px !important;
+}
+
+.escalation-info-row .info-label {
+    color: var(--neutral-500) !important;
+    font-weight: 500 !important;
+}
+
+.escalation-info-row .info-value {
+    color: var(--neutral-900) !important;
+    font-weight: 600 !important;
+}
+
+.escalation-info-row .overdue-value {
+    color: var(--accent-red) !important;
+    font-weight: 700 !important;
+}
+
+/* Escalation Action Buttons */
+.admin-escalation-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+}
+
+.admin-escalation-actions button {
+    flex: 1 1 calc(50% - 3px) !important;
+    height: 32px !important;
+    border-radius: 6px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 8px !important;
+}
+
+.admin-escalation-actions .assign-counsellor-btn {
+    flex: 1 1 100% !important;
+}
+
+.admin-escalation-actions .primary-btn {
+    background-color: var(--accent-blue) !important;
+    border: none !important;
+    color: #ffffff !important;
+}
+
+.admin-escalation-actions .primary-btn:hover:not(:disabled) {
+    background-color: var(--accent-blue-hover) !important;
+}
+
+.admin-escalation-actions .secondary-btn {
+    background-color: var(--neutral-50) !important;
+    border: 1px solid var(--neutral-300) !important;
+    color: var(--neutral-700) !important;
+}
+
+.admin-escalation-actions .secondary-btn:hover:not(:disabled) {
+    background-color: var(--neutral-100) !important;
+    color: var(--neutral-900) !important;
+}
+
+.admin-escalation-actions button:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
+
+/* Inline Counsellor Assignment Panel */
+.inline-counsellor-panel {
+    margin-top: 6px !important;
+    padding: 10px !important;
+    background-color: var(--neutral-100) !important;
+    border: 1px solid var(--neutral-300) !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+}
+
+.inline-counsellor-panel label {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: var(--neutral-700) !important;
+}
+
+.inline-counsellor-panel select {
+    width: 100% !important;
+    height: 32px !important;
+    padding: 0 8px !important;
+    font-size: 11.5px !important;
+    color: var(--neutral-900) !important;
+    background-color: #ffffff !important;
+    border: 1px solid var(--neutral-300) !important;
+    border-radius: 5px !important;
+    outline: none !important;
+    cursor: pointer !important;
+}
+
+.inline-counsellor-panel select:focus {
+    border-color: var(--accent-blue) !important;
+}
+
+.inline-assign-actions {
+    display: flex !important;
+    gap: 6px !important;
+    justify-content: flex-end !important;
+}
+
+.inline-assign-actions button {
+    height: 28px !important;
+    padding: 0 10px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+}
+
+/* ==========================================================================
+   7. NOTIFICATION BELL (NAVBAR / SIDEBAR BADGE)
+   ========================================================================== */
+.notification-bell-wrapper {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    padding: 6px !important;
+    border-radius: 6px !important;
+    color: var(--neutral-700) !important;
+    transition: background-color 0.15s ease !important;
+}
+
+.notification-bell-wrapper:hover {
+    background-color: var(--neutral-100) !important;
+    color: var(--neutral-900) !important;
+}
+
+.notification-badge {
+    position: absolute !important;
+    top: 2px !important;
+    right: 2px !important;
+    min-width: 16px !important;
+    height: 16px !important;
+    padding: 0 4px !important;
+    background-color: var(--accent-red) !important;
+    color: #ffffff !important;
+    border-radius: 10px !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    border: 2px solid var(--neutral-50) !important;
+    box-sizing: border-box !important;
+}
+
+/* ==========================================================================
+   8. RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .notification-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .notifications-page {
+        padding: 0 16px 16px 16px !important;
+    }
+
+    .notification-grid {
+        grid-template-columns: 1fr !important;
+    }
+}

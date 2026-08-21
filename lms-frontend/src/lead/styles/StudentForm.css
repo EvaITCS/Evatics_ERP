@@ -1,0 +1,641 @@
+/* =========================================================
+   COUNSELOR DETAILS PAGE DESIGN SYSTEM SCOPE
+========================================================= */
+.counselor-details-page.registration-page {
+    --erp-bg: #F8FAFC;
+    --erp-surface: #FFFFFF;
+    --erp-field-bg: #FFFFFF;
+
+    --erp-border: #E2E8F0;
+    --erp-input-border: #D1D5DB;
+    --erp-input-border-hover: #94A3B8;
+    --erp-input-border-focus: #2563EB;
+    --erp-input-focus-ring: rgba(37, 99, 235, 0.12);
+
+    --erp-text: #0F172A;
+    --erp-text-muted: #64748B;
+    --erp-text-faint: #94A3B8;
+
+    --erp-primary: #1E40AF;
+    --erp-accent: #2563EB;
+    --erp-primary-gradient: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
+    --erp-primary-soft: #EFF6FF;
+
+    --erp-badge-gradient: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+    --erp-badge-border: #E2E8F0;
+    --erp-badge-text: #334155;
+
+    --erp-danger: #EF4444;
+    --erp-danger-soft: #FEF2F2;
+    --erp-danger-border: #FCA5A5;
+    --erp-success: #10B981;
+
+    --erp-radius-lg: 12px;
+    --erp-radius-md: 6px;
+    --erp-radius-sm: 4px;
+
+    --erp-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 6px 16px rgba(15, 23, 42, 0.04);
+    --erp-shadow-btn: 0 1px 2px rgba(15, 23, 42, 0.05);
+    --erp-shadow-btn-hover: 0 6px 16px rgba(37, 99, 235, 0.22);
+
+    --erp-control-height: 42px;
+    --erp-ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --erp-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --erp-font-label: Georgia, Cambria, "Times New Roman", Times, serif;
+
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    padding: 0px 32px 48px;
+    background: var(--erp-bg);
+    box-sizing: border-box;
+    font-family: var(--erp-font);
+    color: var(--erp-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* =========================================================
+   HEADER SECTION
+========================================================= */
+.counselor-details-page .registration-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.counselor-details-page .registration-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.counselor-details-page .back-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: none;
+    color: var(--erp-text-muted);
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0px 4px;
+    margin-left: -8px;
+    border-radius: var(--erp-radius-sm);
+    transition: color 0.15s var(--erp-ease), background 0.15s var(--erp-ease);
+    width: fit-content;
+}
+
+.counselor-details-page .back-link-btn:hover {
+    color: var(--erp-accent);
+    background: var(--erp-primary-soft);
+}
+
+.counselor-details-page .registration-title-group h1 {
+    margin: 0 0 2px 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--erp-text);
+}
+
+.counselor-details-page .registration-title-group p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--erp-text-muted);
+}
+
+.counselor-details-page .lead-id-badge {
+    display: inline-flex;
+    align-items: center;
+    background: var(--erp-badge-gradient);
+    color: var(--erp-badge-text);
+    padding: 8px 14px;
+    border-radius: var(--erp-radius-sm);
+    border: 1px solid var(--erp-badge-border);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.counselor-details-page .lead-id-badge-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.counselor-details-page .lead-id-badge-label {
+    font-weight: 500;
+    color: var(--erp-text-muted);
+}
+
+.counselor-details-page .lead-id-badge-value {
+    font-weight: 700;
+    color: var(--erp-text);
+}
+
+/* =========================================================
+   SINGLE MAIN FORM CONTAINER (WITH TOP BLUE ACCENT LINE)
+========================================================= */
+.counselor-details-page .registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+    background: var(--erp-surface);
+    border: 1px solid var(--erp-border);
+    border-top: 4px solid var(--erp-accent); /* TOP BLUE ACCENT LINE */
+    border-radius: var(--erp-radius-lg);
+    padding: 32px;
+    box-shadow: var(--erp-shadow-card);
+    box-sizing: border-box;
+}
+
+/* Sub-sections now seamlessly fit inside the main card container */
+.counselor-details-page .registration-card {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+.counselor-details-page .registration-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--erp-border);
+}
+
+.counselor-details-page .registration-section-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--erp-radius-sm);
+    background: var(--erp-primary-soft);
+    color: var(--erp-accent);
+    flex-shrink: 0;
+}
+
+.counselor-details-page .registration-section-text h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--erp-text);
+}
+
+.counselor-details-page .registration-section-text span {
+    display: block;
+    margin-top: 2px;
+    font-size: 12.5px;
+    color: var(--erp-text-muted);
+}
+
+/* =========================================================
+   GRID & FORM CONTROLS (3 COLUMNS)
+========================================================= */
+.counselor-details-page .registration-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 20px;
+    row-gap: 20px;
+    width: 100%;
+}
+
+.counselor-details-page .registration-field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.counselor-details-page .registration-field label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--erp-font-label);
+    color: #000000;
+}
+
+.counselor-details-page .required {
+    color: var(--erp-danger);
+    margin-left: 4px;
+    font-weight: 700;
+}
+
+.counselor-details-page .registration-field input,
+.counselor-details-page .select-wrapper select,
+.counselor-details-page .phone-wrapper {
+    width: 100%;
+    height: var(--erp-control-height);
+    border: 1px solid var(--erp-input-border);
+    border-radius: var(--erp-radius-md);
+    background: var(--erp-field-bg);
+    padding: 0 14px;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: var(--erp-font);
+    color: var(--erp-text);
+    box-sizing: border-box;
+    transition: border-color 0.18s var(--erp-ease), box-shadow 0.18s var(--erp-ease);
+}
+
+.counselor-details-page .registration-field input::placeholder {
+    color: #9CA3AF;
+    font-size: 14px;
+}
+
+.counselor-details-page .registration-field input:hover,
+.counselor-details-page .select-wrapper select:hover,
+.counselor-details-page .phone-wrapper:hover {
+    border-color: var(--erp-input-border-hover);
+}
+
+.counselor-details-page .registration-field input:focus,
+.counselor-details-page .select-wrapper select:focus,
+.counselor-details-page .phone-wrapper:focus-within {
+    border-color: var(--erp-input-border-focus);
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px var(--erp-input-focus-ring);
+    outline: none;
+}
+
+.counselor-details-page .registration-field input:disabled,
+.counselor-details-page .registration-field input.readonly-field,
+.counselor-details-page .select-wrapper select:disabled {
+    background: #F8FAFC !important;
+    color: var(--erp-text-muted) !important;
+    border-color: var(--erp-border) !important;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   CHECKBOX FIELD
+========================================================= */
+.counselor-details-page .checkbox-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.counselor-details-page .checkbox-field input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: 1px solid var(--erp-input-border);
+    accent-color: var(--erp-primary);
+}
+
+.counselor-details-page .checkbox-field label {
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: var(--erp-font-label);
+    color: #000000;
+    cursor: pointer;
+}
+
+/* =========================================================
+   SELECT DROPDOWNS
+========================================================= */
+.counselor-details-page .select-wrapper {
+    position: relative;
+    width: 100%;
+    height: var(--erp-control-height);
+    display: flex;
+    align-items: center;
+}
+
+.counselor-details-page .select-wrapper select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    padding-right: 36px;
+}
+
+.counselor-details-page .select-arrow {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--erp-text-muted);
+    z-index: 2;
+    transition: color 0.18s var(--erp-ease);
+}
+
+.counselor-details-page .select-wrapper:focus-within .select-arrow {
+    color: var(--erp-input-border-focus);
+}
+
+/* =========================================================
+   PHONE NUMBER INPUT
+========================================================= */
+.counselor-details-page .phone-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.counselor-details-page .static-country-code {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    padding: 0 12px;
+    background: var(--erp-bg);
+    color: var(--erp-text-muted);
+    font-weight: 600;
+    font-size: 13.5px;
+    border-right: 1px solid var(--erp-border);
+    user-select: none;
+    flex-shrink: 0;
+}
+
+.counselor-details-page .phone-wrapper input {
+    flex: 1;
+    height: 100% !important;
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    padding: 0 14px !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--erp-text);
+}
+
+/* =========================================================
+   VALIDATION & ERRORS
+========================================================= */
+.counselor-details-page .invalid-field,
+.counselor-details-page .invalid-field-wrapper {
+    border-color: var(--erp-danger) !important;
+    background: var(--erp-danger-soft) !important;
+}
+
+.counselor-details-page .registration-field input.invalid-field:focus,
+.counselor-details-page .phone-wrapper.invalid-field-wrapper:focus-within,
+.counselor-details-page .select-wrapper select.invalid-field:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+}
+
+.counselor-details-page .error-msg-block {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--erp-danger);
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+/* =========================================================
+   ACTIONS & SUBMIT BUTTON
+========================================================= */
+.counselor-details-page .registration-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--erp-border);
+}
+
+.counselor-details-page .registration-submit-btn {
+    height: 44px;
+    padding: 0 24px;
+    border: none;
+    border-radius: var(--erp-radius-md);
+    background: var(--erp-accent);
+    color: #FFFFFF;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--erp-shadow-btn);
+    transition: transform 0.15s var(--erp-ease), box-shadow 0.15s var(--erp-ease), background 0.15s var(--erp-ease);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.counselor-details-page .registration-submit-btn:hover {
+    background: var(--erp-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--erp-shadow-btn-hover);
+}
+
+.counselor-details-page .registration-submit-btn:active {
+    transform: translateY(0);
+    box-shadow: var(--erp-shadow-btn);
+}
+
+.counselor-details-page .btn-spin {
+    animation: erpSpin 0.8s linear infinite;
+}
+
+@keyframes erpSpin {
+    to { transform: rotate(360deg); }
+}
+
+/* =========================================================
+   EMAIL MODAL
+========================================================= */
+.counselor-details-page .email-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.counselor-details-page .email-modal {
+    width: 100%;
+    max-width: 440px;
+    background: var(--erp-surface);
+    border: 1px solid var(--erp-border);
+    border-radius: var(--erp-radius-lg);
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+    box-sizing: border-box;
+}
+
+.counselor-details-page .success-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 14px auto;
+    border-radius: 50%;
+    background: #ECFDF5;
+    color: var(--erp-success);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.counselor-details-page .email-modal h2 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--erp-text);
+}
+
+.counselor-details-page .email-modal p {
+    margin: 0 0 16px 0;
+    color: var(--erp-text-muted);
+    font-size: 13.5px;
+    line-height: 1.5;
+}
+
+.counselor-details-page .invitation-status-box {
+    margin: 16px 0 20px;
+    padding: 14px;
+    border-radius: var(--erp-radius-sm);
+    background: #FFF7ED;
+    border: 1px solid #FFEDD5;
+    text-align: left;
+}
+
+.counselor-details-page .invitation-status-box h4 {
+    margin: 0 0 4px 0;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #9A3412;
+}
+
+.counselor-details-page .pending-status {
+    display: inline-block;
+    color: #C2410C;
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.counselor-details-page .invitation-status-box p {
+    font-size: 12px;
+    color: #7C2D12;
+    margin: 0;
+}
+
+.counselor-details-page .email-modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.counselor-details-page .close-btn,
+.counselor-details-page .send-btn {
+    flex: 1;
+    height: 42px;
+    padding: 0 16px;
+    border-radius: var(--erp-radius-md);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s var(--erp-ease);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.counselor-details-page .close-btn {
+    background: #FFFFFF;
+    color: var(--erp-text-muted);
+    border: 1px solid var(--erp-border);
+}
+
+.counselor-details-page .close-btn:hover {
+    background: #F8FAFC;
+    color: var(--erp-text);
+}
+
+.counselor-details-page .send-btn {
+    background: var(--erp-primary-gradient);
+    color: #FFFFFF;
+    border: none;
+    box-shadow: var(--erp-shadow-btn);
+}
+
+.counselor-details-page .send-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--erp-shadow-btn-hover);
+}
+
+.counselor-details-page .send-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* =========================================================
+   RESPONSIVE LAYOUT (DESKTOP / TABLET / MOBILE)
+========================================================= */
+@media screen and (max-width: 1024px) {
+    .counselor-details-page.registration-page {
+        padding: 10px 20px 30px;
+    }
+
+    .counselor-details-page .registration-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .counselor-details-page.registration-page {
+        padding: 16px 16px 32px;
+    }
+
+    .counselor-details-page .registration-form {
+        padding: 20px 18px;
+    }
+
+    .counselor-details-page .registration-grid {
+        grid-template-columns: 1fr;
+        row-gap: 16px;
+    }
+
+    .counselor-details-page .registration-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .counselor-details-page .registration-actions {
+        justify-content: stretch;
+    }
+
+    .counselor-details-page .registration-submit-btn {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .counselor-details-page .email-modal-buttons {
+        flex-direction: column-reverse;
+    }
+
+    .counselor-details-page .close-btn,
+    .counselor-details-page .send-btn {
+        width: 100%;
+    }
+}

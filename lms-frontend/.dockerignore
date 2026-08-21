@@ -1,0 +1,10 @@
+node_modules
+build
+*.md
+
+# stray backend duplicates from a past folder-restructure commit, not part of the frontend build
+pom.xml
+mvnw
+mvnw.cmd
+src.zip
+uploads

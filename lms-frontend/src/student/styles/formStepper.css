@@ -1,0 +1,243 @@
+/* =========================================================
+   TOKENS — Zinc / Blue, industry-ERP polish pass.
+========================================================= */
+:root {
+    --stp-surface: #ffffff;
+    --stp-border: #e4e4e7;          /* zinc-200 */
+
+    --stp-pending-bg: #f4f4f5;      /* zinc-100 */
+    --stp-pending-border: #e4e4e7;  /* zinc-200 */
+    --stp-pending-fg: #a1a1aa;      /* zinc-400 */
+    --stp-pending-label: #71717a;   /* zinc-500 */
+
+    /* Active State Colors (#2563eb Blue) */
+    --stp-active-fg: #2563eb;       
+    --stp-active-ring: rgba(37, 99, 235, 0.15);
+    --stp-active-shadow: rgba(37, 99, 235, 0.25);
+    --stp-active-label: #1e40af;
+
+    /* Completed State Colors Gradient (#1e40af -> #3b82f6) */
+    --stp-complete-start: #1e40af;  /* Darker Blue */
+    --stp-complete-end: #3b82f6;    /* Lighter Blue */
+    --stp-complete-shadow: rgba(37, 99, 235, 0.30);
+    --stp-complete-label: #1e40af;
+
+    --stp-line-bg: #e4e4e7;         /* zinc-200 */
+
+    --stp-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* =========================================================
+   CONTAINER — white surface with a thin brand accent bar on
+   top and a "Step X of N" chip, the way large ERP suites
+   (Workday / SAP Fiori / ServiceNow) frame a wizard header.
+========================================================= */
+.form-stepper-container {
+    width: 100%;
+    grid-column: 1 / -1;
+    position: relative;
+    background: var(--stp-surface);
+    border: 1px solid var(--stp-border);
+    border-radius: 14px;
+    padding: 26px 28px 24px;
+    box-shadow: 0 1px 2px rgba(24, 24, 27, 0.04), 0 10px 24px rgba(24, 24, 27, 0.05);
+    margin-bottom: 24px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.form-stepper-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 14px 14px 0 0;
+    background: linear-gradient(90deg, var(--stp-complete-start), var(--stp-active-fg), var(--stp-complete-end));
+}
+
+.stepper-meta-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 14px;
+}
+.stepper-count-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--stp-active-fg);
+    background: linear-gradient(180deg, #eef3fd, #e4ecfb);
+    border: 1px solid #d3e0f7;
+    padding: 5px 12px;
+    border-radius: 999px;
+}
+.stepper-count-chip strong {
+    color: var(--stp-complete-end);
+}
+
+/* =========================================================
+   PROGRESS ROW — CSS grid, one column per step. The track is
+   a single absolute line positioned between the center of the
+   first and last column (inset = half a column width each
+   side) so it always passes through every circle's true
+   center — independent of label length or step count.
+========================================================= */
+.stepper-progress-bar {
+    display: grid;
+    align-items: start;
+    width: 100%;
+    max-width: 950px;
+    min-width: 620px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.stepper-track-wrap {
+    position: absolute;
+    top: 19px; /* = half of the 40px circle */
+    height: 3px;
+    z-index: 0;
+}
+.stepper-track {
+    position: absolute;
+    inset: 0;
+    background: var(--stp-line-bg);
+    border-radius: 3px;
+}
+.stepper-track-progress {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: linear-gradient(90deg, var(--stp-complete-start), var(--stp-active-fg));
+    box-shadow: 0 1px 6px var(--stp-active-shadow);
+    border-radius: 3px;
+    transition: width 0.5s var(--stp-ease);
+}
+
+/* =========================================================
+   STEP NODE
+========================================================= */
+.stepper-node-wrapper {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    outline: none;
+}
+
+.stepper-node-wrapper.clickable {
+    cursor: pointer;
+}
+.stepper-node-wrapper.clickable:hover .stepper-circle {
+    transform: translateY(-1px);
+}
+.stepper-node-wrapper.clickable:hover .stepper-label {
+    color: var(--stp-active-label);
+}
+.stepper-node-wrapper.clickable:focus-visible .stepper-circle {
+    box-shadow: 0 0 0 3px var(--stp-active-ring);
+}
+
+/* =========================================================
+   CIRCLE — same 40px box for every state (keeps the track
+   centered) but pending/active/completed read very
+   differently through color + elevation, not size.
+========================================================= */
+.stepper-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--stp-pending-bg);
+    border: 1.5px solid var(--stp-pending-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--stp-pending-fg);
+    transition: background-color 0.3s var(--stp-ease), border-color 0.3s var(--stp-ease),
+        color 0.3s var(--stp-ease), box-shadow 0.3s var(--stp-ease), transform 0.2s var(--stp-ease);
+}
+
+/* =========================================================
+   LABEL
+========================================================= */
+.stepper-label {
+    margin-top: 11px;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--stp-pending-label);
+    white-space: nowrap;
+    position: relative;
+    padding-bottom: 6px;
+    transition: color 0.3s var(--stp-ease);
+}
+.stepper-label::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--stp-active-fg);
+    transform: translateX(-50%);
+    transition: width 0.3s var(--stp-ease);
+}
+
+/* =========================================================
+   STATES
+========================================================= */
+
+/* Active — white face, colored ring + lifted shadow (the
+   "halo" reads as emphasis without changing the box size, so
+   the connector line still hits its exact center). */
+.stepper-node-wrapper.active .stepper-circle {
+    background: var(--stp-surface);
+    border-color: var(--stp-active-fg);
+    border-width: 2px;
+    color: var(--stp-active-fg);
+    box-shadow: 0 0 0 5px var(--stp-active-ring), 0 6px 14px var(--stp-active-shadow);
+}
+.stepper-node-wrapper.active .stepper-label {
+    color: var(--stp-active-label);
+    font-weight: 700;
+}
+.stepper-node-wrapper.active .stepper-label::after {
+    width: 22px;
+}
+
+/* Completed — filled brand gradient, white icon, elevated. */
+.stepper-node-wrapper.completed .stepper-circle {
+    background: linear-gradient(150deg, var(--stp-complete-start), var(--stp-complete-end));
+    border-color: transparent;
+    color: #ffffff;
+    box-shadow: 0 4px 10px var(--stp-complete-shadow);
+}
+.stepper-node-wrapper.completed .stepper-label {
+    color: var(--stp-complete-label);
+}
+
+/* Icon wrappers */
+.check-icon,
+.step-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 680px) {
+    .stepper-progress-bar { min-width: 560px; }
+    .stepper-circle { width: 36px; height: 36px; }
+    .stepper-track-wrap { top: 17px; }
+    .stepper-label { font-size: 11.5px; }
+}
