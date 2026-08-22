@@ -2353,54 +2353,54 @@ public class EmployeeServiceImpl implements EmployeeService {
     // DELETE EMPLOYEE
     // =====================================================
 
-    @Override
-    @Transactional
-    public void deleteEmployee(
-            Long personId
-    ) {
+@Override
+@Transactional
+public void deleteEmployee(Long personId) {
 
-        Employee employee =
-                employeeRepository.findById(
-                                personId
-                        )
-                        .orElseThrow(() ->
-                                new EmployeeNotFoundException(
-                                        "Employee not found"
-                                )
-                        );
-
-
-        Person person =
-                employee.getPerson();
-
-
-        // Delete user first
-        if (person != null) {
-
-            userRepository
-                    .findByPersonPersonId(
-                            person.getPersonId()
-                    )
-                    .ifPresent(
-                            userRepository::delete
+    Employee employee =
+            employeeRepository.findById(personId)
+                    .orElseThrow(() ->
+                            new EmployeeNotFoundException(
+                                    "Employee not found"
+                            )
                     );
-        }
 
+    Person person = employee.getPerson();
 
-        // Delete employee
-        employeeRepository.delete(
-                employee
-        );
+    // =====================================================
+    // DELETE USER + USER ROLES
+    // =====================================================
 
+    if (person != null) {
 
-        // Delete person
-        if (person != null) {
+        userRepository
+                .findByPersonPersonId(person.getPersonId())
+                .ifPresent(user -> {
 
-            personRepository.delete(
-                    person
-            );
-        }
+                    // First delete user_roles
+                    userRoleRepository.deleteByUserUserId(
+                            user.getUserId()
+                    );
+
+                    // Then delete user
+                    userRepository.delete(user);
+                });
     }
+
+    // =====================================================
+    // DELETE EMPLOYEE
+    // =====================================================
+
+    employeeRepository.delete(employee);
+
+    // =====================================================
+    // DELETE PERSON
+    // =====================================================
+
+    if (person != null) {
+        personRepository.delete(person);
+    }
+}
 
 
     // =====================================================
