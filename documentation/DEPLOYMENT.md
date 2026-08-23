@@ -1,4 +1,4 @@
-# Deployment
+Ho# Deployment
 
 How LMS ERP runs on AWS: ECS Fargate for the frontend and backend, RDS for
 MySQL, Secrets Manager for credentials, GitHub Actions for CI/CD. Terraform

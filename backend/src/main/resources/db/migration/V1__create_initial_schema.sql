@@ -1,3 +1,7 @@
+-- Tables are not in dependency order (e.g. persons references gender_master,
+-- created later), so FK checks must be off for this script to run - same
+-- convention as mysqldump output.
+SET FOREIGN_KEY_CHECKS = 0;
 
 CREATE TABLE persons (
 
@@ -2619,3 +2623,5 @@ CREATE TABLE contracts (
                                FOREIGN KEY (uploaded_by_person_id)
                                    REFERENCES persons(person_id)
 );
+
+SET FOREIGN_KEY_CHECKS = 1;
