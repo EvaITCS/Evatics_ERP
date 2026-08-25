@@ -1573,17 +1573,33 @@ function AddEmployeePage() {
 
       try {
 
-        await employeeService.createEmployee(
-            multipartData
-        );
+        const response =
+            await employeeService.createEmployee(
+                multipartData
+            );
 
       // =============================================
       // SUCCESS
       // =============================================
 
-      alert(
-          "Employee Created Successfully."
-      );
+      const created = response?.data;
+
+      if (created?.temporaryPassword) {
+
+        alert(
+            "Employee Created Successfully.\n\n" +
+            "The credentials email could not be sent.\n" +
+            "Hand these login details over manually:\n\n" +
+            "Username: " + created.generatedUsername + "\n" +
+            "Password: " + created.temporaryPassword
+        );
+
+      } else {
+
+        alert(
+            "Employee Created Successfully."
+        );
+      }
 
       // =============================================
       // RESET

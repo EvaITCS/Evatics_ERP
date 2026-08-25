@@ -72,4 +72,8 @@ public class EmployeeResponse {
     private String generatedUsername;
 
     private String assignedRole;
+
+    // Set only when the credentials email could not be delivered,
+    // so the admin can hand the password over manually
+    private String temporaryPassword;
 }
