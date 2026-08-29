@@ -1,75 +1,221 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getReEngagementLeads } from "../services/leadService";
-import { getCounsellors } from "../../user/service/userService";
+import {
+    filterReEngagementLeads,
+    filterMyReEngagementLeads
+} from "../services/leadService";
+
+import {
+    getCounsellors
+} from "../../user/service/userService";
 
 import PageTitle from "../../shared/components/PageTitle";
 import SearchBar from "../components/SearchBar";
 
 import "../styles/lead.css";
 
+
 function ReEngagementPage() {
 
     const navigate = useNavigate();
 
-    // =====================================
+
+    // =====================================================
+    // USER / ROLE
+    // =====================================================
+
+    const USER_ROLE_KEY = "role";
+
+    const storedRole =
+        localStorage.getItem(USER_ROLE_KEY);
+
+    const userRole =
+        (storedRole || "")
+            .trim()
+            .toUpperCase();
+
+    const isAdmin =
+        userRole === "ADMIN";
+
+    const isCounsellor =
+        userRole === "COUNSELLOR";
+
+
+    // =====================================================
     // STATE
-    // =====================================
+    // =====================================================
 
-    const [leads, setLeads] = useState([]);
-    const [counsellors, setCounsellors] = useState([]);
+    const [leads, setLeads] =
+        useState([]);
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [counsellors, setCounsellors] =
+        useState([]);
 
-    // =====================================
+    const [loading, setLoading] =
+        useState(true);
+
+    const [error, setError] =
+        useState("");
+
+
+    // =====================================================
     // FILTER STATE
-    // =====================================
+    // =====================================================
 
-    const [search, setSearch] = useState("");
-    const [counsellorFilter, setCounsellorFilter] = useState("");
-    const [fromDate, setFromDate] = useState("");
-    const [toDate, setToDate] = useState("");
+    const [search, setSearch] =
+        useState("");
+
+    const [counsellorFilter, setCounsellorFilter] =
+        useState("");
+
+    const [fromDate, setFromDate] =
+        useState("");
+
+    const [toDate, setToDate] =
+        useState("");
 
 
-    // =====================================
+    // =====================================================
     // INITIAL LOAD
-    // =====================================
+    // =====================================================
 
     useEffect(() => {
 
         fetchLeads();
-        loadCounsellors();
 
-    }, []);
+        // Counsellor dropdown is required
+        // only for ADMIN
+        if (isAdmin) {
+            loadCounsellors();
+        }
+
+    }, [isAdmin]);
 
 
-    // =====================================
-    // LOAD RE-ENGAGEMENT LEADS
-    // =====================================
+    // =====================================================
+    // FETCH RE-ENGAGEMENT LEADS
+    // =====================================================
 
-    const fetchLeads = async () => {
+    const fetchLeads = async (
+        searchValue = "",
+        counsellorValue = "",
+        fromDateValue = "",
+        toDateValue = ""
+    ) => {
 
         try {
 
             setLoading(true);
             setError("");
 
-            const data = await getReEngagementLeads();
+
+            let data;
+
+
+            // =================================================
+            // ADMIN
+            // =================================================
+
+            if (isAdmin) {
+
+                data =
+                    await filterReEngagementLeads({
+
+                        keyword:
+                            searchValue?.trim() || "",
+
+                        counsellorPersonId:
+                            counsellorValue
+                                ? Number(counsellorValue)
+                                : null,
+
+                        fromDate:
+                            fromDateValue || null,
+
+                        toDate:
+                            toDateValue || null
+
+                    });
+
+            }
+
+
+                // =================================================
+                // COUNSELLOR
+            // =================================================
+
+            else if (isCounsellor) {
+
+                data =
+                    await filterMyReEngagementLeads({
+
+                        keyword:
+                            searchValue?.trim() || "",
+
+                        fromDate:
+                            fromDateValue || null,
+
+                        toDate:
+                            toDateValue || null
+
+                    });
+
+            }
+
+
+                // =================================================
+                // OTHER ROLE
+            // =================================================
+
+            else {
+
+                data = [];
+
+            }
+
 
             console.log(
-                "========== RE-ENGAGEMENT LEADS =========="
+                "========== RE-ENGAGEMENT FILTER =========="
             );
 
-            console.log("Total:", data?.length);
-            console.log("Leads:", data);
+            console.log(
+                "Role:",
+                userRole
+            );
+
+            console.log(
+                "Search:",
+                searchValue
+            );
+
+            console.log(
+                "Counsellor:",
+                counsellorValue
+            );
+
+            console.log(
+                "From Date:",
+                fromDateValue
+            );
+
+            console.log(
+                "To Date:",
+                toDateValue
+            );
+
+            console.log(
+                "Result:",
+                data
+            );
+
 
             setLeads(
                 Array.isArray(data)
                     ? data
                     : []
             );
+
 
         } catch (err) {
 
@@ -92,21 +238,27 @@ function ReEngagementPage() {
     };
 
 
-    // =====================================
+    // =====================================================
     // LOAD COUNSELLORS
-    // =====================================
+    // ADMIN ONLY
+    // =====================================================
 
     const loadCounsellors = async () => {
 
         try {
 
-            const data = await getCounsellors();
+            const data =
+                await getCounsellors();
 
             console.log(
                 "========== COUNSELLORS =========="
             );
 
-            console.log("Counsellors:", data);
+            console.log(
+                "Counsellors:",
+                data
+            );
+
 
             setCounsellors(
                 Array.isArray(data)
@@ -127,132 +279,55 @@ function ReEngagementPage() {
     };
 
 
-    // =====================================
-    // FRONTEND FILTERING
-    // =====================================
+    // =====================================================
+    // SEARCH
+    // =====================================================
 
-    const filteredLeads = useMemo(() => {
+    const handleSearch = () => {
 
-        return leads.filter((lead) => {
-
-            // =================================
-            // SEARCH
-            // =================================
-
-            const keyword =
-                search.trim().toLowerCase();
-
-            const fullName = [
-                lead.firstName,
-                lead.middleName,
-                lead.lastName
-            ]
-                .filter(Boolean)
-                .join(" ")
-                .toLowerCase();
-
-            const email =
-                (lead.email || "").toLowerCase();
-
-            const phone =
-                lead.phone || "";
-
-            const status =
-                (lead.leadStatus || "").toLowerCase();
-
-            const matchesSearch =
-                !keyword ||
-                fullName.includes(keyword) ||
-                email.includes(keyword) ||
-                phone.includes(keyword) ||
-                status.includes(keyword);
-
-
-            // =================================
-            // COUNSELLOR
-            // =================================
-
-            const matchesCounsellor =
-                !counsellorFilter ||
-                Number(lead.employeePersonId) ===
-                Number(counsellorFilter);
-
-
-            // =================================
-            // CREATED DATE
-            // =================================
-
-            const createdDate =
-                lead.createdAt
-                    ? new Date(lead.createdAt)
-                    : null;
-
-
-            // =================================
-            // FROM DATE
-            // =================================
-
-            const matchesFrom =
-                !fromDate ||
-                (
-                    createdDate &&
-                    createdDate >=
-                    new Date(`${fromDate}T00:00:00`)
-                );
-
-
-            // =================================
-            // TO DATE
-            // =================================
-
-            const matchesTo =
-                !toDate ||
-                (
-                    createdDate &&
-                    createdDate <=
-                    new Date(`${toDate}T23:59:59`)
-                );
-
-
-            return (
-                matchesSearch &&
-                matchesCounsellor &&
-                matchesFrom &&
-                matchesTo
-            );
-
-        });
-
-    }, [
-        leads,
-        search,
-        counsellorFilter,
-        fromDate,
-        toDate
-    ]);
-
-
-    // =====================================
-    // CLEAR FILTERS
-    // =====================================
-
-    const clearFilters = () => {
-
-        setSearch("");
-        setCounsellorFilter("");
-        setFromDate("");
-        setToDate("");
+        fetchLeads(
+            search,
+            counsellorFilter,
+            fromDate,
+            toDate
+        );
 
     };
 
 
-    // =====================================
+    // =====================================================
+    // CLEAR FILTERS
+    // =====================================================
+
+    const clearFilters = () => {
+
+        setSearch("");
+
+        setCounsellorFilter("");
+
+        setFromDate("");
+
+        setToDate("");
+
+
+        fetchLeads(
+            "",
+            "",
+            "",
+            ""
+        );
+
+    };
+
+
+    // =====================================================
     // LOADING
-    // =====================================
+    // =====================================================
 
     if (loading) {
 
         return (
+
             <div className="re-engagement-page">
 
                 <div className="re-engagement-card-wrapper">
@@ -264,6 +339,7 @@ function ReEngagementPage() {
                         />
 
                     </div>
+
 
                     <div className="empty-state">
 
@@ -276,20 +352,24 @@ function ReEngagementPage() {
                 </div>
 
             </div>
+
         );
+
     }
 
 
-    // =====================================
+    // =====================================================
     // ERROR
-    // =====================================
+    // =====================================================
 
     if (error) {
 
         return (
+
             <div className="re-engagement-page">
 
                 <div className="re-engagement-card-wrapper">
+
 
                     <div className="card-header">
 
@@ -297,24 +377,38 @@ function ReEngagementPage() {
                             title="Re-Engagement Leads"
                         />
 
+
                         <button
                             type="button"
                             className="back-btn"
-                            onClick={() => navigate(-1)}
+                            onClick={() =>
+                                navigate(-1)
+                            }
                         >
                             ← Back
                         </button>
 
                     </div>
 
+
                     <div className="empty-state">
 
-                        <h3>{error}</h3>
+                        <h3>
+                            {error}
+                        </h3>
+
 
                         <button
                             type="button"
                             className="primary-btn"
-                            onClick={fetchLeads}
+                            onClick={() =>
+                                fetchLeads(
+                                    search,
+                                    counsellorFilter,
+                                    fromDate,
+                                    toDate
+                                )
+                            }
                         >
                             Retry
                         </button>
@@ -324,13 +418,15 @@ function ReEngagementPage() {
                 </div>
 
             </div>
+
         );
+
     }
 
 
-    // =====================================
-    // UI
-    // =====================================
+    // =====================================================
+    // MAIN UI
+    // =====================================================
 
     return (
 
@@ -339,9 +435,9 @@ function ReEngagementPage() {
             <div className="re-engagement-card-wrapper">
 
 
-                {/* =====================================
-                        HEADER
-                    ===================================== */}
+                {/* =================================================
+                    HEADER
+                ================================================= */}
 
                 <div className="card-header">
 
@@ -349,10 +445,13 @@ function ReEngagementPage() {
                         title="Re-Engagement Leads"
                     />
 
+
                     <button
                         type="button"
                         className="back-btn"
-                        onClick={() => navigate(-1)}
+                        onClick={() =>
+                            navigate(-1)
+                        }
                     >
                         ← Back
                     </button>
@@ -360,14 +459,16 @@ function ReEngagementPage() {
                 </div>
 
 
-                {/* =====================================
-                        FILTERS
-                    ===================================== */}
+                {/* =================================================
+                    FILTERS
+                ================================================= */}
 
                 <div className="lead-filters">
 
 
-                    {/* SEARCH */}
+                    {/* =================================================
+                        SEARCH
+                    ================================================= */}
 
                     <SearchBar
                         value={search}
@@ -376,55 +477,67 @@ function ReEngagementPage() {
                     />
 
 
-                    {/* =================================
-                            COUNSELLOR
-                        ================================= */}
+                    {/* =================================================
+                        COUNSELLOR
+                        ADMIN ONLY
+                    ================================================= */}
 
-                    <select
-                        value={counsellorFilter}
-                        onChange={(e) =>
-                            setCounsellorFilter(
-                                e.target.value
-                            )
-                        }
-                    >
+                    {isAdmin && (
 
-                        <option value="">
-                            All Counsellors
-                        </option>
+                        <select
+                            value={counsellorFilter}
+                            onChange={(e) =>
+                                setCounsellorFilter(
+                                    e.target.value
+                                )
+                            }
+                        >
 
-                        {counsellors.map(
-                            (counsellor) => (
-
-                                <option
-                                    key={
-                                        counsellor.personId
-                                    }
-                                    value={
-                                        counsellor.personId
-                                    }
-                                >
-
-                                    {counsellor.fullName
-                                        ||
-                                        `${counsellor.firstName || ""}
-                                         ${counsellor.lastName || ""}`
-                                            .trim()
-                                        ||
-                                        `Counsellor ${counsellor.personId}`
-                                    }
-
-                                </option>
-
-                            )
-                        )}
-
-                    </select>
+                            <option value="">
+                                All Counsellors
+                            </option>
 
 
-                    {/* =================================
-                            FROM DATE
-                        ================================= */}
+                            {counsellors.map(
+                                (counsellor) => (
+
+                                    <option
+                                        key={
+                                            counsellor.personId
+                                        }
+                                        value={
+                                            counsellor.personId
+                                        }
+                                    >
+
+                                        {
+                                            counsellor.employeeName ||
+                                            counsellor.fullName ||
+                                            counsellor.counsellorName ||
+                                            [
+                                                counsellor.firstName,
+                                                counsellor.middleName,
+                                                counsellor.lastName
+                                            ]
+                                                .filter(Boolean)
+                                                .join(" ")
+                                            ||
+                                            `Counsellor ${counsellor.personId}`
+                                        }
+
+                                    </option>
+
+                                )
+                            )}
+
+                        </select>
+
+                    )}
+
+
+                    {/* =================================================
+                        FROM DATE
+                    ================================================= */}
 
                     <input
                         type="date"
@@ -437,9 +550,9 @@ function ReEngagementPage() {
                     />
 
 
-                    {/* =================================
-                            TO DATE
-                        ================================= */}
+                    {/* =================================================
+                        TO DATE
+                    ================================================= */}
 
                     <input
                         type="date"
@@ -452,22 +565,22 @@ function ReEngagementPage() {
                     />
 
 
-                    {/* =================================
-                            SEARCH BUTTON
-                        ================================= */}
+                    {/* =================================================
+                        SEARCH BUTTON
+                    ================================================= */}
 
                     <button
                         type="button"
                         className="primary-btn"
-                        onClick={fetchLeads}
+                        onClick={handleSearch}
                     >
                         Search
                     </button>
 
 
-                    {/* =================================
-                            CLEAR BUTTON
-                        ================================= */}
+                    {/* =================================================
+                        CLEAR BUTTON
+                    ================================================= */}
 
                     <button
                         type="button"
@@ -480,30 +593,31 @@ function ReEngagementPage() {
                 </div>
 
 
-                {/* =====================================
-                        RESULT COUNT
-                    ===================================== */}
+                {/* =================================================
+                    RESULT COUNT
+                ================================================= */}
 
                 <p className="result-count">
 
-                    Total Results :
+                    Total Results:
                     {" "}
-                    {filteredLeads.length}
+                    {leads.length}
 
                 </p>
 
 
-                {/* =====================================
-                        TABLE / EMPTY STATE
-                    ===================================== */}
+                {/* =================================================
+                    EMPTY STATE
+                ================================================= */}
 
-                {filteredLeads.length === 0 ? (
+                {leads.length === 0 ? (
 
                     <div className="empty-state">
 
                         <h3>
                             No Re-Engagement Leads Found
                         </h3>
+
 
                         <p>
                             No re-engagement leads match
@@ -513,6 +627,11 @@ function ReEngagementPage() {
                     </div>
 
                 ) : (
+
+
+                    /* =================================================
+                       TABLE
+                    ================================================= */
 
                     <div className="table-wrapper">
 
@@ -538,17 +657,17 @@ function ReEngagementPage() {
                                     Phone
                                 </th>
 
-                                <th>
-                                    Counsellor
-                                </th>
+                                {isAdmin && (
+                                    <th>
+                                        Counsellor
+                                    </th>
+                                )}
 
                                 <th>
                                     Status
                                 </th>
 
-                                <th>
-                                    Created At
-                                </th>
+
 
                             </tr>
 
@@ -557,7 +676,7 @@ function ReEngagementPage() {
 
                             <tbody>
 
-                            {filteredLeads.map(
+                            {leads.map(
                                 (lead) => (
 
                                     <tr
@@ -566,67 +685,110 @@ function ReEngagementPage() {
                                         }
                                     >
 
+
+                                        {/* =================================================
+                                                ID
+                                            ================================================= */}
+
                                         <td>
-                                            {lead.personId}
+                                            {
+                                                lead.personId
+                                            }
                                         </td>
 
+
+                                        {/* =================================================
+                                                NAME
+                                            ================================================= */}
 
                                         <td>
 
                                             {[
-                                                lead.firstName,
-                                                lead.middleName,
-                                                lead.lastName
-                                            ]
-                                                .filter(Boolean)
-                                                .join(" ") || "-"}
+                                                    lead.firstName,
+                                                    lead.middleName,
+                                                    lead.lastName
+                                                ]
+                                                    .filter(Boolean)
+                                                    .join(" ")
+                                                || "-"}
 
                                         </td>
 
 
-                                        <td>
-                                            {lead.email || "-"}
-                                        </td>
-
-
-                                        <td>
-                                            {lead.phone || "-"}
-                                        </td>
-
+                                        {/* =================================================
+                                                EMAIL
+                                            ================================================= */}
 
                                         <td>
+
                                             {
-                                                lead.assignedEmployeeName
-                                                || "Unassigned"
+                                                lead.email
+                                                || "-"
                                             }
+
                                         </td>
 
 
+                                        {/* =================================================
+                                                PHONE
+                                            ================================================= */}
+
                                         <td>
 
-                                            <span className="status-badge re-engagement">
+                                            {
+                                                lead.phone
+                                                || "-"
+                                            }
+
+                                        </td>
+
+
+                                        {/* =================================================
+                                                COUNSELLOR
+                                                ADMIN ONLY
+                                            ================================================= */}
+
+                                        {isAdmin && (
+
+                                            <td>
 
                                                 {
-                                                    lead.leadStatus
-                                                    || "RE_ENGAGEMENT"
+                                                    lead.employeeName ||
+                                                    lead.assignedEmployeeName ||
+                                                    lead.counsellorName ||
+                                                    "Unassigned"
                                                 }
 
-                                            </span>
+                                            </td>
 
-                                        </td>
+                                        )}
 
+
+                                        {/* =================================================
+                                                STATUS
+                                            ================================================= */}
 
                                         <td>
 
-                                            {
-                                                lead.createdAt
-                                                    ? new Date(
-                                                        lead.createdAt
-                                                    ).toLocaleDateString()
-                                                    : "-"
-                                            }
+                                                <span className="status-badge re-engagement">
+
+                                                    {
+                                                        lead.leadStatus
+                                                        ||
+                                                        "RE_ENGAGEMENT"
+                                                    }
+
+                                                </span>
 
                                         </td>
+
+
+                                        {/* =================================================
+                                                RE-ENGAGEMENT DATE
+                                            ================================================= */}
+
+
+
 
                                     </tr>
 
@@ -647,5 +809,6 @@ function ReEngagementPage() {
 
     );
 }
+
 
 export default ReEngagementPage;

@@ -93,4 +93,16 @@ public class LeadFollowup {
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
+
+
+    @Column(name = "action_performed_at")
+    private LocalDateTime actionPerformedAt;
+
+    // =====================================================
+// ACTION RESULT
+// =====================================================
+
+    @Column(name = "action_result", nullable = false, length = 50)
+    private String actionResult;
+
 }

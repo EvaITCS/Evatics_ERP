@@ -2,13 +2,13 @@ import React, {
     useEffect,
     useState
 } from "react";
-
+import { useToast } from "../../shared/components/ToastContext";
 import holidayService
 from "../services/holidayService";
 import PageTitle from "../../shared/components/PageTitle";
 import "../styles/employee.css";
 function HolidaysPage() {
-
+    const { showToast } = useToast();
     const [holidays,
         setHolidays] = useState([]);
 
@@ -72,8 +72,9 @@ function HolidaysPage() {
                         formData
                     );
 
-                alert(
-                    "Holiday Updated Successfully"
+                showToast(
+                    "Holiday Updated Successfully",
+                    "success"
                 );
 
             } else {
@@ -82,9 +83,9 @@ function HolidaysPage() {
                     .createHoliday(
                         formData
                     );
-
-                alert(
-                    "Holiday Added Successfully"
+                showToast(
+                    "Holiday Added Successfully",
+                    "success"
                 );
             }
 
@@ -144,8 +145,9 @@ function HolidaysPage() {
                     holidayId
                 );
 
-            alert(
-                "Holiday Deleted Successfully"
+            showToast(
+                "Holiday Deleted Successfully",
+                "success"
             );
 
             fetchHolidays();

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import LeadForm from "../components/LeadForm";
 import { createLead } from "../services/leadService";
+import { useToast } from "../../shared/components/ToastContext";
 
 import PageTitle from "../../shared/components/PageTitle";
 import { getCounsellors } from "../../user/service/userService";
@@ -13,6 +14,8 @@ import "../styles/lead.css";
 function AddLeadPage() {
 
   const navigate = useNavigate();
+
+  const { showToast } = useToast();
 
   const role =
       localStorage.getItem("role");
@@ -65,8 +68,9 @@ function AddLeadPage() {
             error
         );
 
-        alert(
-            "Failed to load counsellors."
+        showToast(
+            "Failed to load counsellors.",
+            "error"
         );
       }
     };
@@ -97,8 +101,9 @@ function AddLeadPage() {
           !selectedCounsellor
       ) {
 
-        alert(
-            "Please select a Counsellor."
+        showToast(
+            "Please select a Counsellor.",
+            "error"
         );
 
         setLoading(false);
@@ -131,8 +136,9 @@ function AddLeadPage() {
 
         if (!currentPersonId) {
 
-          alert(
-              "Counsellor person ID not found."
+          showToast(
+              "Counsellor person ID not found.",
+              "error"
           );
 
           setLoading(false);
@@ -184,14 +190,16 @@ function AddLeadPage() {
 
       if (role === "ADMIN") {
 
-        alert(
-            "Lead Created and Assigned Successfully"
+        showToast(
+            "Lead Created and Assigned Successfully",
+            "success"
         );
 
       } else {
 
-        alert(
-            "Lead Created Successfully"
+        showToast(
+            "Lead Created Successfully",
+            "success"
         );
       }
 
@@ -236,7 +244,10 @@ function AddLeadPage() {
           "Failed to create lead";
 
 
-      alert(message);
+      showToast(
+          message,
+          "error"
+      );
 
 
     } finally {
@@ -297,9 +308,6 @@ function AddLeadPage() {
 
               <div className="admin-form-note">
 
-                <strong>
-                  Lead Ownership
-                </strong>
 
               </div>
 

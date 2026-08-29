@@ -16,9 +16,12 @@ import {
     FiChevronUp
 } from "react-icons/fi";
 import studentService from "../services/studentService";
+import { useToast } from "../../shared/components/ToastContext";
 import "../styles/profileChangeRequests.css";
 
 export default function ProfileChangeRequestsPage() {
+    const { showToast } = useToast();
+
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -28,68 +31,42 @@ export default function ProfileChangeRequestsPage() {
     const [processingId, setProcessingId] = useState(null);
     const [expandedId, setExpandedId] = useState(null);
     const [filter, setFilter] = useState("ALL");
+    const [viewingDocumentId, setViewingDocumentId] = useState(null);
 
     useEffect(() => {
         loadRequests();
     }, []);
 
-    const [viewingDocumentId, setViewingDocumentId] =
-    useState(null);
+    const handleViewRequestedDocument = async request => {
+        try {
+            setViewingDocumentId(request.requestId);
 
-const handleViewRequestedDocument = async request => {
-    try {
-
-        setViewingDocumentId(
-            request.requestId
-        );
-
-        const response =
-            await studentService
-                .getPendingProfileChangeDocument(
+            const response =
+                await studentService.getPendingProfileChangeDocument(
                     request.requestId
                 );
 
-        const blob = new Blob(
-            [response.data],
-            {
+            const blob = new Blob([response.data], {
                 type:
-                    response.headers[
-                        "content-type"
-                    ] ||
+                    response.headers["content-type"] ||
                     "application/octet-stream"
-            }
-        );
+            });
 
-        const url =
-            window.URL.createObjectURL(blob);
+            const url = window.URL.createObjectURL(blob);
 
-        window.open(
-            url,
-            "_blank",
-            "noopener,noreferrer"
-        );
+            window.open(url, "_blank", "noopener,noreferrer");
 
-        setTimeout(() => {
-            window.URL.revokeObjectURL(url);
-        }, 10000);
+            setTimeout(() => {
+                window.URL.revokeObjectURL(url);
+            }, 10000);
+        } catch (error) {
+            console.error("Pending Document View Error:", error);
 
-    } catch (error) {
-
-        console.error(
-            "Pending Document View Error:",
-            error
-        );
-
-        alert(
-            "Unable to open requested document."
-        );
-
-    } finally {
-
-        setViewingDocumentId(null);
-
-    }
-};
+            showToast("Unable to open requested document.", "error");
+        } finally {
+            setViewingDocumentId(null);
+        }
+    };
 
     const loadRequests = async () => {
         try {
@@ -104,7 +81,7 @@ const handleViewRequestedDocument = async request => {
             console.error("Profile Change Requests Error:", err);
             setError(
                 err?.response?.data?.message ||
-                "Unable to load profile change requests."
+                    "Unable to load profile change requests."
             );
         } finally {
             setLoading(false);
@@ -112,10 +89,6 @@ const handleViewRequestedDocument = async request => {
     };
 
     const handleApprove = async request => {
-        if (!window.confirm("Are you sure you want to approve this request?")) {
-            return;
-        }
-
         try {
             setProcessingId(request.requestId);
 
@@ -127,7 +100,10 @@ const handleViewRequestedDocument = async request => {
                 }
             );
 
-            alert("Profile change request approved successfully.");
+            showToast(
+                "Profile change request approved successfully.",
+                "success"
+            );
 
             setRequests(prev =>
                 prev.filter(item => item.requestId !== request.requestId)
@@ -135,9 +111,9 @@ const handleViewRequestedDocument = async request => {
         } catch (err) {
             console.error("Approve Request Error:", err);
 
-            alert(
-                err?.response?.data?.message ||
-                "Failed to approve request."
+            showToast(
+                err?.response?.data?.message || "Failed to approve request.",
+                "error"
             );
         } finally {
             setProcessingId(null);
@@ -152,7 +128,7 @@ const handleViewRequestedDocument = async request => {
 
     const handleReject = async () => {
         if (!selectedRequest || !rejectionReason.trim()) {
-            alert("Please enter a rejection reason.");
+            showToast("Please enter a rejection reason.", "warning");
             return;
         }
 
@@ -167,7 +143,7 @@ const handleViewRequestedDocument = async request => {
                 }
             );
 
-            alert("Profile change request rejected.");
+            showToast("Profile change request rejected.", "success");
 
             setRequests(prev =>
                 prev.filter(
@@ -181,9 +157,9 @@ const handleViewRequestedDocument = async request => {
         } catch (err) {
             console.error("Reject Request Error:", err);
 
-            alert(
-                err?.response?.data?.message ||
-                "Failed to reject request."
+            showToast(
+                err?.response?.data?.message || "Failed to reject request.",
+                "error"
             );
         } finally {
             setProcessingId(null);
@@ -266,11 +242,7 @@ const handleViewRequestedDocument = async request => {
             request.fullName ||
             request.student?.fullName ||
             request.student?.name ||
-            [
-                request.firstName,
-                request.middleName,
-                request.lastName
-            ]
+            [request.firstName, request.middleName, request.lastName]
                 .filter(Boolean)
                 .join(" ");
 
@@ -311,10 +283,12 @@ const handleViewRequestedDocument = async request => {
             fileData: "Document"
         };
 
-        return labels[key] ||
+        return (
+            labels[key] ||
             key
                 .replace(/([A-Z])/g, " $1")
-                .replace(/^./, str => str.toUpperCase());
+                .replace(/^./, str => str.toUpperCase())
+        );
     };
 
     const getAllowedFields = type => {
@@ -347,11 +321,7 @@ const handleViewRequestedDocument = async request => {
                 "endDate",
                 "yearsOfExperience"
             ],
-            VISA: [
-                "visaType",
-                "eadType",
-                "visaExpiryDate"
-            ],
+            VISA: ["visaType", "eadType", "visaExpiryDate"],
             DOCUMENT: [
                 "documentType",
                 "documentNumber",
@@ -389,9 +359,7 @@ const handleViewRequestedDocument = async request => {
 
     const formatValue = (key, value) => {
         if (key === "fileData") {
-            return value
-                ? "Document Uploaded"
-                : "Document Not Provided";
+            return value ? "Document Uploaded" : "Document Not Provided";
         }
 
         if (key === "fileSize") {
@@ -424,16 +392,12 @@ const handleViewRequestedDocument = async request => {
 
                 if (key === "fileData") {
                     return (
-                        value !== undefined &&
-                        value !== null &&
-                        value !== ""
+                        value !== undefined && value !== null && value !== ""
                     );
                 }
 
                 return (
-                    value !== undefined &&
-                    value !== null &&
-                    value !== ""
+                    value !== undefined && value !== null && value !== ""
                 );
             })
             .map(key => ({
@@ -461,36 +425,27 @@ const handleViewRequestedDocument = async request => {
                             {formatFieldName(key)}
                         </span>
 
-                           {key === "fileData" ? (
-        <button
-            type="button"
-            className="pcr-document-view-btn"
-            onClick={() =>
-                handleViewRequestedDocument(
-                    request
-                )
-            }
-            disabled={
-                viewingDocumentId ===
-                request.requestId
-            }
-        >
-            <FiEye />
-
-            {viewingDocumentId ===
-            request.requestId
-                ? "Opening..."
-                : "View Document"}
-        </button>
-    ) : (
-
-                     <strong className="pcr-data-value">
-            {formatValue(
-                key,
-                newValue
-            )}
-        </strong>
-    )}
+                        {key === "fileData" ? (
+                            <button
+                                type="button"
+                                className="pcr-document-view-btn"
+                                onClick={() =>
+                                    handleViewRequestedDocument(request)
+                                }
+                                disabled={
+                                    viewingDocumentId === request.requestId
+                                }
+                            >
+                                <FiEye />
+                                {viewingDocumentId === request.requestId
+                                    ? "Opening..."
+                                    : "View Document"}
+                            </button>
+                        ) : (
+                            <strong className="pcr-data-value">
+                                {formatValue(key, newValue)}
+                            </strong>
+                        )}
                     </div>
                 ))}
             </div>
@@ -504,9 +459,7 @@ const handleViewRequestedDocument = async request => {
     );
 
     const countType = type =>
-        requests.filter(
-            r => r.requestType?.toUpperCase() === type
-        ).length;
+        requests.filter(r => r.requestType?.toUpperCase() === type).length;
 
     const otherCount = requests.filter(
         r =>
@@ -517,9 +470,7 @@ const handleViewRequestedDocument = async request => {
                 "ADDRESS",
                 "VISA",
                 "DOCUMENT"
-            ].includes(
-                r.requestType?.toUpperCase()
-            )
+            ].includes(r.requestType?.toUpperCase())
     ).length;
 
     const toggleExpanded = id => {
@@ -645,9 +596,7 @@ const handleViewRequestedDocument = async request => {
             ) : (
                 <div className="pcr-request-list">
                     {filteredRequests.map(request => {
-                        const isExpanded =
-                            expandedId === request.requestId;
-
+                        const isExpanded = expandedId === request.requestId;
                         const isProcessing =
                             processingId === request.requestId;
 
@@ -692,7 +641,7 @@ const handleViewRequestedDocument = async request => {
                                                     Submitted{" "}
                                                     {formatDate(
                                                         request.createdAt ||
-                                                        request.requestDate
+                                                            request.requestDate
                                                     )}
                                                 </span>
                                             </div>
@@ -788,9 +737,7 @@ const handleViewRequestedDocument = async request => {
                     className="pcr-modal-overlay"
                     onClick={e => {
                         if (
-                            e.target.classList.contains(
-                                "pcr-modal-overlay"
-                            )
+                            e.target.classList.contains("pcr-modal-overlay")
                         ) {
                             setShowRejectModal(false);
                         }
@@ -814,9 +761,7 @@ const handleViewRequestedDocument = async request => {
 
                             <button
                                 type="button"
-                                onClick={() =>
-                                    setShowRejectModal(false)
-                                }
+                                onClick={() => setShowRejectModal(false)}
                             >
                                 <FiX />
                             </button>

@@ -3,8 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 import { BACKEND_API_URL } from "../../shared/constants/env";
 import "../styles/AdminApplication.css";
+import { useToast } from "../../shared/components/ToastContext";
 
 export default function AdminApplicationDetails() {
+    const { showToast } = useToast();
+
     const [batches, setBatches] = useState([]);
     const [selectedBatch, setSelectedBatch] = useState("");
     const [isBatchDropdownOpen, setIsBatchDropdownOpen] = useState(false);
@@ -17,6 +20,9 @@ export default function AdminApplicationDetails() {
     const [showRecheckModal, setShowRecheckModal] = useState(false);
     const [recheckReason, setRecheckReason] = useState("");
     const [selectedReasons, setSelectedReasons] = useState([]);
+
+    // --- Enrollment confirmation modal ---
+    const [showEnrollConfirm, setShowEnrollConfirm] = useState(false);
 
     useEffect(() => {
         api.get(`/admin/application/${id}`)
@@ -36,15 +42,17 @@ export default function AdminApplicationDetails() {
     const formatPhoneNumber = (phoneStr) => {
         if (!phoneStr) return "N/A";
 
-        const cleaned = ('' + phoneStr).replace(/\D/g, '');
+        const cleaned = ("" + phoneStr).replace(/\D/g, "");
         const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+
         if (match) {
             return `${match[1]}-${match[2]}-${match[3]}`;
         }
+
         return phoneStr;
     };
 
-    // Date formatter for custom dropdown (e.g. 11 Aug 2026)
+    // Date formatter for custom dropdown
     const formatBatchDate = (date) => {
         if (!date) return "";
 
@@ -63,22 +71,53 @@ export default function AdminApplicationDetails() {
         });
     };
 
-    const enroll = async () => {
-        if (window.confirm("Are you sure you want to enroll this student?")) {
-            if (!selectedBatch) {
-                alert("Please select batch first");
-                return;
-            }
+    // =========================================================
+    // OPEN ENROLL CONFIRMATION
+    // =========================================================
 
-            try {
-                await api.put(`/admin/application/enroll/${id}`, {
-                    batchId: selectedBatch
-                });
-                alert("Student Enrolled Successfully");
-                navigate("/admin/my-students");
-            } catch (error) {
-                alert(error.response?.data || error.message);
-            }
+    const enroll = () => {
+        if (!selectedBatch) {
+            showToast(
+                "Please select a batch first",
+                "error",
+                "Batch Required"
+            );
+            return;
+        }
+
+        setShowEnrollConfirm(true);
+    };
+
+    // =========================================================
+    // ACTUAL ENROLLMENT
+    // =========================================================
+
+    const confirmEnrollment = async () => {
+        setShowEnrollConfirm(false);
+
+        try {
+            await api.put(`/admin/application/enroll/${id}`, {
+                batchId: selectedBatch
+            });
+
+            showToast(
+                "Student enrolled successfully",
+                "success",
+                "Student Enrolled"
+            );
+
+            setTimeout(() => {
+                navigate("/admin/students");
+            }, 1200);
+
+        } catch (error) {
+            showToast(
+                error.response?.data ||
+                    error.message ||
+                    "Unable to enroll student",
+                "error",
+                "Enrollment Failed"
+            );
         }
     };
 
@@ -100,7 +139,11 @@ export default function AdminApplicationDetails() {
             selectedReasons.length === 0 &&
             !recheckReason.trim()
         ) {
-            alert("Please select at least one reason");
+            showToast(
+                "Please select at least one reason",
+                "error",
+                "Recheck Reason Required"
+            );
             return;
         }
 
@@ -129,12 +172,23 @@ export default function AdminApplicationDetails() {
                 }
             );
 
-            alert("Application sent for recheck");
-            window.location.reload();
+            showToast(
+                "Application sent back for recheck",
+                "success",
+                "Application Recheck"
+            );
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 1200);
 
         } catch (error) {
-            alert(
-                error.response?.data || error.message
+            showToast(
+                error.response?.data ||
+                    error.message ||
+                    "Unable to send application for recheck",
+                "error",
+                "Recheck Failed"
             );
         }
     };
@@ -163,7 +217,11 @@ export default function AdminApplicationDetails() {
 
     const handleViewDocument = async (documentPath) => {
         if (!documentPath) {
-            alert("Document not available.");
+            showToast(
+                "The requested document is not available",
+                "error",
+                "Document Not Available"
+            );
             return;
         }
 
@@ -178,7 +236,11 @@ export default function AdminApplicationDetails() {
 
             const blobUrl = window.URL.createObjectURL(blob);
 
-            window.open(blobUrl, "_blank", "noopener,noreferrer");
+            window.open(
+                blobUrl,
+                "_blank",
+                "noopener,noreferrer"
+            );
 
             setTimeout(() => {
                 URL.revokeObjectURL(blobUrl);
@@ -186,7 +248,12 @@ export default function AdminApplicationDetails() {
 
         } catch (error) {
             console.error("Document View Error:", error);
-            alert("Unable to open document.");
+
+            showToast(
+                "Unable to open the document",
+                "error",
+                "Document Error"
+            );
         }
     };
 
@@ -200,66 +267,156 @@ export default function AdminApplicationDetails() {
 
     return (
         <div className="admin-list-container">
+
             <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-                <button className="back-link-btn" onClick={() => window.history.back()}>
+                <button
+                    className="back-link-btn"
+                    onClick={() => window.history.back()}
+                >
                     ← Back to Applications List
                 </button>
             </div>
 
             <div className="admin-details-container">
-                <h2 className="admin-details-title">Full Student Application</h2>
 
-                {/* Section 1: Basic Information */}
+                <h2 className="admin-details-title">
+                    Full Student Application
+                </h2>
+
+                {/* =====================================================
+                    SECTION 1: BASIC INFORMATION
+                ===================================================== */}
+
                 <div className="details-section">
                     <h3>Basic Information</h3>
+
                     <div className="details-grid">
+
                         <div className="detail-card">
                             <strong>Application Number</strong>
-                           <p>{app.personId ? `APP${app.personId}` : "N/A"}</p>
+                            <p>
+                                {app.personId
+                                    ? `APP${app.personId}`
+                                    : "N/A"}
+                            </p>
                         </div>
-                        <div className="detail-card"><strong>First Name</strong><p>{app.firstName || "N/A"}</p></div>
-                        <div className="detail-card"><strong>Middle Name</strong><p>{app.middleName || "N/A"}</p></div>
-                        <div className="detail-card"><strong>Last Name</strong><p>{app.lastName || "N/A"}</p></div>
-                        <div className="detail-card"><strong>Email Address</strong><p className="app-email">{app.email || "N/A"}</p></div>
-                        <div className="detail-card"><strong>Primary Phone</strong><p>{app.phoneCountryCode} {formatPhoneNumber(app.phone)}</p></div>
-                        <div className="detail-card"><strong>Alternate Phone</strong><p>{app.alternateCountryCode} {app.alternatePhone ? formatPhoneNumber(app.alternatePhone) : "N/A"}</p></div>
+
+                        <div className="detail-card">
+                            <strong>First Name</strong>
+                            <p>{app.firstName || "N/A"}</p>
+                        </div>
+
+                        <div className="detail-card">
+                            <strong>Middle Name</strong>
+                            <p>{app.middleName || "N/A"}</p>
+                        </div>
+
+                        <div className="detail-card">
+                            <strong>Last Name</strong>
+                            <p>{app.lastName || "N/A"}</p>
+                        </div>
+
+                        <div className="detail-card">
+                            <strong>Email Address</strong>
+                            <p className="app-email">
+                                {app.email || "N/A"}
+                            </p>
+                        </div>
+
+                        <div className="detail-card">
+                            <strong>Primary Phone</strong>
+                            <p>
+                                {app.phoneCountryCode}{" "}
+                                {formatPhoneNumber(app.phone)}
+                            </p>
+                        </div>
+
+                        <div className="detail-card">
+                            <strong>Alternate Phone</strong>
+                            <p>
+                                {app.alternateCountryCode}{" "}
+                                {app.alternatePhone
+                                    ? formatPhoneNumber(
+                                          app.alternatePhone
+                                      )
+                                    : "N/A"}
+                            </p>
+                        </div>
+
                     </div>
                 </div>
 
-                {/* Section 5: Visa Details */}
+                {/* =====================================================
+                    VISA DETAILS
+                ===================================================== */}
+
                 <div className="details-section">
                     <h3>Visa & Immigration</h3>
+
                     <div className="details-grid">
+
                         <div className="detail-card">
                             <strong>Visa Type</strong>
                             <p>{app.visaType || "N/A"}</p>
                         </div>
+
                         <div className="detail-card">
                             <strong>EAD Type</strong>
                             <p>{app.eadType || "N/A"}</p>
                         </div>
+
                         <div className="detail-card">
                             <strong>Visa Expiry Date</strong>
                             <p>{app.visaExpiryDate || "N/A"}</p>
                         </div>
+
                     </div>
                 </div>
 
-                {/* Section 4: Address Details */}
+                {/* =====================================================
+                    ADDRESS DETAILS
+                ===================================================== */}
+
                 <div className="details-section">
                     <h3>Address Details</h3>
+
                     <div className="details-grid">
-                        <div className="detail-card"><strong>Street Address</strong><p>{app.addressLine || "N/A"}</p></div>
-                        <div className="detail-card"><strong>City</strong><p>{app.city || "N/A"}</p></div>
-                        <div className="detail-card"><strong>State</strong><p>{app.state || "N/A"}</p></div>
-                        <div className="detail-card"><strong>Country</strong><p>{app.country || "N/A"}</p></div>
-                        <div className="detail-card"><strong>Zipcode</strong><p>{app.zipcode || "N/A"}</p></div>
+
+                        <div className="detail-card">
+                            <strong>Street Address</strong>
+                            <p>{app.addressLine || "N/A"}</p>
+                        </div>
+
+                        <div className="detail-card">
+                            <strong>City</strong>
+                            <p>{app.city || "N/A"}</p>
+                        </div>
+
+                        <div className="detail-card">
+                            <strong>State</strong>
+                            <p>{app.state || "N/A"}</p>
+                        </div>
+
+                        <div className="detail-card">
+                            <strong>Country</strong>
+                            <p>{app.country || "N/A"}</p>
+                        </div>
+
+                        <div className="detail-card">
+                            <strong>Zipcode</strong>
+                            <p>{app.zipcode || "N/A"}</p>
+                        </div>
+
                     </div>
                 </div>
 
-                {/* Section 3: Education Details */}
+                {/* =====================================================
+                    EDUCATION DETAILS
+                ===================================================== */}
+
                 <div className="details-section">
                     <h3>Education Details</h3>
+
                     {app.educations?.length > 0 ? (
                         app.educations.map((edu, index) => (
                             <div
@@ -267,22 +424,35 @@ export default function AdminApplicationDetails() {
                                 className="details-grid"
                                 style={{ marginBottom: "20px" }}
                             >
+
                                 <div className="detail-card">
                                     <strong>Degree</strong>
-                                    <p>{edu.qualification || "N/A"}</p>
+                                    <p>
+                                        {edu.qualification || "N/A"}
+                                    </p>
                                 </div>
+
                                 <div className="detail-card">
                                     <strong>Institute Name</strong>
-                                    <p>{edu.instituteName || "N/A"}</p>
+                                    <p>
+                                        {edu.instituteName || "N/A"}
+                                    </p>
                                 </div>
+
                                 <div className="detail-card">
                                     <strong>Field Of Study</strong>
-                                    <p>{edu.fieldOfStudy || "N/A"}</p>
+                                    <p>
+                                        {edu.fieldOfStudy || "N/A"}
+                                    </p>
                                 </div>
+
                                 <div className="detail-card">
                                     <strong>Passing Year</strong>
-                                    <p>{edu.passingYear || "N/A"}</p>
+                                    <p>
+                                        {edu.passingYear || "N/A"}
+                                    </p>
                                 </div>
+
                             </div>
                         ))
                     ) : (
@@ -290,9 +460,13 @@ export default function AdminApplicationDetails() {
                     )}
                 </div>
 
-                {/* Section 2: Professional Experience */}
+                {/* =====================================================
+                    PROFESSIONAL EXPERIENCE
+                ===================================================== */}
+
                 <div className="details-section">
                     <h3>Professional Experience</h3>
+
                     {app.experiences?.length > 0 ? (
                         app.experiences.map((exp, index) => (
                             <div
@@ -300,22 +474,35 @@ export default function AdminApplicationDetails() {
                                 className="details-grid"
                                 style={{ marginBottom: "20px" }}
                             >
+
                                 <div className="detail-card">
                                     <strong>Company Name</strong>
-                                    <p>{exp.companyName || "N/A"}</p>
+                                    <p>
+                                        {exp.companyName || "N/A"}
+                                    </p>
                                 </div>
+
                                 <div className="detail-card">
                                     <strong>Job Title</strong>
-                                    <p>{exp.designation || "N/A"}</p>
+                                    <p>
+                                        {exp.designation || "N/A"}
+                                    </p>
                                 </div>
+
                                 <div className="detail-card">
                                     <strong>Start Date</strong>
-                                    <p>{exp.startDate || "N/A"}</p>
+                                    <p>
+                                        {exp.startDate || "N/A"}
+                                    </p>
                                 </div>
+
                                 <div className="detail-card">
                                     <strong>End Date</strong>
-                                    <p>{exp.endDate || "Present"}</p>
+                                    <p>
+                                        {exp.endDate || "Present"}
+                                    </p>
                                 </div>
+
                             </div>
                         ))
                     ) : (
@@ -323,101 +510,180 @@ export default function AdminApplicationDetails() {
                     )}
                 </div>
 
-                {/* Section 6: Uploaded Documents */}
+                {/* =====================================================
+                    UPLOADED DOCUMENTS
+                ===================================================== */}
+
                 <div className="details-section">
                     <h3>Uploaded Documents</h3>
+
                     <div className="details-grid">
+
                         <div className="detail-card document-box">
                             <strong>Resume File</strong>
+
                             <p>
                                 {app.resume ? (
                                     <button
                                         type="button"
                                         className="doc-link"
-                                        onClick={() => handleViewDocument(app.resume)}
+                                        onClick={() =>
+                                            handleViewDocument(
+                                                app.resume
+                                            )
+                                        }
                                     >
                                         Open Resume
                                     </button>
                                 ) : (
-                                    <span className="no-doc">Not Provided</span>
+                                    <span className="no-doc">
+                                        Not Provided
+                                    </span>
                                 )}
                             </p>
                         </div>
 
                         <div className="detail-card document-box">
                             <strong>ID Proof</strong>
+
                             <p>
                                 {app.idProof ? (
                                     <button
                                         type="button"
                                         className="doc-link"
-                                        onClick={() => handleViewDocument(app.idProof)}
+                                        onClick={() =>
+                                            handleViewDocument(
+                                                app.idProof
+                                            )
+                                        }
                                     >
                                         Open ID Proof
                                     </button>
                                 ) : (
-                                    <span className="no-doc">Not Provided</span>
+                                    <span className="no-doc">
+                                        Not Provided
+                                    </span>
                                 )}
                             </p>
                         </div>
+
                         <div className="detail-card document-box">
                             <strong>Academic Transcript</strong>
+
                             <p>
                                 {app.transcript ? (
                                     <button
                                         type="button"
                                         className="doc-link"
-                                        onClick={() => handleViewDocument(app.transcript)}
+                                        onClick={() =>
+                                            handleViewDocument(
+                                                app.transcript
+                                            )
+                                        }
                                     >
                                         Open Transcript
                                     </button>
                                 ) : (
-                                    <span className="no-doc">Not Provided</span>
+                                    <span className="no-doc">
+                                        Not Provided
+                                    </span>
                                 )}
                             </p>
                         </div>
+
                     </div>
                 </div>
 
-                {/* System Process Status Bar */}
+                {/* =====================================================
+                    SYSTEM PROCESS STATUS
+                ===================================================== */}
+
                 <div className="status-box">
-                    <span>Application Processing State:</span>
-                    <span className={`status-badge ${getStatusClass(app.applicationStage)}`} style={{ marginLeft: "5px", fontSize: "16px", color: "#4a6be2" }}>
+                    <span>
+                        Application Processing State:
+                    </span>
+
+                    <span
+                        className={`status-badge ${getStatusClass(
+                            app.applicationStage
+                        )}`}
+                        style={{
+                            marginLeft: "5px",
+                            fontSize: "16px",
+                            color: "#4a6be2"
+                        }}
+                    >
                         {app.applicationStage || "PENDING"}
                     </span>
                 </div>
 
-                {/* CUSTOM BATCH DROPDOWN ENROLLMENT PANEL */}
+                {/* =====================================================
+                    CUSTOM BATCH DROPDOWN
+                ===================================================== */}
+
                 <div className="enrollment-panel">
+
                     <h3>Student Enrollment</h3>
-                    <label className="batch-label">Assign Batch</label>
-                    
+
+                    <label className="batch-label">
+                        Assign Batch
+                    </label>
+
                     <div className="custom-batch-dropdown">
+
                         <button
                             type="button"
                             className="batch-dropdown-selected"
-                            onClick={() => setIsBatchDropdownOpen(!isBatchDropdownOpen)}
+                            onClick={() =>
+                                setIsBatchDropdownOpen(
+                                    !isBatchDropdownOpen
+                                )
+                            }
                         >
+
                             {selectedBatchData ? (
                                 <div className="batch-selected-content">
+
                                     <span className="batch-selected-name">
-                                        {selectedBatchData.batchName} ({selectedBatchData.trainerName || "N/A"})
+                                        {selectedBatchData.batchName} (
+                                        {selectedBatchData.trainerName ||
+                                            "N/A"}
+                                        )
                                     </span>
+
                                     <span className="batch-selected-date">
-                                        {formatBatchDate(selectedBatchData.startDate)} → {formatBatchDate(selectedBatchData.endDate)}
+                                        {formatBatchDate(
+                                            selectedBatchData.startDate
+                                        )}{" "}
+                                        →{" "}
+                                        {formatBatchDate(
+                                            selectedBatchData.endDate
+                                        )}
                                     </span>
+
                                 </div>
                             ) : (
-                                <span className="batch-placeholder" style={{fontSize:"15px"}}>Select Batch</span>
+                                <span
+                                    className="batch-placeholder"
+                                    style={{
+                                        fontSize: "15px"
+                                    }}
+                                >
+                                    Select Batch
+                                </span>
                             )}
+
                             <span className="batch-dropdown-arrow">
-                                {isBatchDropdownOpen ? "▲" : "▼"}
+                                {isBatchDropdownOpen
+                                    ? "▲"
+                                    : "▼"}
                             </span>
+
                         </button>
 
-                        {/* DROPDOWN OPTIONS */}
                         {isBatchDropdownOpen && (
                             <div className="batch-dropdown-menu">
+
                                 {batches.length === 0 ? (
                                     <div className="no-batches">
                                         No batches available
@@ -428,55 +694,107 @@ export default function AdminApplicationDetails() {
                                             type="button"
                                             key={batch.batchId}
                                             className={`batch-dropdown-option ${
-                                                String(selectedBatch) === String(batch.batchId)
+                                                String(
+                                                    selectedBatch
+                                                ) ===
+                                                String(
+                                                    batch.batchId
+                                                )
                                                     ? "selected"
                                                     : ""
                                             }`}
                                             onClick={() => {
-                                                setSelectedBatch(String(batch.batchId));
-                                                setIsBatchDropdownOpen(false);
+                                                setSelectedBatch(
+                                                    String(
+                                                        batch.batchId
+                                                    )
+                                                );
+
+                                                setIsBatchDropdownOpen(
+                                                    false
+                                                );
                                             }}
                                         >
+
                                             <div className="batch-option-left">
+
                                                 <span className="batch-option-name">
                                                     {batch.batchName}
                                                 </span>
+
                                                 <span className="batch-option-trainer">
-                                                    Trainer: {batch.trainerName || "N/A"}
+                                                    Trainer:{" "}
+                                                    {batch.trainerName ||
+                                                        "N/A"}
                                                 </span>
+
                                             </div>
 
                                             <div className="batch-option-date">
+
                                                 <span className="batch-date-label">
-                                                    {formatBatchDate(batch.startDate)}
+                                                    {formatBatchDate(
+                                                        batch.startDate
+                                                    )}
                                                 </span>
+
                                                 <span className="batch-date-arrow">
                                                     →
                                                 </span>
+
                                                 <span className="batch-date-label">
-                                                    {formatBatchDate(batch.endDate)}
+                                                    {formatBatchDate(
+                                                        batch.endDate
+                                                    )}
                                                 </span>
+
                                             </div>
+
                                         </button>
                                     ))
                                 )}
+
                             </div>
                         )}
+
                     </div>
                 </div>
 
-                {/* DYNAMIC CONDITIONAL RENDERING CONTROL BLOCK */}
+                {/* =====================================================
+                    CONDITIONAL ACTIONS
+                ===================================================== */}
+
                 {app.applicationStage === "ENROLLED" ? (
+
                     <div className="enrolled-success-box">
-                        <h3> Student Successfully Enrolled</h3>
-                        <p>This application has been verified, approved, and credentials have been granted to the student.</p>
+                        <h3>
+                            Student Successfully Enrolled
+                        </h3>
+
+                        <p>
+                            This application has been verified,
+                            approved, and credentials have been
+                            granted to the student.
+                        </p>
                     </div>
-                ) : app.applicationStage === "RECHECK_REQUIRED" ? (
+
+                ) : app.applicationStage ===
+                  "RECHECK_REQUIRED" ? (
+
                     <div className="recheck-alert-box">
-                        <h3> Sent Back for Audit / Recheck</h3>
-                        <p>This profile is currently locked and awaiting correction guidelines from the applicant student.</p>
+                        <h3>
+                            Sent Back for Audit / Recheck
+                        </h3>
+
+                        <p>
+                            This profile is currently locked
+                            and awaiting correction guidelines
+                            from the applicant student.
+                        </p>
                     </div>
+
                 ) : (
+
                     <div
                         className="action-buttons"
                         style={{
@@ -487,21 +805,27 @@ export default function AdminApplicationDetails() {
                             width: "100%"
                         }}
                     >
+
                         <button
                             className="reject-btn1"
-                            onClick={() => setShowRecheckModal(true)}
+                            onClick={() =>
+                                setShowRecheckModal(true)
+                            }
                             style={{
                                 flex: 1,
                                 height: "46px",
-                                background: "linear-gradient(135deg, #f38383, #e16e6e)",
+                                background:
+                                    "linear-gradient(135deg, #f38383, #e16e6e)",
                                 color: "#fff",
                                 border: "none",
                                 borderRadius: "10px",
                                 fontSize: "14px",
                                 fontWeight: "600",
                                 cursor: "pointer",
-                                boxShadow: "0 4px 12px rgba(239, 68, 68, 0.15)",
-                                transition: "all 0.2s ease",
+                                boxShadow:
+                                    "0 4px 12px rgba(239, 68, 68, 0.15)",
+                                transition:
+                                    "all 0.2s ease",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
@@ -518,15 +842,24 @@ export default function AdminApplicationDetails() {
                             style={{
                                 flex: 1,
                                 height: "46px",
-                                background: !selectedBatch ? "#e2e8f0" : "#226ec5",
-                                color: !selectedBatch ? "#94a3b8" : "#fff",
+                                background: !selectedBatch
+                                    ? "#e2e8f0"
+                                    : "#226ec5",
+                                color: !selectedBatch
+                                    ? "#94a3b8"
+                                    : "#fff",
                                 border: "none",
                                 borderRadius: "10px",
                                 fontSize: "14px",
                                 fontWeight: "600",
-                                cursor: !selectedBatch ? "not-allowed" : "pointer",
-                                boxShadow: !selectedBatch ? "none" : "0 4px 12px rgba(34, 197, 94, 0.15)",
-                                transition: "all 0.2s ease",
+                                cursor: !selectedBatch
+                                    ? "not-allowed"
+                                    : "pointer",
+                                boxShadow: !selectedBatch
+                                    ? "none"
+                                    : "0 4px 12px rgba(34, 197, 94, 0.15)",
+                                transition:
+                                    "all 0.2s ease",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
@@ -535,80 +868,275 @@ export default function AdminApplicationDetails() {
                         >
                             ✓ Approve & Enroll Student
                         </button>
+
                     </div>
                 )}
 
-                {/* Recheck Modal */}
+                {/* =====================================================
+                    ENROLLMENT CONFIRMATION MODAL
+                ===================================================== */}
+
+                {showEnrollConfirm && (
+                    <div
+                        className="recheck-overlay"
+                        onClick={() =>
+                            setShowEnrollConfirm(false)
+                        }
+                    >
+                        <div
+                            className="recheck-modal"
+                            onClick={(e) =>
+                                e.stopPropagation()
+                            }
+                            style={{
+                                maxWidth: "460px",
+                                width: "90%",
+                                textAlign: "center"
+                            }}
+                        >
+
+                            <h3>
+                                Confirm Student Enrollment
+                            </h3>
+
+                            <p
+                                style={{
+                                    marginTop: "15px",
+                                    marginBottom: "22px",
+                                    color: "#475569",
+                                    lineHeight: "1.6"
+                                }}
+                            >
+                                Are you sure you want to enroll
+                                this student?
+                            </p>
+
+                            {selectedBatchData && (
+                                <div
+                                    style={{
+                                        background: "#f8fafc",
+                                        border:
+                                            "1px solid #e2e8f0",
+                                        borderRadius: "8px",
+                                        padding: "12px",
+                                        marginBottom: "20px",
+                                        textAlign: "left"
+                                    }}
+                                >
+                                    <strong>
+                                        Selected Batch
+                                    </strong>
+
+                                    <div
+                                        style={{
+                                            marginTop: "5px",
+                                            color: "#475569"
+                                        }}
+                                    >
+                                        {selectedBatchData.batchName}
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            marginTop: "4px",
+                                            color: "#64748b",
+                                            fontSize: "13px"
+                                        }}
+                                    >
+                                        Trainer:{" "}
+                                        {selectedBatchData.trainerName ||
+                                            "N/A"}
+                                    </div>
+                                </div>
+                            )}
+
+                            <div
+                                style={{
+                                    display: "flex",
+                                    gap: "12px",
+                                    justifyContent: "flex-end",
+                                    marginTop: "18px"
+                                }}
+                            >
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setShowEnrollConfirm(
+                                            false
+                                        )
+                                    }
+                                    style={{
+                                        minWidth: "100px",
+                                        height: "40px",
+                                        border:
+                                            "1px solid #cbd5e1",
+                                        borderRadius: "7px",
+                                        background: "#fff",
+                                        color: "#475569",
+                                        fontWeight: "600",
+                                        cursor: "pointer"
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={
+                                        confirmEnrollment
+                                    }
+                                    style={{
+                                        minWidth: "120px",
+                                        height: "40px",
+                                        border: "none",
+                                        borderRadius: "7px",
+                                        background:
+                                            "#226ec5",
+                                        color: "#fff",
+                                        fontWeight: "600",
+                                        cursor: "pointer"
+                                    }}
+                                >
+                                    Yes, Enroll
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                )}
+
+                {/* =====================================================
+                    RECHECK MODAL
+                ===================================================== */}
+
                 {showRecheckModal && (
                     <div className="recheck-overlay">
+
                         <div className="recheck-modal">
-                            <h3>Recheck Required</h3>
+
+                            <h3>
+                                Recheck Required
+                            </h3>
+
                             <br />
 
                             <label>
                                 <input
                                     type="checkbox"
-                                    onChange={() => handleReasonChange("Invalid Visa Information")}
+                                    onChange={() =>
+                                        handleReasonChange(
+                                            "Invalid Visa Information"
+                                        )
+                                    }
                                 />
                                 Invalid Visa Information
                             </label>
+
                             <br />
 
                             <label>
                                 <input
                                     type="checkbox"
-                                    onChange={() => handleReasonChange("Education Details Need Correction")}
+                                    onChange={() =>
+                                        handleReasonChange(
+                                            "Education Details Need Correction"
+                                        )
+                                    }
                                 />
                                 Education Details Need Correction
                             </label>
+
                             <br />
 
                             <label>
                                 <input
                                     type="checkbox"
-                                    onChange={() => handleReasonChange("Work Experience Details Need Correction")}
+                                    onChange={() =>
+                                        handleReasonChange(
+                                            "Work Experience Details Need Correction"
+                                        )
+                                    }
                                 />
                                 Work Experience Details Need Correction
                             </label>
+
                             <br />
 
                             <label>
                                 <input
                                     type="checkbox"
-                                    onChange={() => handleReasonChange("Document Not Clear")}
+                                    onChange={() =>
+                                        handleReasonChange(
+                                            "Document Not Clear"
+                                        )
+                                    }
                                 />
                                 Document Not Clear
                             </label>
+
                             <br />
 
                             <label>
                                 <input
                                     type="checkbox"
-                                    onChange={() => handleReasonChange("Other")}
+                                    onChange={() =>
+                                        handleReasonChange(
+                                            "Other"
+                                        )
+                                    }
                                 />
                                 Other
                             </label>
 
-                            {selectedReasons.includes("Other") && (
+                            {selectedReasons.includes(
+                                "Other"
+                            ) && (
                                 <textarea
                                     rows="3"
                                     placeholder="Enter custom reason"
                                     value={recheckReason}
-                                    onChange={(e) => setRecheckReason(e.target.value)}
+                                    onChange={(e) =>
+                                        setRecheckReason(
+                                            e.target.value
+                                        )
+                                    }
                                 />
                             )}
 
-                            <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-end', marginTop: '18px' }}>
-                                <button onClick={() => setShowRecheckModal(false)}>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    gap: "16px",
+                                    justifyContent:
+                                        "flex-end",
+                                    marginTop: "18px"
+                                }}
+                            >
+
+                                <button
+                                    onClick={() =>
+                                        setShowRecheckModal(
+                                            false
+                                        )
+                                    }
+                                >
                                     Cancel
                                 </button>
-                                <button onClick={submitRecheck}>
+
+                                <button
+                                    onClick={submitRecheck}
+                                >
                                     Submit
                                 </button>
+
                             </div>
+
                         </div>
                     </div>
                 )}
+
             </div>
         </div>
     );

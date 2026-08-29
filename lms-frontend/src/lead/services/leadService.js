@@ -207,16 +207,69 @@ export const filterLeads = async (filters = {}) => {
 // FILTER INTERESTED LEADS
 // =====================================
 
+// =====================================
+// FILTER INTERESTED LEADS - ADMIN
+// DATE = ACTION PERFORMED DATE
+// =====================================
+
 export const filterInterestedLeads = async (
     filters = {}
 ) => {
 
-  return filterLeads({
-    ...filters,
-    status: "INTERESTED"
-  });
+  const params = {
+    keyword:
+        filters.keyword?.trim() || null,
+
+    counsellorPersonId:
+        filters.counsellorPersonId || null,
+
+    fromDate:
+        filters.fromDate || null,
+
+    toDate:
+        filters.toDate || null
+  };
+
+  const response = await api.get(
+      "/api/leads/interested/filter",
+      {
+        params
+      }
+  );
+
+  return response.data;
 };
 
+
+// =====================================
+// FILTER MY INTERESTED LEADS
+// DATE = ACTION PERFORMED DATE
+// =====================================
+
+export const filterMyInterestedLeads = async (
+    filters = {}
+) => {
+
+  const params = {
+    keyword:
+        filters.keyword?.trim() || null,
+
+    fromDate:
+        filters.fromDate || null,
+
+    toDate:
+        filters.toDate || null
+  };
+
+  const response = await api.get(
+      "/api/leads/my-interested/filter",
+      {
+        params
+      }
+  );
+
+  return response.data;
+};
 
 // =====================================
 // FILTER CONVERTED LEADS
@@ -231,18 +284,64 @@ export const filterConvertedLeads = async (
     status: "CONVERTED"
   });
 };
-
-
 // =====================================
-// FILTER RE-ENGAGEMENT LEADS
+// FILTER RE-ENGAGEMENT LEADS - ADMIN
 // =====================================
 
 export const filterReEngagementLeads = async (
     filters = {}
 ) => {
 
-  return filterLeads({
-    ...filters,
-    status: "RE_ENGAGEMENT"
-  });
+  const params = {
+    keyword:
+        filters.keyword?.trim() || null,
+
+    counsellorPersonId:
+        filters.counsellorPersonId || null,
+
+    fromDate:
+        filters.fromDate || null,
+
+    toDate:
+        filters.toDate || null
+  };
+
+  const response = await api.get(
+      "/api/leads/re-engagement/filter",
+      {
+        params
+      }
+  );
+
+  return response.data;
+};
+
+
+// =====================================
+// FILTER MY RE-ENGAGEMENT LEADS
+// =====================================
+
+export const filterMyReEngagementLeads = async (
+    filters = {}
+) => {
+
+  const params = {
+    keyword:
+        filters.keyword?.trim() || null,
+
+    fromDate:
+        filters.fromDate || null,
+
+    toDate:
+        filters.toDate || null
+  };
+
+  const response = await api.get(
+      "/api/leads/my-re-engagement/filter",
+      {
+        params
+      }
+  );
+
+  return response.data;
 };

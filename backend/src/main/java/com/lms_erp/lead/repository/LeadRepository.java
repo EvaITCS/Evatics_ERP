@@ -15,26 +15,6 @@ import java.util.Optional;
 @Repository
 public interface LeadRepository extends JpaRepository<Lead, Long> {
 
-    // =====================================================
-    // LEAD STATUS
-    // =====================================================
-//
-//    @Query("""
-//        SELECT DISTINCT l
-//        FROM Lead l
-//        JOIN FETCH l.person p
-//        LEFT JOIN FETCH p.contacts pc
-//        LEFT JOIN FETCH pc.contactType
-//        LEFT JOIN FETCH l.leadStatus
-//        LEFT JOIN FETCH l.leadSource
-//        WHERE l.leadStatus = :leadStatus
-//          AND l.isArchived = false
-//        ORDER BY l.createdAt DESC
-//    """)
-//    List<Lead> findByLeadStatus(
-//            @Param("leadStatus")
-//            LeadStatusMaster leadStatus
-//    );
 
     // =====================================================
     // DASHBOARD COUNTS
@@ -57,81 +37,6 @@ public interface LeadRepository extends JpaRepository<Lead, Long> {
             LocalDateTime end
     );
 
-//    // =====================================================
-//    // EMPLOYEE DASHBOARD COUNTS
-//    // =====================================================
-//
-//    @Query("""
-//        SELECT COUNT(la)
-//        FROM LeadAssignment la
-//        WHERE la.employee.personId = :employeePersonId
-//          AND la.isActive = true
-//          AND la.lead.isArchived = false
-//    """)
-//    long countActiveLeadsByEmployee(
-//            @Param("employeePersonId")
-//            Long employeePersonId
-//    );
-//
-//    @Query("""
-//        SELECT COUNT(la)
-//        FROM LeadAssignment la
-//        WHERE la.employee.personId = :employeePersonId
-//          AND la.isActive = true
-//          AND la.lead.isArchived = false
-//          AND la.lead.leadStatus.statusName = :statusName
-//    """)
-//    long countByEmployeeAndStatus(
-//            @Param("employeePersonId")
-//            Long employeePersonId,
-//
-//            @Param("statusName")
-//            String statusName
-//    );
-//
-//    @Query("""
-//        SELECT COUNT(la)
-//        FROM LeadAssignment la
-//        WHERE la.employee.personId = :employeePersonId
-//          AND la.isActive = true
-//          AND la.lead.isArchived = false
-//          AND la.lead.createdAt BETWEEN :start AND :end
-//    """)
-//    long countByEmployeeAndCreatedAtBetween(
-//
-//            @Param("employeePersonId")
-//            Long employeePersonId,
-//
-//            @Param("start")
-//            LocalDateTime start,
-//
-//            @Param("end")
-//            LocalDateTime end
-//    );
-//
-//    @Query("""
-//        SELECT COUNT(la)
-//        FROM LeadAssignment la
-//        WHERE la.employee.personId = :employeePersonId
-//          AND la.isActive = true
-//          AND la.lead.isArchived = false
-//          AND la.lead.leadStatus.statusName = :statusName
-//          AND la.lead.createdAt BETWEEN :start AND :end
-//    """)
-//    long countByEmployeeStatusAndCreatedAtBetween(
-//
-//            @Param("employeePersonId")
-//            Long employeePersonId,
-//
-//            @Param("statusName")
-//            String statusName,
-//
-//            @Param("start")
-//            LocalDateTime start,
-//
-//            @Param("end")
-//            LocalDateTime end
-//    );
 
 
     // =====================================================
@@ -835,5 +740,512 @@ ORDER BY l.createdAt DESC
     List<Lead> findByLeadStatus(
             @Param("leadStatus")
             LeadStatusMaster leadStatus
+    );
+
+
+    // =====================================================
+// FILTER INTERESTED LEADS - ADMIN
+// DATE = ACTION PERFORMED DATE
+// =====================================================
+
+    @Query("""
+    SELECT DISTINCT l
+    FROM Lead l
+
+    JOIN FETCH l.person p
+    LEFT JOIN FETCH p.contacts pc
+    LEFT JOIN FETCH pc.contactType
+    LEFT JOIN FETCH l.leadSource
+    LEFT JOIN FETCH l.leadStatus
+    LEFT JOIN FETCH l.createdBy cb
+    LEFT JOIN FETCH cb.person
+
+    JOIN LeadFollowup f
+      ON f.lead = l
+
+    WHERE l.isArchived = false
+
+      AND l.leadStatus.statusName = 'INTERESTED'
+
+      AND f.actionResult = 'INTERESTED'
+
+      AND f.actionPerformedAt IS NOT NULL
+
+      AND (
+            :start IS NULL
+            OR f.actionPerformedAt >= :start
+      )
+
+      AND (
+            :end IS NULL
+            OR f.actionPerformedAt < :end
+      )
+
+      AND (
+            :keyword IS NULL
+            OR :keyword = ''
+
+            OR LOWER(
+                CONCAT(
+                    COALESCE(p.firstName, ''),
+                    ' ',
+                    COALESCE(p.middleName, ''),
+                    ' ',
+                    COALESCE(p.lastName, '')
+                )
+            ) LIKE LOWER(CONCAT('%', :keyword, '%'))
+
+            OR LOWER(COALESCE(pc.contactValue, ''))
+               LIKE LOWER(CONCAT('%', :keyword, '%'))
+      )
+
+    ORDER BY l.createdAt DESC
+""")
+    List<Lead> filterInterestedLeads(
+            @Param("keyword") String keyword,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
+
+
+    // =====================================================
+// FILTER MY INTERESTED LEADS - COUNSELLOR
+// DATE = ACTION PERFORMED DATE
+// =====================================================
+
+    @Query("""
+    SELECT DISTINCT l
+    FROM LeadAssignment la
+
+    JOIN la.lead l
+
+    JOIN FETCH l.person p
+    LEFT JOIN FETCH p.contacts pc
+    LEFT JOIN FETCH pc.contactType
+    LEFT JOIN FETCH l.leadSource
+    LEFT JOIN FETCH l.leadStatus
+    LEFT JOIN FETCH l.createdBy cb
+    LEFT JOIN FETCH cb.person
+
+    JOIN LeadFollowup f
+      ON f.lead = l
+
+    WHERE la.employee.personId = :employeePersonId
+      AND la.isActive = true
+      AND l.isArchived = false
+      AND l.leadStatus.statusName = 'INTERESTED'
+      AND f.actionResult = 'INTERESTED'
+      AND f.actionPerformedAt IS NOT NULL
+
+      AND (
+            :start IS NULL
+            OR f.actionPerformedAt >= :start
+      )
+
+      AND (
+            :end IS NULL
+            OR f.actionPerformedAt < :end
+      )
+
+      AND (
+            :keyword IS NULL
+            OR :keyword = ''
+
+            OR LOWER(
+                CONCAT(
+                    COALESCE(p.firstName, ''),
+                    ' ',
+                    COALESCE(p.middleName, ''),
+                    ' ',
+                    COALESCE(p.lastName, '')
+                )
+            ) LIKE LOWER(CONCAT('%', :keyword, '%'))
+
+            OR LOWER(COALESCE(pc.contactValue, ''))
+               LIKE LOWER(CONCAT('%', :keyword, '%'))
+      )
+
+    ORDER BY l.createdAt DESC
+""")
+    List<Lead> filterMyInterestedLeads(
+            @Param("employeePersonId")
+            Long employeePersonId,
+
+            @Param("keyword")
+            String keyword,
+
+            @Param("start")
+            LocalDateTime start,
+
+            @Param("end")
+            LocalDateTime end
+    );
+
+    // =====================================================
+// FILTER RE-ENGAGEMENT LEADS - ADMIN
+//
+// DATE FILTER = FOLLOW-UP ACTION PERFORMED DATE
+//
+// Includes:
+// 1. NOT_INTERESTED leads having re-engagement date
+// 2. RE_ENGAGEMENT actions already performed
+// =====================================================
+
+    @Query("""
+    SELECT DISTINCT l
+    FROM Lead l
+
+    JOIN FETCH l.person p
+
+    LEFT JOIN FETCH p.contacts pc
+    LEFT JOIN FETCH pc.contactType
+
+    LEFT JOIN FETCH l.leadSource
+    LEFT JOIN FETCH l.leadStatus
+
+    LEFT JOIN FETCH l.createdBy cb
+    LEFT JOIN FETCH cb.person
+
+    JOIN LeadFollowup f
+      ON f.lead = l
+
+    WHERE l.isArchived = false
+
+      AND (
+            (
+                l.leadStatus.statusName = 'NOT_INTERESTED'
+                AND l.reEngagementDate IS NOT NULL
+                AND f.actionResult = 'NOT_INTERESTED'
+            )
+
+            OR
+
+            (
+                l.leadStatus.statusName = 'RE_ENGAGEMENT'
+                AND f.actionResult = 'RE_ENGAGEMENT'
+            )
+      )
+
+      AND f.actionPerformedAt IS NOT NULL
+
+      AND (
+            :start IS NULL
+            OR f.actionPerformedAt >= :start
+      )
+
+      AND (
+            :end IS NULL
+            OR f.actionPerformedAt < :end
+      )
+
+      AND (
+            :counsellorPersonId IS NULL
+
+            OR EXISTS (
+                SELECT 1
+                FROM LeadAssignment la
+                WHERE la.lead = l
+                  AND la.employee.personId = :counsellorPersonId
+                  AND la.isActive = true
+            )
+      )
+
+      AND (
+            :keyword IS NULL
+            OR :keyword = ''
+
+            OR LOWER(
+                CONCAT(
+                    COALESCE(p.firstName, ''),
+                    ' ',
+                    COALESCE(p.middleName, ''),
+                    ' ',
+                    COALESCE(p.lastName, '')
+                )
+            ) LIKE LOWER(
+                CONCAT('%', :keyword, '%')
+            )
+
+            OR LOWER(
+                COALESCE(pc.contactValue, '')
+            ) LIKE LOWER(
+                CONCAT('%', :keyword, '%')
+            )
+      )
+
+    ORDER BY l.reEngagementDate ASC
+""")
+    List<Lead> filterReEngagementLeads(
+
+            @Param("counsellorPersonId")
+            Long counsellorPersonId,
+
+            @Param("keyword")
+            String keyword,
+
+            @Param("start")
+            LocalDateTime start,
+
+            @Param("end")
+            LocalDateTime end
+    );
+
+    // =====================================================
+// FILTER MY RE-ENGAGEMENT LEADS - COUNSELLOR
+//
+// DATE FILTER = FOLLOW-UP ACTION PERFORMED DATE
+// =====================================================
+
+    @Query("""
+    SELECT DISTINCT l
+    FROM LeadAssignment la
+
+    JOIN la.lead l
+
+    JOIN FETCH l.person p
+
+    LEFT JOIN FETCH p.contacts pc
+    LEFT JOIN FETCH pc.contactType
+
+    LEFT JOIN FETCH l.leadSource
+    LEFT JOIN FETCH l.leadStatus
+
+    LEFT JOIN FETCH l.createdBy cb
+    LEFT JOIN FETCH cb.person
+
+    JOIN LeadFollowup f
+      ON f.lead = l
+
+    WHERE la.employee.personId = :employeePersonId
+
+      AND la.isActive = true
+
+      AND l.isArchived = false
+
+      AND (
+            (
+                l.leadStatus.statusName = 'NOT_INTERESTED'
+                AND l.reEngagementDate IS NOT NULL
+                AND f.actionResult = 'NOT_INTERESTED'
+            )
+
+            OR
+
+            (
+                l.leadStatus.statusName = 'RE_ENGAGEMENT'
+                AND f.actionResult = 'RE_ENGAGEMENT'
+            )
+      )
+
+      AND f.actionPerformedAt IS NOT NULL
+
+      AND (
+            :start IS NULL
+            OR f.actionPerformedAt >= :start
+      )
+
+      AND (
+            :end IS NULL
+            OR f.actionPerformedAt < :end
+      )
+
+      AND (
+            :keyword IS NULL
+            OR :keyword = ''
+
+            OR LOWER(
+                CONCAT(
+                    COALESCE(p.firstName, ''),
+                    ' ',
+                    COALESCE(p.middleName, ''),
+                    ' ',
+                    COALESCE(p.lastName, '')
+                )
+            ) LIKE LOWER(
+                CONCAT('%', :keyword, '%')
+            )
+
+            OR LOWER(
+                COALESCE(pc.contactValue, '')
+            ) LIKE LOWER(
+                CONCAT('%', :keyword, '%')
+            )
+      )
+
+    ORDER BY l.reEngagementDate ASC
+""")
+    List<Lead> filterMyReEngagementLeads(
+
+            @Param("employeePersonId")
+            Long employeePersonId,
+
+            @Param("keyword")
+            String keyword,
+
+            @Param("start")
+            LocalDateTime start,
+
+            @Param("end")
+            LocalDateTime end
+    );
+
+    // =====================================================
+// ANALYTICS - ACTION PERFORMED DATE
+// =====================================================
+//
+// Status count is based on the follow-up action date,
+// NOT the lead creation date.
+//
+// Example:
+// Lead created       = 20 Aug
+// NOT_INTERESTED     = 27 Aug
+//
+// Analytics 27 Aug  = NOT_INTERESTED count = 1
+// =====================================================
+
+
+// =====================================================
+// COUNSELLOR - STATUS COUNT BY ACTION DATE
+// =====================================================
+
+    @Query("""
+    SELECT COUNT(DISTINCT l.personId)
+    FROM Lead l
+
+    JOIN LeadFollowup f
+      ON f.lead = l
+
+    WHERE l.isArchived = false
+
+      AND f.actionResult = :actionResult
+
+      AND f.actionPerformedAt IS NOT NULL
+
+      AND f.actionPerformedAt >= :start
+      AND f.actionPerformedAt < :end
+
+      AND (
+            l.createdBy.personId = :employeePersonId
+
+            OR EXISTS (
+                SELECT 1
+                FROM LeadAssignment la
+                WHERE la.lead = l
+                  AND la.employee.personId = :employeePersonId
+                  AND la.isActive = true
+            )
+      )
+""")
+    long countCounsellorActionByDate(
+            @Param("employeePersonId")
+            Long employeePersonId,
+
+            @Param("actionResult")
+            String actionResult,
+
+            @Param("start")
+            LocalDateTime start,
+
+            @Param("end")
+            LocalDateTime end
+    );
+
+
+// =====================================================
+// ADMIN - STATUS COUNT BY ACTION DATE
+// =====================================================
+
+    @Query("""
+    SELECT COUNT(DISTINCT l.personId)
+    FROM Lead l
+
+    JOIN LeadFollowup f
+      ON f.lead = l
+
+    WHERE l.isArchived = false
+
+      AND f.actionResult = :actionResult
+
+      AND f.actionPerformedAt IS NOT NULL
+
+      AND f.actionPerformedAt >= :start
+      AND f.actionPerformedAt < :end
+""")
+    long countActionByDate(
+            @Param("actionResult")
+            String actionResult,
+
+            @Param("start")
+            LocalDateTime start,
+
+            @Param("end")
+            LocalDateTime end
+    );
+
+    // =====================================================
+// ADMIN - ALL ACTION LEADS COUNT BY ACTION DATE
+// =====================================================
+
+    @Query("""
+    SELECT COUNT(DISTINCT l.personId)
+    FROM Lead l
+
+    JOIN LeadFollowup f
+      ON f.lead = l
+
+    WHERE l.isArchived = false
+
+      AND f.actionPerformedAt IS NOT NULL
+
+      AND f.actionPerformedAt >= :start
+      AND f.actionPerformedAt < :end
+""")
+    long countAllActionLeadsByDate(
+            @Param("start")
+            LocalDateTime start,
+
+            @Param("end")
+            LocalDateTime end
+    );
+
+    // =====================================================
+// COUNSELLOR - ALL ACTION LEADS COUNT BY ACTION DATE
+// =====================================================
+
+    @Query("""
+    SELECT COUNT(DISTINCT l.personId)
+    FROM Lead l
+
+    JOIN LeadFollowup f
+      ON f.lead = l
+
+    WHERE l.isArchived = false
+
+      AND f.actionPerformedAt IS NOT NULL
+
+      AND f.actionPerformedAt >= :start
+      AND f.actionPerformedAt < :end
+
+      AND (
+            l.createdBy.personId = :employeePersonId
+
+            OR EXISTS (
+                SELECT 1
+                FROM LeadAssignment la
+                WHERE la.lead = l
+                  AND la.employee.personId = :employeePersonId
+                  AND la.isActive = true
+            )
+      )
+""")
+    long countCounsellorAllActionLeadsByDate(
+            @Param("employeePersonId")
+            Long employeePersonId,
+
+            @Param("start")
+            LocalDateTime start,
+
+            @Param("end")
+            LocalDateTime end
     );
 }

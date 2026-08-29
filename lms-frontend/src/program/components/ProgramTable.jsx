@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/program.css";
+
 
 export default function ProgramTable({ programs, onDeleteProgram }) {
     const navigate = useNavigate();

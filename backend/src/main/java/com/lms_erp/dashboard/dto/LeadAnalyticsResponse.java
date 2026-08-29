@@ -14,6 +14,8 @@ public class LeadAnalyticsResponse {
 
     private Long interestedLeads;
 
+    private Long notInterestedLeads;
+
     private Long convertedLeads;
 
     private Long callbackLeads;

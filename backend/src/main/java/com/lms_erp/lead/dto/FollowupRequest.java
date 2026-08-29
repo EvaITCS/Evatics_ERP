@@ -4,6 +4,8 @@ import com.lms_erp.lead.enums.FollowupType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class FollowupRequest {
 
@@ -40,4 +42,10 @@ public class FollowupRequest {
     // =====================================================
 
     private String remarks;
+
+    // =====================================================
+    // RE-ENGAGEMENT DATE
+    // =====================================================
+
+    private LocalDateTime reEngagementDate;
 }

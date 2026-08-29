@@ -306,25 +306,7 @@ function VisaSection({
             })}
 
 
-            {/* ===================================================== */}
-            {/* ADD VISA */}
-            {/* ===================================================== */}
 
-            <div
-                style={{
-                    gridColumn: "span 3",
-                }}
-            >
-
-                <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={addVisa}
-                >
-                    + Add Visa
-                </button>
-
-            </div>
 
         </div>
 </>

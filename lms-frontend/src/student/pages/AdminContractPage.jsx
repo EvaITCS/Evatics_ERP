@@ -3,11 +3,20 @@ import React, {
     useRef,
     useState
 } from "react";
+
 import api from "../../api/axios";
 import batchService from "../../batch/services/batchService";
 import contractService from "../services/contractService";
+import { useToast } from "../../shared/components/ToastContext";
 
 export default function AdminContractPage() {
+
+    // =========================================================
+    // GLOBAL TOAST
+    // =========================================================
+
+    const { showToast } = useToast();
+
 
     // =========================================================
     // STATE
@@ -29,12 +38,6 @@ export default function AdminContractPage() {
     const [isUploading, setIsUploading] =
         useState(false);
 
-    const [error, setError] =
-        useState("");
-
-    const [success, setSuccess] =
-        useState("");
-
     const fileInputRef = useRef(null);
 
 
@@ -43,9 +46,7 @@ export default function AdminContractPage() {
     // =========================================================
 
     useEffect(() => {
-
         loadData();
-
     }, []);
 
 
@@ -54,7 +55,6 @@ export default function AdminContractPage() {
         try {
 
             setIsLoading(true);
-            setError("");
 
             const [
                 batchResponse,
@@ -82,14 +82,17 @@ export default function AdminContractPage() {
                 err
             );
 
-            setError(
+            showToast(
                 err?.response?.data?.message ||
-                "Unable to load contract data."
+                "Unable to load contract data.",
+                "error",
+                "Loading Failed"
             );
 
         } finally {
 
             setIsLoading(false);
+
         }
     };
 
@@ -103,9 +106,6 @@ export default function AdminContractPage() {
         const file =
             event.target.files?.[0];
 
-        setError("");
-        setSuccess("");
-
         if (!file) {
 
             setSelectedFile(null);
@@ -113,8 +113,9 @@ export default function AdminContractPage() {
             return;
         }
 
+
         // -----------------------------------------------------
-        // PDF only
+        // PDF ONLY
         // -----------------------------------------------------
 
         const fileName =
@@ -122,8 +123,10 @@ export default function AdminContractPage() {
 
         if (!fileName.endsWith(".pdf")) {
 
-            setError(
-                "Only PDF files are allowed."
+            showToast(
+                "Only PDF files are allowed.",
+                "error",
+                "Invalid File"
             );
 
             event.target.value = "";
@@ -133,8 +136,9 @@ export default function AdminContractPage() {
             return;
         }
 
+
         // -----------------------------------------------------
-        // 5 MB limit
+        // 5 MB LIMIT
         // -----------------------------------------------------
 
         const maxSize =
@@ -142,8 +146,10 @@ export default function AdminContractPage() {
 
         if (file.size > maxSize) {
 
-            setError(
-                "Contract PDF must not exceed 5 MB."
+            showToast(
+                "Contract PDF must not exceed 5 MB.",
+                "error",
+                "File Too Large"
             );
 
             event.target.value = "";
@@ -163,38 +169,42 @@ export default function AdminContractPage() {
 
     const handleUpload = async () => {
 
-        setError("");
-        setSuccess("");
-
         // -----------------------------------------------------
-        // Validate batch
+        // VALIDATE BATCH
         // -----------------------------------------------------
 
         if (!selectedBatchId) {
 
-            setError(
-                "Please select a batch."
+            showToast(
+                "Please select a batch.",
+                "error",
+                "Batch Required"
             );
 
             return;
         }
 
+
         // -----------------------------------------------------
-        // Validate file
+        // VALIDATE FILE
         // -----------------------------------------------------
 
         if (!selectedFile) {
 
-            setError(
-                "Please select a contract PDF."
+            showToast(
+                "Please select a contract PDF.",
+                "error",
+                "Contract Required"
             );
 
             return;
         }
 
+
         try {
 
             setIsUploading(true);
+
 
             const response =
                 await contractService.uploadContract(
@@ -202,8 +212,9 @@ export default function AdminContractPage() {
                     selectedFile
                 );
 
+
             // -------------------------------------------------
-            // Add newly uploaded contract to list
+            // ADD NEWLY UPLOADED CONTRACT
             // -------------------------------------------------
 
             if (response.data) {
@@ -216,8 +227,9 @@ export default function AdminContractPage() {
                 );
             }
 
+
             // -------------------------------------------------
-            // Reset form
+            // RESET FORM
             // -------------------------------------------------
 
             setSelectedBatchId("");
@@ -227,11 +239,20 @@ export default function AdminContractPage() {
             if (fileInputRef.current) {
 
                 fileInputRef.current.value = "";
+
             }
 
-            setSuccess(
-                "Contract uploaded successfully."
+
+            // -------------------------------------------------
+            // SUCCESS TOAST
+            // -------------------------------------------------
+
+            showToast(
+                "Contract uploaded successfully.",
+                "success",
+                "Contract Uploaded"
             );
+
 
         } catch (err) {
 
@@ -240,14 +261,18 @@ export default function AdminContractPage() {
                 err
             );
 
-            setError(
+
+            showToast(
                 err?.response?.data?.message ||
-                "Failed to upload contract."
+                "Failed to upload contract.",
+                "error",
+                "Upload Failed"
             );
 
         } finally {
 
             setIsUploading(false);
+
         }
     };
 
@@ -255,43 +280,80 @@ export default function AdminContractPage() {
     // =========================================================
     // VIEW CONTRACT
     // =========================================================
-const handleViewContract = async (contractId) => {
-    if (!contractId) {
-        setError("Contract is not available.");
-        return;
-    }
 
-    try {
-        setError("");
+    const handleViewContract = async (contractId) => {
 
-        const response = await api.get(
-            `/api/admin/contracts/${contractId}/file`,
-            { responseType: "blob" }
-        );
+        if (!contractId) {
 
-        const fileUrl = window.URL.createObjectURL(
-            new Blob([response.data], {
-                type: response.headers["content-type"] || "application/pdf"
-            })
-        );
+            showToast(
+                "Contract is not available.",
+                "error",
+                "Contract Not Available"
+            );
 
-        window.open(fileUrl, "_blank", "noopener,noreferrer");
+            return;
+        }
 
-        setTimeout(() => {
-            window.URL.revokeObjectURL(fileUrl);
-        }, 60000);
 
-    } catch (err) {
-        console.error("Failed to open contract:", err);
+        try {
 
-        setError(
-            err?.response?.status === 401 ||
-            err?.response?.status === 403
-                ? "You are not authorized to view this contract."
-                : "Unable to open contract PDF."
-        );
-    }
-};
+            const response =
+                await api.get(
+                    `/api/admin/contracts/${contractId}/file`,
+                    {
+                        responseType: "blob"
+                    }
+                );
+
+
+            const fileUrl =
+                window.URL.createObjectURL(
+                    new Blob(
+                        [response.data],
+                        {
+                            type:
+                                response.headers["content-type"] ||
+                                "application/pdf"
+                        }
+                    )
+                );
+
+
+            window.open(
+                fileUrl,
+                "_blank",
+                "noopener,noreferrer"
+            );
+
+
+            setTimeout(() => {
+
+                window.URL.revokeObjectURL(
+                    fileUrl
+                );
+
+            }, 60000);
+
+
+        } catch (err) {
+
+            console.error(
+                "Failed to open contract:",
+                err
+            );
+
+
+            showToast(
+                err?.response?.status === 401 ||
+                err?.response?.status === 403
+                    ? "You are not authorized to view this contract."
+                    : "Unable to open contract PDF.",
+                "error",
+                "Unable to Open Contract"
+            );
+        }
+    };
+
 
     // =========================================================
     // LOADING
@@ -302,10 +364,14 @@ const handleViewContract = async (contractId) => {
         return (
             <div style={{ padding: "10px" }}>
 
-                <div style={{ padding: "40px 20px", textAlign: "center", color: "#6b7280" }}>
-
+                <div
+                    style={{
+                        padding: "40px 20px",
+                        textAlign: "center",
+                        color: "#6b7280"
+                    }}
+                >
                     Loading contracts...
-
                 </div>
 
             </div>
@@ -329,7 +395,12 @@ const handleViewContract = async (contractId) => {
 
                 <div>
 
-                    <h2 style={{ margin: 0, fontSize: "24px" }}>
+                    <h2
+                        style={{
+                            margin: 0,
+                            fontSize: "24px"
+                        }}
+                    >
                         Contracts
                     </h2>
 
@@ -342,19 +413,32 @@ const handleViewContract = async (contractId) => {
                 UPLOAD SECTION
             ================================================= */}
 
-            <div style={{
-                background: "#ffffff",
-                border: "1px solid #e5e7eb",
-                borderRadius: "10px",
-                padding: "24px",
-                marginBottom: "24px"
-            }}>
+            <div
+                style={{
+                    background: "#ffffff",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "10px",
+                    padding: "24px",
+                    marginBottom: "24px"
+                }}
+            >
 
-                <h3 style={{ margin: 0, fontSize: "18px" }}>
+                <h3
+                    style={{
+                        margin: 0,
+                        fontSize: "18px"
+                    }}
+                >
                     Upload Contract
                 </h3>
 
-                <p style={{ margin: "6px 0 20px", color: "#6b7280" }}>
+
+                <p
+                    style={{
+                        margin: "6px 0 20px",
+                        color: "#6b7280"
+                    }}
+                >
                     Select a training batch and
                     upload its contract as a PDF.
                 </p>
@@ -366,11 +450,17 @@ const handleViewContract = async (contractId) => {
 
                 <div style={{ marginBottom: "18px" }}>
 
-                    <label htmlFor="contract-batch" style={{ display: "block", marginBottom: "7px", fontWeight: 600 }}>
-
+                    <label
+                        htmlFor="contract-batch"
+                        style={{
+                            display: "block",
+                            marginBottom: "7px",
+                            fontWeight: 600
+                        }}
+                    >
                         Batch
-
                     </label>
+
 
                     <select
                         id="contract-batch"
@@ -396,6 +486,7 @@ const handleViewContract = async (contractId) => {
                             Select Batch
                         </option>
 
+
                         {batches.map((batch) => (
 
                             <option
@@ -418,11 +509,17 @@ const handleViewContract = async (contractId) => {
 
                 <div style={{ marginBottom: "18px" }}>
 
-                    <label htmlFor="contract-file" style={{ display: "block", marginBottom: "7px", fontWeight: 600 }}>
-
+                    <label
+                        htmlFor="contract-file"
+                        style={{
+                            display: "block",
+                            marginBottom: "7px",
+                            fontWeight: 600
+                        }}
+                    >
                         Contract PDF
-
                     </label>
+
 
                     <input
                         ref={fileInputRef}
@@ -440,12 +537,17 @@ const handleViewContract = async (contractId) => {
                         }}
                     />
 
+
                     {selectedFile && (
 
-                        <div style={{ marginTop: "8px", fontSize: "14px", color: "#374151" }}>
-
+                        <div
+                            style={{
+                                marginTop: "8px",
+                                fontSize: "14px",
+                                color: "#374151"
+                            }}
+                        >
                             {selectedFile.name}
-
                         </div>
 
                     )}
@@ -454,81 +556,38 @@ const handleViewContract = async (contractId) => {
 
 
                 {/* =================================================
-                    ERROR
-                ================================================= */}
-
-                {error && (
-
-                    <div style={{
-                        marginTop: "12px",
-                        padding: "10px 12px",
-                        borderRadius: "6px",
-                        fontSize: "14px",
-                        background: "#fef2f2",
-                        color: "#b91c1c"
-                    }}>
-
-                        {error}
-
-                    </div>
-
-                )}
-
-
-                {/* =================================================
-                    SUCCESS
-                ================================================= */}
-
-                {success && (
-
-                    <div style={{
-                        marginTop: "12px",
-                        padding: "10px 12px",
-                        borderRadius: "6px",
-                        fontSize: "14px",
-                        background: "#f0fdf4",
-                        color: "#15803d"
-                    }}>
-
-                        {success}
-
-                    </div>
-
-                )}
-
-
-                {/* =================================================
                     UPLOAD BUTTON
                 ================================================= */}
 
                 <div style={{ marginTop: "20px" }}>
 
-                        <button
-                            type="button"
-                            onClick={handleUpload}
-                            disabled={isUploading}
-                            style={{
-                                border: "none",
+                    <button
+                        type="button"
+                        onClick={handleUpload}
+                        disabled={isUploading}
+                        style={{
+                            border: "none",
                             borderRadius: "6px",
-                            cursor: isUploading ? "not-allowed" : "pointer",
+                            cursor: isUploading
+                                ? "not-allowed"
+                                : "pointer",
                             fontWeight: 600,
                             padding: "11px 20px",
                             background: isUploading
                                 ? "#93c5fd"
                                 : "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
                             color: "#ffffff",
-                            boxShadow: "0 4px 6px -1px rgba(37, 99, 235, 0.25)",
+                            boxShadow:
+                                "0 4px 6px -1px rgba(37, 99, 235, 0.25)",
                             opacity: isUploading ? 0.7 : 1,
                             transition: "all 0.2s ease"
-                            }}
-                        >
-
-                            {isUploading
-                                ? "Uploading..."
-                                : "Upload Contract"
-                            }
-
-                        </button>
+                        }}
+                    >
+                        {isUploading
+                            ? "Uploading..."
+                            : "Upload Contract"
+                        }
+                    </button>
 
                 </div>
 
@@ -539,64 +598,109 @@ const handleViewContract = async (contractId) => {
                 CONTRACT LIST
             ================================================= */}
 
-            <div style={{
-                background: "#ffffff",
-                border: "1px solid #e5e7eb",
-                borderRadius: "10px",
-                padding: "24px",
-                marginBottom: "24px"
-            }}>
+            <div
+                style={{
+                    background: "#ffffff",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "10px",
+                    padding: "24px",
+                    marginBottom: "24px"
+                }}
+            >
 
                 <div style={{ marginBottom: "16px" }}>
 
-                    <div>
-
-                        <h3 style={{ margin: 0, fontSize: "18px" }}>
-                            Uploaded Contracts
-                        </h3>
-
-
-                    </div>
+                    <h3
+                        style={{
+                            margin: 0,
+                            fontSize: "18px"
+                        }}
+                    >
+                        Uploaded Contracts
+                    </h3>
 
                 </div>
 
 
                 {contracts.length === 0 ? (
 
-                    <div style={{ padding: "40px 20px", textAlign: "center", color: "#6b7280" }}>
-
+                    <div
+                        style={{
+                            padding: "40px 20px",
+                            textAlign: "center",
+                            color: "#6b7280"
+                        }}
+                    >
                         No contracts have been
                         uploaded yet.
-
                     </div>
 
                 ) : (
 
                     <div style={{ overflowX: "auto" }}>
 
-                        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                        <table
+                            style={{
+                                width: "100%",
+                                borderCollapse: "collapse"
+                            }}
+                        >
 
                             <thead>
 
                                 <tr>
 
-                                    <th style={{ padding: "13px 12px", textAlign: "left", borderBottom: "1px solid #e5e7eb", fontSize: "13px", fontWeight: 600 }}>
+                                    <th style={{
+                                        padding: "13px 12px",
+                                        textAlign: "left",
+                                        borderBottom: "1px solid #e5e7eb",
+                                        fontSize: "13px",
+                                        fontWeight: 600
+                                    }}>
                                         Batch
                                     </th>
 
-                                    <th style={{ padding: "13px 12px", textAlign: "left", borderBottom: "1px solid #e5e7eb", fontSize: "13px", fontWeight: 600 }}>
+
+                                    <th style={{
+                                        padding: "13px 12px",
+                                        textAlign: "left",
+                                        borderBottom: "1px solid #e5e7eb",
+                                        fontSize: "13px",
+                                        fontWeight: 600
+                                    }}>
                                         Contract
                                     </th>
 
-                                    <th style={{ padding: "13px 12px", textAlign: "left", borderBottom: "1px solid #e5e7eb", fontSize: "13px", fontWeight: 600 }}>
+
+                                    <th style={{
+                                        padding: "13px 12px",
+                                        textAlign: "left",
+                                        borderBottom: "1px solid #e5e7eb",
+                                        fontSize: "13px",
+                                        fontWeight: 600
+                                    }}>
                                         Uploaded
                                     </th>
 
-                                    <th style={{ padding: "13px 12px", textAlign: "left", borderBottom: "1px solid #e5e7eb", fontSize: "13px", fontWeight: 600 }}>
+
+                                    <th style={{
+                                        padding: "13px 12px",
+                                        textAlign: "left",
+                                        borderBottom: "1px solid #e5e7eb",
+                                        fontSize: "13px",
+                                        fontWeight: 600
+                                    }}>
                                         Status
                                     </th>
 
-                                    <th style={{ padding: "13px 12px", textAlign: "left", borderBottom: "1px solid #e5e7eb", fontSize: "13px", fontWeight: 600 }}>
+
+                                    <th style={{
+                                        padding: "13px 12px",
+                                        textAlign: "left",
+                                        borderBottom: "1px solid #e5e7eb",
+                                        fontSize: "13px",
+                                        fontWeight: 600
+                                    }}>
                                         Action
                                     </th>
 
@@ -604,13 +708,23 @@ const handleViewContract = async (contractId) => {
 
                             </thead>
 
+
                             <tbody>
 
                                 {contracts.map(
                                     (contract) => {
-                                        const statusLower = String(contract.status).toLowerCase();
-                                        const isStatusActive = statusLower === "active";
-                                        const isStatusInactive = statusLower === "inactive";
+
+                                        const statusLower =
+                                            String(
+                                                contract.status
+                                            ).toLowerCase();
+
+                                        const isStatusActive =
+                                            statusLower === "active";
+
+                                        const isStatusInactive =
+                                            statusLower === "inactive";
+
 
                                         return (
 
@@ -620,25 +734,41 @@ const handleViewContract = async (contractId) => {
                                                 }
                                             >
 
-                                                <td style={{ padding: "13px 12px", textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
+                                                <td style={{
+                                                    padding: "13px 12px",
+                                                    textAlign: "left",
+                                                    borderBottom: "1px solid #e5e7eb"
+                                                }}>
                                                     {
                                                         contract.batchName
                                                     }
                                                 </td>
 
-                                                <td style={{ padding: "13px 12px", textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
 
-                                                    <span style={{ fontWeight: 500 }}>
+                                                <td style={{
+                                                    padding: "13px 12px",
+                                                    textAlign: "left",
+                                                    borderBottom: "1px solid #e5e7eb"
+                                                }}>
 
+                                                    <span
+                                                        style={{
+                                                            fontWeight: 500
+                                                        }}
+                                                    >
                                                         {
                                                             contract.fileName
                                                         }
-
                                                     </span>
 
                                                 </td>
 
-                                                <td style={{ padding: "13px 12px", textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
+
+                                                <td style={{
+                                                    padding: "13px 12px",
+                                                    textAlign: "left",
+                                                    borderBottom: "1px solid #e5e7eb"
+                                                }}>
 
                                                     {
                                                         contract.uploadedAt
@@ -650,7 +780,12 @@ const handleViewContract = async (contractId) => {
 
                                                 </td>
 
-                                                <td style={{ padding: "13px 12px", textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
+
+                                                <td style={{
+                                                    padding: "13px 12px",
+                                                    textAlign: "left",
+                                                    borderBottom: "1px solid #e5e7eb"
+                                                }}>
 
                                                     <span
                                                         style={{
@@ -659,20 +794,29 @@ const handleViewContract = async (contractId) => {
                                                             borderRadius: "20px",
                                                             fontSize: "12px",
                                                             fontWeight: 600,
-                                                            background: isStatusActive ? "#ecfdf5" : isStatusInactive ? "#f3f4f6" : "#f3f4f6",
-                                                            color: isStatusActive ? "#047857" : isStatusInactive ? "#6b7280" : "#6b7280"
+                                                            background:
+                                                                isStatusActive
+                                                                    ? "#ecfdf5"
+                                                                    : "#f3f4f6",
+                                                            color:
+                                                                isStatusActive
+                                                                    ? "#047857"
+                                                                    : "#6b7280"
                                                         }}
                                                     >
-
                                                         {
                                                             contract.status
                                                         }
-
                                                     </span>
 
                                                 </td>
 
-                                                <td style={{ padding: "13px 12px", textAlign: "left", borderBottom: "1px solid #e5e7eb" }}>
+
+                                                <td style={{
+                                                    padding: "13px 12px",
+                                                    textAlign: "left",
+                                                    borderBottom: "1px solid #e5e7eb"
+                                                }}>
 
                                                     <button
                                                         type="button"
@@ -689,9 +833,7 @@ const handleViewContract = async (contractId) => {
                                                             )
                                                         }
                                                     >
-
                                                         View PDF
-
                                                     </button>
 
                                                 </td>

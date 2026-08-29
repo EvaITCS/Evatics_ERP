@@ -3,10 +3,11 @@ import {
     changePassword,
     changePasswordByInvitation
 } from "../../user/service/userService";
-
+import { useToast } from "../../shared/components/ToastContext";
 import "../styles/Password.css";
 
 export default function ChangePasswordCard({ token = null, onSuccess }) {
+    const { showToast } = useToast();
     const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -22,35 +23,38 @@ export default function ChangePasswordCard({ token = null, onSuccess }) {
 
         if (loading) return;
 
-        if (!currentPassword.trim()) {
-            alert("Please enter your current password");
-            return;
-        }
+       if (!currentPassword.trim()) {
+    showToast("Please enter your current password", "error");
+    return;
+}
 
-        if (!newPassword.trim()) {
-            alert("Please enter your new password");
-            return;
-        }
+if (!newPassword.trim()) {
+    showToast("Please enter your new password", "error");
+    return;
+}
 
-        if (newPassword.length < 6) {
-            alert("Password must be at least 6 characters");
-            return;
-        }
+if (newPassword.length < 6) {
+    showToast("Password must be at least 6 characters", "error");
+    return;
+}
 
-        if (!confirmPassword.trim()) {
-            alert("Please confirm your new password");
-            return;
-        }
+if (!confirmPassword.trim()) {
+    showToast("Please confirm your new password", "error");
+    return;
+}
 
-        if (newPassword !== confirmPassword) {
-            alert("Passwords do not match");
-            return;
-        }
+if (newPassword !== confirmPassword) {
+    showToast("Passwords do not match", "error");
+    return;
+}
 
-        if (currentPassword === newPassword) {
-            alert("New password must be different from current password");
-            return;
-        }
+if (currentPassword === newPassword) {
+    showToast(
+        "New password must be different from current password",
+        "error"
+    );
+    return;
+}
 
         try {
             setLoading(true);
@@ -92,7 +96,7 @@ export default function ChangePasswordCard({ token = null, onSuccess }) {
                 localStorage.setItem("mustChangePassword", "false");
             }
 
-            alert("Password Changed Successfully");
+           showToast("Password Changed Successfully", "success");
 
             if (onSuccess) {
                 onSuccess();
@@ -104,7 +108,7 @@ export default function ChangePasswordCard({ token = null, onSuccess }) {
                 error.response?.data ||
                 "Failed to change password";
 
-            alert(message);
+            showToast(message, "error");
         } finally {
             setLoading(false);
         }

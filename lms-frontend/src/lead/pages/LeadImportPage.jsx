@@ -4,12 +4,12 @@ import api from "../../api/axios";
 import "../styles/lead.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import PageTitle from "../../shared/components/PageTitle";
-
+import { useToast } from "../../shared/components/ToastContext";
 const LeadImportPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const fileInputRef = useRef(null);
-
+    const { showToast } = useToast();
     const [file, setFile] = useState(null);
     const [importJobId, setImportJobId] = useState(null);
     const [summary, setSummary] = useState(null);
@@ -73,12 +73,12 @@ const LeadImportPage = () => {
 
     const uploadExcel = async () => {
         if (!file) {
-            alert("Please select an excel file");
+            showToast("Please select an excel file", "error");
             return;
         }
 
         if (!selectedAssignment) {
-            alert("Please select assignment");
+            showToast("Please select assignment", "error");
             return;
         }
 
@@ -116,13 +116,13 @@ const LeadImportPage = () => {
                 fileInputRef.current.value = "";
             }
 
-            alert("Excel uploaded successfully.");
+            showToast("Excel uploaded successfully.", "success");
         } catch (error) {
             console.error(error);
-            alert(
+            showToast(
                 error.response?.data?.message ||
                 error.response?.data ||
-                "Upload failed"
+                "Upload failed", "error"
             );
         } finally {
             setLoading(false);
@@ -131,7 +131,7 @@ const LeadImportPage = () => {
 
     const importValidLeads = async () => {
         if (!importJobId) {
-            alert("Please upload excel first");
+            showToast("Please upload excel first", "error");
             return;
         }
 
@@ -139,8 +139,7 @@ const LeadImportPage = () => {
             const response = await api.post(
                 `/api/lead-import/import/${importJobId}`
             );
-            alert(response.data);
-
+            showToast(response.data, "success");
             setImportJobId(null);
             setSummary(null);
             setFile(null);
@@ -151,13 +150,13 @@ const LeadImportPage = () => {
             }
         } catch (error) {
             console.error(error.response?.data || error.message);
-            alert("Import failed");
+            showToast("Import failed", "error");
         }
     };
 
     const downloadRejectedExcel = async () => {
         if (!importJobId) {
-            alert("Please upload excel first");
+            showToast("Please upload excel first", "error");
             return;
         }
 
@@ -179,7 +178,7 @@ const LeadImportPage = () => {
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error(error.response?.data || error.message);
-            alert("Unable to download rejected leads.");
+            showToast("Unable to download rejected leads.", "error");
         }
     };
 

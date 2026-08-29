@@ -314,15 +314,7 @@ Description: ${department.description || "N/A"}`
 
                                             <td>
 
-                                                <button
-                                                    onClick={() =>
-                                                        handleView(
-                                                            department
-                                                        )
-                                                    }
-                                                >
-                                                    View
-                                                </button>
+
 
                                                 {" "}
 

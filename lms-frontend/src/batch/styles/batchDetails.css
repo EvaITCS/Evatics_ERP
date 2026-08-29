@@ -1,43 +1,36 @@
 /* ==========================================================================
-   EVA ERP - PREMIUM BATCH DETAIL SYSTEM METRICS CSS
+   EVA ERP - BATCH DETAIL SYSTEM METRICS CSS
    ========================================================================== */
 
 .batch-details-page {
-    font-family: 'Cambria';
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     padding: 0px;
-    background: #f8fafc; /* Sleek workspace gray background */
+    background: #f8fafc;
     min-height: 100vh;
     box-sizing: border-box;
+    color: #0f172a;
 }
 
 /* ==========================================================================
-   HEADER ZONE AND ACTION ALIGNMENT HUB
+   HEADER ZONE (BORDER-BOTTOM REMOVED & UPWARD SHIFT)
    ========================================================================== */
 .details-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 14px; /* Reduced to bring first card higher */
+    padding-bottom: 0px;  /* Padding removed */
+    border-bottom: none;  /* Line explicitly removed */
     flex-wrap: wrap;
     gap: 16px;
 }
 
 .details-header h1 {
-    font-family: 'Cambria';
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
     color: #0f172a;
     margin: 0;
-    letter-spacing: -0.01em;
-}
-
-.details-header p {
-    font-family: 'Cambria';
-    margin: 4px 0 0 0;
-    color: #64748b;
-    font-size: 14px;
+    letter-spacing: -0.4px;
 }
 
 /* Header Buttons Layout Group */
@@ -48,16 +41,15 @@
 }
 
 .back-btn {
-    font-family: 'Cambria';
     border: 1px solid #cbd5e1;
     background: #ffffff;
     color: #475569;
-    padding: 10px 18px;
-    border-radius: 8px; /* Standardized to clean enterprise curvature radius */
+    padding: 7px 14px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s ease;
 }
 
 .back-btn:hover {
@@ -66,87 +58,95 @@
     border-color: #94a3b8;
 }
 
-/* High-priority Premium Admin Action Button */
 .edit-prime-btn {
-    font-family: 'Cambria';
     border: 1px solid transparent;
-    background: #3b597f; /* Primary Enterprise Blue */
+    background: #2563eb;
     color: #ffffff;
-    padding: 10px 20px;
+    padding: 7px 16px;
     border-radius: 8px;
     cursor: pointer;
     font-size: 13px;
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12);
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+    transition: all 0.2s ease;
 }
 
 .edit-prime-btn:hover {
-    background: #2a395b;
+    background: #1d4ed8;
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
 }
 
 /* ==========================================================================
-   COMMON ENTERPRISE BENTO CARDS MODULE
+   COMMON ENTERPRISE CARDS MODULE
    ========================================================================== */
 .details-card {
     background: #ffffff;
-    border-radius: 12px; /* Uniform subtle panel roundness */
-    padding: 24px;
-    margin-bottom: 24px;
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 18px;
     border: 1px solid #e2e8f0;
-    box-shadow: 
-        0 1px 3px rgba(15, 23, 42, 0.02), 
-        0 4px 12px rgba(15, 23, 42, 0.01);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
 }
 
+/* Reduced Font Size for Section Headings */
 .details-card h2 {
-    font-family: 'Cambria';
-    font-size: 18px;
-    font-weight: 700;
+    font-size: 15px;
+    font-weight: 600;
     color: #0f172a;
     margin: 0;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.1px;
 }
 
 .card-title-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     gap: 12px;
 }
 
 /* Status Micro-badges */
 .status-chip {
-    font-family: 'Cambria';
-    padding: 4px 12px;
-    border-radius: 6px; /* High-end blocky structural tags look cleaner in ERP dashboards */
+    padding: 3px 10px;
+    border-radius: 9999px;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.03em;
     text-transform: uppercase;
 }
 
-.status-chip.planned { background: #fef3c7; color: #b45309; }
-.status-chip.ongoing { background: #dcfce7; color: #15803d; }
-.status-chip.completed { background: #f1f5f9; color: #475569; }
+.status-chip.planned,
+.status-chip.upcoming,
+.status-chip.available {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.status-chip.ongoing {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.status-chip.completed {
+    background: #f1f5f9;
+    color: #64748b;
+}
 
 /* ==========================================================================
    DETAILS INFRASTRUCTURE GRID SYSTEM
    ========================================================================== */
 .details-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
 }
 
 .detail-box {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 14px 18px; /* Optimized balance structure */
+    padding: 12px 16px;
     transition: all 0.2s ease;
 }
 
@@ -157,21 +157,19 @@
 
 .detail-box span {
     display: block;
-    font-family: 'Cambria';
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
     color: #64748b;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.5px;
 }
 
 .detail-box h3 {
-    font-family: 'Cambria';
-    font-size: 15px;
+    font-size: 13.5px;
     color: #0f172a;
     margin: 0;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 1.4;
 }
 
@@ -180,38 +178,36 @@
    ========================================================================== */
 .analytics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-top: 14px;
 }
 
 .analytics-box {
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 8px;
+    padding: 14px 18px;
     border: 1px solid #e2e8f0;
     background: #ffffff;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
 }
 
 .analytics-box span {
     display: block;
-    font-family: 'Cambria';
-    font-size: 12px;
+    font-size: 11px;
     color: #64748b;
-    font-weight: 600;
-    margin-bottom: 8px;
+    font-weight: 700;
+    margin-bottom: 6px;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .analytics-box h2 {
-    font-family: 'Cambria';
     margin: 0;
-    font-size: 30px; /* Aligned beautifully with dashboard bento scale */
+    font-size: 22px;
     font-weight: 700;
-    letter-spacing: -0.02em;
+    line-height: 1;
 }
 
-/* Dynamic Variant Themes for Capacity Dashboard Blocks */
 .metric-current h2 { color: #2563eb; }
 .metric-max h2 { color: #0f172a; }
 .metric-rem h2 { color: #16a34a; }
@@ -220,17 +216,19 @@
    STUDENT ROSTER DATA SHEET GRID
    ========================================================================== */
 .student-table-wrapper {
-    margin-top: 16px;
+    margin-top: 14px;
     border: 1px solid #e2e8f0;
+    border-top: 3.5px solid #2563eb;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);
 }
 
 .student-table {
     width: 100%;
     border-collapse: collapse;
     background: #ffffff;
+    text-align: left;
 }
 
 .student-table thead {
@@ -239,20 +237,20 @@
 }
 
 .student-table th {
-    font-family: 'Cambria';
     color: #475569;
-    padding: 12px 20px;
-    font-size: 13px;
+    padding: 10px 16px;
+    font-size: 11px;
     font-weight: 700;
-    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .student-table td {
-    font-family: 'Cambria';
-    padding: 14px 20px;
+    padding: 12px 16px;
     border-bottom: 1px solid #f1f5f9;
-    font-size: 14px;
+    font-size: 13.5px;
     color: #334155;
+    vertical-align: middle;
 }
 
 .student-table tbody tr:last-child td {
@@ -261,56 +259,50 @@
 
 .student-table tbody tr:hover {
     background: #f8fafc;
-    cursor: pointer;
 }
 
 .student-name-cell {
-    font-weight: 700;
+    font-weight: 600;
     color: #0f172a;
 }
 
-/* Dynamic State Badges */
 .active-status {
-    font-family: 'Cambria';
-    background: #dcfce7;
-    color: #15803d;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 700;
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 600;
 }
 
 .student-count-chip {
-    font-family: 'Cambria';
     background: #eff6ff;
     color: #2563eb;
-    padding: 4px 12px;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
 }
 
 .empty-student-box {
-    font-family: 'Cambria';
-    margin-top: 16px;
-    padding: 20px;
+    margin-top: 14px;
+    padding: 16px;
     border-radius: 8px;
-    background: #fff8f8;
-    border: 1px dashed #fee2e2;
-    color: #ef4444;
-    font-size: 14px;
-    font-weight: 600;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
     text-align: center;
 }
 
 /* ==========================================================================
-   UTILITY INFRASTRUCTURE LOADER SKELETON
+   UTILITY LOADER SKELETON
    ========================================================================== */
 .loading-box {
-    font-family: 'Cambria';
     background: #ffffff;
     border-radius: 12px;
-    padding: 64px 32px;
+    padding: 48px 24px;
     text-align: center;
     border: 1px solid #e2e8f0;
     display: flex;
@@ -321,16 +313,15 @@
 }
 
 .loading-box h2 {
-    font-family: 'Cambria';
-    font-size: 16px;
+    font-size: 14px;
     color: #64748b;
     font-weight: 600;
     margin: 0;
 }
 
 .skeleton-spinner {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     border: 3px solid #f1f5f9;
     border-top-color: #2563eb;
     border-radius: 50%;
@@ -346,9 +337,8 @@
    ========================================================================== */
 @media(max-width: 768px) {
     .batch-details-page { padding: 16px; }
-    .details-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .details-header { flex-direction: column; align-items: flex-start; gap: 12px; }
     .header-action-hub { width: 100%; justify-content: space-between; }
     .back-btn, .edit-prime-btn { flex: 1; text-align: center; }
-    .details-card { padding: 18px; }
-    .analytics-box h2 { font-size: 26px; }
+    .details-card { padding: 16px; }
 }

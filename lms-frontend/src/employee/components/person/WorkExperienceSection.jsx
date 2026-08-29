@@ -286,28 +286,32 @@ function WorkExperienceSection({
                             {/* ================================================= */}
 
                             {workExperiences.length > 1 && (
-
                                 <div
-                                    className="form-group"
                                     style={{
                                         gridColumn: "span 3",
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                        alignItems: "center",
                                     }}
                                 >
-
                                     <button
                                         type="button"
                                         className="btn btn-danger"
-                                        onClick={() =>
-                                            removeExperience(index)
-                                        }
+                                        onClick={() => removeExperience(index)}
+                                        style={{
+                                            width: "2cm",
+                                            height: "0.8cm",
+                                            padding: "0",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            whiteSpace: "nowrap",
+                                        }}
                                     >
-                                        Remove Experience
+                                        Remove
                                     </button>
-
                                 </div>
-
                             )}
-
 
                             {/* ================================================= */}
                             {/* SEPARATOR */}
@@ -329,21 +333,32 @@ function WorkExperienceSection({
             {/* ADD EXPERIENCE */}
             {/* ===================================================== */}
 
-            <div
-                style={{
-                    gridColumn: "span 3",
-                }}
-            >
-
-                <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={addExperience}
+                <div
+                    style={{
+                        gridColumn: "span 3",
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                        marginTop: "10px",
+                    }}
                 >
-                    + Add Experience
-                </button>
-
-            </div>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={addExperience}
+                        style={{
+                            width: "2cm",
+                            height: "0.8cm",
+                            padding: "0",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            whiteSpace: "nowrap",
+                        }}
+                    >
+                       + Add
+                    </button>
+                </div>
 
         </div>
 </>

@@ -2,13 +2,13 @@ import React, {
     useEffect,
     useState
 } from "react";
-
+import { useToast } from "../../shared/components/ToastContext";
 import ShiftForm from "../components/ShiftForm";
 import shiftService from "../services/shiftService";
 import PageTitle from "../../shared/components/PageTitle";
 import "../styles/employee.css";
 function ShiftsPage() {
-
+    const { showToast } = useToast();
     const [shifts, setShifts] = useState([]);
 
     const [editingId, setEditingId] = useState(null);
@@ -60,8 +60,9 @@ function ShiftsPage() {
                     formData
                 );
 
-                alert(
-                    "Shift Updated Successfully"
+                showToast(
+                    "Shift Updated Successfully",
+                    "success"
                 );
 
             } else {
@@ -70,8 +71,9 @@ function ShiftsPage() {
                     formData
                 );
 
-                alert(
-                    "Shift Added Successfully"
+                showToast(
+                    "Shift Added Successfully",
+                    "success"
                 );
             }
 
@@ -125,8 +127,9 @@ function ShiftsPage() {
                 shiftId
             );
 
-            alert(
-                "Shift Deleted Successfully"
+            showToast(
+                "Shift Deleted Successfully",
+                "success"
             );
 
             fetchShifts();

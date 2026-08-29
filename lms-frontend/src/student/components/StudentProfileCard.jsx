@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api/axios";
 import { BACKEND_API_URL } from "../../shared/constants/env";
+import { useToast } from "../../shared/components/ToastContext";
 import {
     FiUser,
     FiMail,
@@ -69,6 +70,7 @@ const degreeOptions = [
 ];
 
 export default function StudentProfileCard({ student }) {
+    const { showToast } = useToast();
     const [activeSection, setActiveSection] = useState(null);
 
     const [expandedSections, setExpandedSections] = useState({
@@ -233,22 +235,53 @@ export default function StudentProfileCard({ student }) {
         }));
     };
 
-    const handleViewDocument = async (documentPath) => {
-        if (!documentPath) {
-            alert("Document not available.");
-            return;
-        }
-        try {
-            const response = await api.get(documentPath, { responseType: "blob" });
-            const blob = new Blob([response.data], { type: response.headers["content-type"] });
-            const blobUrl = window.URL.createObjectURL(blob);
-            window.open(blobUrl, "_blank", "noopener,noreferrer");
-            setTimeout(() => window.URL.revokeObjectURL(blobUrl), 10000);
-        } catch (error) {
-            console.error("Document View Error:", error);
-            alert("Unable to open document.");
-        }
-    };
+   const handleViewDocument = async (documentPath) => {
+    if (!documentPath) {
+        showToast(
+            "Document is not available.",
+            "error",
+            "Document Not Available"
+        );
+        return;
+    }
+
+    try {
+        const response = await api.get(documentPath, {
+            responseType: "blob"
+        });
+
+        const blob = new Blob(
+            [response.data],
+            {
+                type: response.headers["content-type"]
+            }
+        );
+
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        window.open(
+            blobUrl,
+            "_blank",
+            "noopener,noreferrer"
+        );
+
+        setTimeout(() => {
+            window.URL.revokeObjectURL(blobUrl);
+        }, 10000);
+
+    } catch (error) {
+        console.error(
+            "Document View Error:",
+            error
+        );
+
+        showToast(
+            "Unable to open the document. Please try again.",
+            "error",
+            "Document Error"
+        );
+    }
+};
 
   const handleSaveSection = async (section, e) => {
 
@@ -375,10 +408,14 @@ export default function StudentProfileCard({ student }) {
 
     else if (section === "documents") {
 
-        if (!formData.documentFile) {
-            alert("Please select a file.");
-            return;
-        }
+       if (!formData.documentFile) {
+    showToast(
+        "Please select a file before uploading.",
+        "error",
+        "File Required"
+    );
+    return;
+}
 
         endpoint = "/student/profile/upload-document";
 
@@ -403,9 +440,11 @@ export default function StudentProfileCard({ student }) {
 
         await api.post(endpoint, payload);
 
-        alert(
-            "Your change request has been submitted successfully. It is pending approval."
-        );
+       showToast(
+    "Your change request has been submitted successfully. It is pending approval.",
+    "success",
+    "Request Submitted"
+);
 
         closeAllModals();
 
@@ -421,7 +460,11 @@ export default function StudentProfileCard({ student }) {
             error?.response?.data ||
             "Failed to submit change request.";
 
-        alert(message);
+        showToast(
+    message,
+    "error",
+    "Request Failed"
+);
     }
 };
 

@@ -1,5 +1,5 @@
 /* =========================================================
-   COUNSELOR DETAILS PAGE DESIGN SYSTEM SCOPE
+   COUNSELOR DETAILS PAGE DESIGN SYSTEM SCOPE (REPLICA)
 ========================================================= */
 .counselor-details-page.registration-page {
     --erp-bg: #F8FAFC;
@@ -7,45 +7,32 @@
     --erp-field-bg: #FFFFFF;
 
     --erp-border: #E2E8F0;
-    --erp-input-border: #D1D5DB;
-    --erp-input-border-hover: #94A3B8;
+    --erp-input-border: #cbd2db;
+    --erp-input-border-hover: #CBD5E1;
     --erp-input-border-focus: #2563EB;
     --erp-input-focus-ring: rgba(37, 99, 235, 0.12);
 
     --erp-text: #0F172A;
     --erp-text-muted: #64748B;
-    --erp-text-faint: #94A3B8;
 
     --erp-primary: #1E40AF;
     --erp-accent: #2563EB;
-    --erp-primary-gradient: linear-gradient(135deg, #1E40AF 0%, #2563EB 100%);
-    --erp-primary-soft: #EFF6FF;
-
-    --erp-badge-gradient: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
-    --erp-badge-border: #E2E8F0;
-    --erp-badge-text: #334155;
 
     --erp-danger: #EF4444;
     --erp-danger-soft: #FEF2F2;
-    --erp-danger-border: #FCA5A5;
     --erp-success: #10B981;
 
-    --erp-radius-lg: 12px;
+    --erp-radius-lg: 10px;
     --erp-radius-md: 6px;
     --erp-radius-sm: 4px;
 
-    --erp-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 6px 16px rgba(15, 23, 42, 0.04);
-    --erp-shadow-btn: 0 1px 2px rgba(15, 23, 42, 0.05);
-    --erp-shadow-btn-hover: 0 6px 16px rgba(37, 99, 235, 0.22);
-
-    --erp-control-height: 42px;
+    --erp-control-height: 40px;
     --erp-ease: cubic-bezier(0.4, 0, 0.2, 1);
-    --erp-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --erp-font-label: Georgia, Cambria, "Times New Roman", Times, serif;
+    --erp-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
     width: 100%;
     min-height: calc(100vh - 70px);
-    padding: 0px 32px 48px;
+    padding: 20px 32px 48px;
     background: var(--erp-bg);
     box-sizing: border-box;
     font-family: var(--erp-font);
@@ -54,146 +41,63 @@
 }
 
 /* =========================================================
-   HEADER SECTION
+   MAIN FORM CARD CONTAINER
 ========================================================= */
-.counselor-details-page .registration-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
+.counselor-details-page .registration-form-wrapper {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
-.counselor-details-page .registration-header-left {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.counselor-details-page .back-link-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: transparent;
-    border: none;
-    color: var(--erp-text-muted);
-    font-size: 14.5px;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0px 4px;
-    margin-left: -8px;
-    border-radius: var(--erp-radius-sm);
-    transition: color 0.15s var(--erp-ease), background 0.15s var(--erp-ease);
-    width: fit-content;
-}
-
-.counselor-details-page .back-link-btn:hover {
-    color: var(--erp-accent);
-    background: var(--erp-primary-soft);
-}
-
-.counselor-details-page .registration-title-group h1 {
-    margin: 0 0 2px 0;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--erp-text);
-}
-
-.counselor-details-page .registration-title-group p {
-    margin: 0;
-    font-size: 13.5px;
-    color: var(--erp-text-muted);
-}
-
-.counselor-details-page .lead-id-badge {
-    display: inline-flex;
-    align-items: center;
-    background: var(--erp-badge-gradient);
-    color: var(--erp-badge-text);
-    padding: 8px 14px;
-    border-radius: var(--erp-radius-sm);
-    border: 1px solid var(--erp-badge-border);
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
-}
-
-.counselor-details-page .lead-id-badge-text {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-}
-
-.counselor-details-page .lead-id-badge-label {
-    font-weight: 500;
-    color: var(--erp-text-muted);
-}
-
-.counselor-details-page .lead-id-badge-value {
-    font-weight: 700;
-    color: var(--erp-text);
-}
-
-/* =========================================================
-   SINGLE MAIN FORM CONTAINER (WITH TOP BLUE ACCENT LINE)
-========================================================= */
 .counselor-details-page .registration-form {
     display: flex;
     flex-direction: column;
-    gap: 32px;
     width: 100%;
     background: var(--erp-surface);
-    border: 1px solid var(--erp-border);
-    border-top: 4px solid var(--erp-accent); /* TOP BLUE ACCENT LINE */
+    border: 1px solid #E2E8F0;
+    border-top: 5px solid #2563EB; /* TOP BLUE STRIP */
     border-radius: var(--erp-radius-lg);
-    padding: 32px;
-    box-shadow: var(--erp-shadow-card);
+    padding: 20px 32px 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     box-sizing: border-box;
 }
 
-/* Sub-sections now seamlessly fit inside the main card container */
-.counselor-details-page .registration-card {
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    padding: 0;
-    box-shadow: none;
-}
-
-.counselor-details-page .registration-card-header {
+/* =========================================================
+   CARD HEADER WITH BACK BUTTON
+========================================================= */
+.counselor-details-page .form-card-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--erp-border);
+    justify-content: space-between;
+    margin-bottom: 24px;
 }
 
-.counselor-details-page .registration-section-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: var(--erp-radius-sm);
-    background: var(--erp-primary-soft);
-    color: var(--erp-accent);
-    flex-shrink: 0;
-}
-
-.counselor-details-page .registration-section-text h3 {
+.counselor-details-page .form-card-header h2 {
     margin: 0;
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 700;
-    color: var(--erp-text);
+    color: #0F172A;
+    letter-spacing: -0.01em;
 }
 
-.counselor-details-page .registration-section-text span {
-    display: block;
-    margin-top: 2px;
-    font-size: 12.5px;
-    color: var(--erp-text-muted);
+.counselor-details-page .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: var(--erp-radius-md);
+    cursor: pointer;
+    transition: all 0.15s var(--erp-ease);
+}
+
+.counselor-details-page .back-btn:hover {
+    background: #F8FAFC;
+    border-color: #94A3B8;
 }
 
 /* =========================================================
@@ -213,20 +117,19 @@
     width: 100%;
 }
 
+/* Exact Font Size, Weight & Uniform Family */
 .counselor-details-page .registration-field label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-    font-size: 14px;
-    font-weight: 700;
-    font-family: var(--erp-font-label);
-    color: #000000;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13.5px;
+    font-weight: 600;
+    font-family: var(--erp-font) !important;
+    color: #0F172A;
 }
 
 .counselor-details-page .required {
     color: var(--erp-danger);
-    margin-left: 4px;
-    font-weight: 700;
+    margin-left: 2px;
 }
 
 .counselor-details-page .registration-field input,
@@ -237,18 +140,46 @@
     border: 1px solid var(--erp-input-border);
     border-radius: var(--erp-radius-md);
     background: var(--erp-field-bg);
-    padding: 0 14px;
-    font-size: 14px;
+    padding: 0 12px;
+    font-size: 13.5px;
     font-weight: 400;
     font-family: var(--erp-font);
-    color: var(--erp-text);
+    color: #0F172A;
     box-sizing: border-box;
-    transition: border-color 0.18s var(--erp-ease), box-shadow 0.18s var(--erp-ease);
+    transition: border-color 0.15s var(--erp-ease), box-shadow 0.15s var(--erp-ease);
 }
 
-.counselor-details-page .registration-field input::placeholder {
-    color: #9CA3AF;
-    font-size: 14px;
+/* =========================================================
+   SELECT DROPDOWNS (SINGLE CLEAN DEFINITION WITH ARROW)
+========================================================= */
+.counselor-details-page .select-wrapper {
+    position: relative;
+    width: 100%;
+    height: var(--erp-control-height);
+}
+
+.counselor-details-page .select-wrapper select {
+    width: 100%;
+    height: 100%;
+ 
+    cursor: pointer;
+    background-color: var(--erp-field-bg);
+    /* High contrast dark arrow icon */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%3C334155' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+    padding-right: 36px;
+}
+
+.counselor-details-page .select-wrapper select::-ms-expand {
+    display: none;
+}
+
+.counselor-details-page .registration-field input::placeholder,
+.counselor-details-page .select-wrapper select option[value=""] {
+    color: #94A3B8;
+    font-size: 13.5px;
 }
 
 .counselor-details-page .registration-field input:hover,
@@ -267,8 +198,7 @@
 }
 
 .counselor-details-page .registration-field input:disabled,
-.counselor-details-page .registration-field input.readonly-field,
-.counselor-details-page .select-wrapper select:disabled {
+.counselor-details-page .registration-field input.readonly-field {
     background: #F8FAFC !important;
     color: var(--erp-text-muted) !important;
     border-color: var(--erp-border) !important;
@@ -276,69 +206,7 @@
 }
 
 /* =========================================================
-   CHECKBOX FIELD
-========================================================= */
-.counselor-details-page .checkbox-field {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 4px;
-}
-
-.counselor-details-page .checkbox-field input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    border-radius: 4px;
-    border: 1px solid var(--erp-input-border);
-    accent-color: var(--erp-primary);
-}
-
-.counselor-details-page .checkbox-field label {
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: 700;
-    font-family: var(--erp-font-label);
-    color: #000000;
-    cursor: pointer;
-}
-
-/* =========================================================
-   SELECT DROPDOWNS
-========================================================= */
-.counselor-details-page .select-wrapper {
-    position: relative;
-    width: 100%;
-    height: var(--erp-control-height);
-    display: flex;
-    align-items: center;
-}
-
-.counselor-details-page .select-wrapper select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    cursor: pointer;
-    padding-right: 36px;
-}
-
-.counselor-details-page .select-arrow {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: var(--erp-text-muted);
-    z-index: 2;
-    transition: color 0.18s var(--erp-ease);
-}
-
-.counselor-details-page .select-wrapper:focus-within .select-arrow {
-    color: var(--erp-input-border-focus);
-}
-
-/* =========================================================
-   PHONE NUMBER INPUT
+   PHONE NUMBER INPUT (+1 USA)
 ========================================================= */
 .counselor-details-page .phone-wrapper {
     display: flex;
@@ -350,14 +218,14 @@
 .counselor-details-page .static-country-code {
     display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
     height: 100%;
     padding: 0 12px;
-    background: var(--erp-bg);
-    color: var(--erp-text-muted);
+    background: #E8F2FF;
+    color: #1E40AF;
     font-weight: 600;
-    font-size: 13.5px;
-    border-right: 1px solid var(--erp-border);
+    font-size: 13px;
+    border-right: 1px solid var(--erp-input-border);
     user-select: none;
     flex-shrink: 0;
 }
@@ -368,13 +236,13 @@
     border: none !important;
     outline: none !important;
     background: transparent !important;
-    padding: 0 14px !important;
+    padding: 0 12px !important;
     margin: 0 !important;
     border-radius: 0 !important;
     box-shadow: none !important;
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 400;
-    color: var(--erp-text);
+    color: #0F172A;
 }
 
 /* =========================================================
@@ -386,20 +254,13 @@
     background: var(--erp-danger-soft) !important;
 }
 
-.counselor-details-page .registration-field input.invalid-field:focus,
-.counselor-details-page .phone-wrapper.invalid-field-wrapper:focus-within,
-.counselor-details-page .select-wrapper select.invalid-field:focus {
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
-}
-
 .counselor-details-page .error-msg-block {
     display: flex;
     align-items: center;
-    gap: 4px;
     color: var(--erp-danger);
     font-size: 12px;
     font-weight: 500;
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
 /* =========================================================
@@ -408,42 +269,198 @@
 .counselor-details-page .registration-actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 12px;
-    padding-top: 16px;
-    border-top: 1px solid var(--erp-border);
+    margin-top: 24px;
 }
 
 .counselor-details-page .registration-submit-btn {
-    height: 44px;
-    padding: 0 24px;
+    height: 38px;
+    padding: 0 20px;
     border: none;
     border-radius: var(--erp-radius-md);
-    background: var(--erp-accent);
+    background: #2563EB;
     color: #FFFFFF;
-    font-size: 14.5px;
+    font-size: 13.5px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: var(--erp-shadow-btn);
-    transition: transform 0.15s var(--erp-ease), box-shadow 0.15s var(--erp-ease), background 0.15s var(--erp-ease);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    transition: background 0.15s var(--erp-ease);
 }
 
 .counselor-details-page .registration-submit-btn:hover {
-    background: var(--erp-primary);
-    transform: translateY(-1px);
-    box-shadow: var(--erp-shadow-btn-hover);
-}
-
-.counselor-details-page .registration-submit-btn:active {
-    transform: translateY(0);
-    box-shadow: var(--erp-shadow-btn);
+    background: #1D4ED8;
 }
 
 .counselor-details-page .btn-spin {
     animation: erpSpin 0.8s linear infinite;
+}
+
+/* Toast Notification - Top Center Positioned */
+.custom-toast {
+    position: fixed;
+
+    top: 24px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    min-width: 360px;
+    max-width: 420px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 18px 20px;
+
+    background: #ffffff;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 15px 40px rgba(15, 23, 42, 0.20),
+        0 4px 12px rgba(15, 23, 42, 0.10);
+
+    border: 1px solid #e2e8f0;
+
+    z-index: 10000;
+
+    animation: customToastTopIn 0.25s ease-out;
+}
+
+
+/* =========================
+   SUCCESS
+========================= */
+
+.custom-toast.success {
+    border-left: 4px solid #16a34a;
+}
+
+
+/* =========================
+   ERROR
+========================= */
+
+.custom-toast.error {
+    border-left: 4px solid #dc2626;
+}
+
+
+/* =========================
+   ICON
+========================= */
+
+.custom-toast-icon {
+    width: 34px;
+    height: 34px;
+
+    min-width: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+/* Success Icon */
+
+.custom-toast.success .custom-toast-icon {
+    color: #15803d;
+    background: #dcfce7;
+}
+
+
+/* Error Icon */
+
+.custom-toast.error .custom-toast-icon {
+    color: #b91c1c;
+    background: #fee2e2;
+}
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.custom-toast-content {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+
+    flex: 1;
+}
+
+
+.custom-toast-content strong {
+    font-size: 0.92rem;
+    font-weight: 700;
+
+    color: #1e293b;
+}
+
+
+.custom-toast-content span {
+    font-size: 0.85rem;
+    line-height: 1.4;
+
+    color: #64748b;
+}
+
+
+/* =========================
+   CLOSE BUTTON
+========================= */
+
+.toast-close-btn {
+    border: none;
+
+    background: transparent;
+
+    color: #94a3b8;
+
+    font-size: 22px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    padding: 2px 4px;
+
+    transition: color 0.2s ease;
+
+    flex-shrink: 0;
+}
+
+
+.toast-close-btn:hover {
+    color: #334155;
+}
+
+
+/* =========================
+   TOP CENTER ANIMATION
+========================= */
+
+@keyframes customToastTopIn {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translate(-50%, -45%);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translate(-50%, 0);
+    }
+
 }
 
 @keyframes erpSpin {
@@ -456,8 +473,8 @@
 .counselor-details-page .email-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.5);
-    backdrop-filter: blur(4px);
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(3px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -543,7 +560,7 @@
 .counselor-details-page .close-btn,
 .counselor-details-page .send-btn {
     flex: 1;
-    height: 42px;
+    height: 40px;
     padding: 0 16px;
     border-radius: var(--erp-radius-md);
     font-size: 13.5px;
@@ -570,32 +587,24 @@
 }
 
 .counselor-details-page .send-btn {
-    background: var(--erp-primary-gradient);
+    background: #2563EB;
     color: #FFFFFF;
     border: none;
-    box-shadow: var(--erp-shadow-btn);
 }
 
 .counselor-details-page .send-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--erp-shadow-btn-hover);
+    background: #1D4ED8;
 }
 
 .counselor-details-page .send-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
 }
 
 /* =========================================================
-   RESPONSIVE LAYOUT (DESKTOP / TABLET / MOBILE)
+   RESPONSIVE LAYOUT
 ========================================================= */
 @media screen and (max-width: 1024px) {
-    .counselor-details-page.registration-page {
-        padding: 10px 20px 30px;
-    }
-
     .counselor-details-page .registration-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -613,29 +622,5 @@
     .counselor-details-page .registration-grid {
         grid-template-columns: 1fr;
         row-gap: 16px;
-    }
-
-    .counselor-details-page .registration-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .counselor-details-page .registration-actions {
-        justify-content: stretch;
-    }
-
-    .counselor-details-page .registration-submit-btn {
-        width: 100%;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    .counselor-details-page .email-modal-buttons {
-        flex-direction: column-reverse;
-    }
-
-    .counselor-details-page .close-btn,
-    .counselor-details-page .send-btn {
-        width: 100%;
     }
 }

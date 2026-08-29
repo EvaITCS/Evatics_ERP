@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../../api/axios";
+import { useToast } from "../../shared/components/ToastContext";
 import "../styles/CounselorApplicationDetails.css";
 
 export default function CounselorApplicationDetails() {
@@ -10,11 +11,11 @@ export default function CounselorApplicationDetails() {
     const [app, setApp] = useState(null);
     const [sendingInvitation, setSendingInvitation] = useState(false);
 
-    const [notification, setNotification] = useState({
-    show: false,
-    type: "",
-    message: ""
-});
+    // =========================================================
+    // GLOBAL TOAST
+    // =========================================================
+
+    const { showToast } = useToast();
 
     useEffect(() => {
 
@@ -59,17 +60,21 @@ export default function CounselorApplicationDetails() {
     // APPLICATION / ENROLLMENT NUMBER
     // =========================================================
 
-const formatApplicationNumber = (personId) => {
-    if (!personId) return "N/A";
+    const formatApplicationNumber = (personId) => {
 
-    return `APP${personId}`;
-};
+        if (!personId) return "N/A";
 
-const formatEnrollmentNumber = (personId) => {
-    if (!personId) return "N/A";
+        return `APP${personId}`;
+    };
 
-    return `ENR${personId}`;
-};
+
+    const formatEnrollmentNumber = (personId) => {
+
+        if (!personId) return "N/A";
+
+        return `ENR${personId}`;
+    };
+
 
     // =========================================================
     // CHECK ENROLLED
@@ -124,143 +129,138 @@ const formatEnrollmentNumber = (personId) => {
     // =========================================================
     // SEND INVITATION
     // =========================================================
-const handleSendInvitation = async () => {
 
-    try {
+    const handleSendInvitation = async () => {
 
-        setSendingInvitation(true);
+        try {
 
-        // =====================================================
-        // STEP 1: Fetch student credentials
-        // =====================================================
+            setSendingInvitation(true);
 
-        const credentialsResponse = await api.get(
-            "/api/counselor/student-credentials"
-        );
+            // =====================================================
+            // STEP 1: Fetch student credentials
+            // =====================================================
 
-        console.log(
-            "Student Credentials:",
-            credentialsResponse.data
-        );
-
-        // =====================================================
-        // STEP 2: Find credentials for current student
-        // =====================================================
-
-        const credentialsList = credentialsResponse.data;
-
-        const studentCredentials = credentialsList.find(
-            (student) =>
-                Number(student.personId) === Number(app.personId)
-        );
-
-        console.log(
-            "Current Student Credentials:",
-            studentCredentials
-        );
-
-        // =====================================================
-        // STEP 3: Make sure username/password are available
-        // =====================================================
-
-        if (!studentCredentials) {
-
-            throw new Error(
-                "Student credentials not found."
+            const credentialsResponse = await api.get(
+                "/api/counselor/student-credentials"
             );
 
-        }
-
-        if (
-            !studentCredentials.username ||
-            !studentCredentials.temporaryPassword
-        ) {
-
-            throw new Error(
-                "Username or temporary password is missing."
+            console.log(
+                "Student Credentials:",
+                credentialsResponse.data
             );
 
-        }
 
-        // =====================================================
-        // STEP 4: Send invitation email
-        // =====================================================
+            // =====================================================
+            // STEP 2: Find credentials for current student
+            // =====================================================
 
-        await api.post(
-            "/student/send-invitation-email",
-            {
+            const credentialsList = credentialsResponse.data;
 
-                personId: app.personId,
+            const studentCredentials = credentialsList.find(
+                (student) =>
+                    Number(student.personId) === Number(app.personId)
+            );
 
-                username: studentCredentials.username,
+            console.log(
+                "Current Student Credentials:",
+                studentCredentials
+            );
 
-                temporaryPassword:
-                    studentCredentials.temporaryPassword
+
+            // =====================================================
+            // STEP 3: Make sure username/password are available
+            // =====================================================
+
+            if (!studentCredentials) {
+
+                throw new Error(
+                    "Student credentials not found."
+                );
 
             }
-        );
 
-        // =====================================================
-        // STEP 5: Update invitation status
-        // =====================================================
 
-        setApp(prev => ({
-            ...prev,
-            invitationSent: true
-        }));
+            if (
+                !studentCredentials.username ||
+                !studentCredentials.temporaryPassword
+            ) {
 
-        // =====================================================
-        // STEP 6: Success notification
-        // =====================================================
+                throw new Error(
+                    "Username or temporary password is missing."
+                );
 
-        setNotification({
-            show: true,
-            type: "success",
-            message: "Invitation email sent successfully."
-        });
+            }
 
-        setTimeout(() => {
 
-            setNotification({
-                show: false,
-                type: "",
-                message: ""
-            });
+            // =====================================================
+            // STEP 4: Send invitation email
+            // =====================================================
 
-        }, 4000);
+            await api.post(
+                "/student/send-invitation-email",
+                {
 
-    } catch (error) {
+                    personId: app.personId,
 
-        console.error(
-            "Invitation Error:",
-            error
-        );
+                    username: studentCredentials.username,
 
-        setNotification({
-            show: true,
-            type: "error",
-            message:
+                    temporaryPassword:
+                        studentCredentials.temporaryPassword
+
+                }
+            );
+
+
+            // =====================================================
+            // STEP 5: Update invitation status
+            // =====================================================
+
+            setApp(prev => ({
+                ...prev,
+                invitationSent: true
+            }));
+
+
+            // =====================================================
+            // STEP 6: SUCCESS TOAST
+            // =====================================================
+
+            showToast(
+                "Invitation email sent successfully.",
+                "success",
+                "Invitation Sent"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Invitation Error:",
+                error
+            );
+
+
+            // =====================================================
+            // ERROR TOAST
+            // =====================================================
+
+            showToast(
                 error?.message ||
-                "Failed to send invitation email."
-        });
+                "Failed to send invitation email.",
+                "error",
+                "Invitation Error"
+            );
 
-        setTimeout(() => {
 
-            setNotification({
-                show: false,
-                type: "",
-                message: ""
-            });
+        } finally {
 
-        }, 4000);
+            setSendingInvitation(false);
 
-    } finally {
+        }
 
-        setSendingInvitation(false);
+    };
 
-    }
 
-};
     // =========================================================
     // VIEW DOCUMENT
     // =========================================================
@@ -275,6 +275,7 @@ const handleSendInvitation = async () => {
 
         }
 
+
         try {
 
             const response = await api.get(documentPath, {
@@ -282,6 +283,7 @@ const handleSendInvitation = async () => {
                 responseType: "blob",
 
             });
+
 
             const blob = new Blob(
 
@@ -293,7 +295,9 @@ const handleSendInvitation = async () => {
 
             );
 
+
             const blobUrl = window.URL.createObjectURL(blob);
+
 
             window.open(
                 blobUrl,
@@ -301,11 +305,13 @@ const handleSendInvitation = async () => {
                 "noopener,noreferrer"
             );
 
+
             setTimeout(() => {
 
                 window.URL.revokeObjectURL(blobUrl);
 
             }, 10000);
+
 
         } catch (error) {
 
@@ -349,6 +355,7 @@ const handleSendInvitation = async () => {
 
     ];
 
+
     const uploadedCount = docFields.filter(Boolean).length;
 
 
@@ -387,57 +394,6 @@ const handleSendInvitation = async () => {
     return (
 
         <div className="admin-list-container">
-
-
-     {/* =====================================================
-            NOTIFICATION TOAST
-        ====================================================== */}
-
-        {notification.show && (
-
-            <div
-                className={`erp-toast ${notification.type}`}
-            >
-
-                <div className="erp-toast-icon">
-
-                    {notification.type === "success"
-                        ? "✓"
-                        : "!"}
-
-                </div>
-
-                <div className="erp-toast-content">
-
-                    <strong>
-                        {notification.type === "success"
-                            ? "Success"
-                            : "Error"}
-                    </strong>
-
-                    <span>
-                        {notification.message}
-                    </span>
-
-                </div>
-
-                <button
-                    type="button"
-                    className="erp-toast-close"
-                    onClick={() =>
-                        setNotification({
-                            show: false,
-                            type: "",
-                            message: ""
-                        })
-                    }
-                >
-                    ×
-                </button>
-
-            </div>
-
-        )}
 
 
             {/* =====================================================
@@ -501,7 +457,7 @@ const handleSendInvitation = async () => {
                             border: "1px solid #e2e8f0",
                             borderRadius: "10px",
                             padding: "10px 16px"
-                            
+
                         }}
                     >
 
@@ -678,7 +634,10 @@ const handleSendInvitation = async () => {
 
                             </strong>
 
-                            <p className="summary-value-secondary"  style={{ fontSize: "1rem" }}>
+                            <p
+                                className="summary-value-secondary"
+                                style={{ fontSize: "1rem" }}
+                            >
 
                                 {displayNumber}
 
@@ -697,7 +656,10 @@ const handleSendInvitation = async () => {
 
                             </strong>
 
-                            <p className="summary-value-stage"style={{ fontSize: "0.9rem" }}>
+                            <p
+                                className="summary-value-stage"
+                                style={{ fontSize: "0.9rem" }}
+                            >
 
                                 {app.applicationStage || "N/A"}
 
@@ -838,7 +800,8 @@ const handleSendInvitation = async () => {
 
                         </div>
 
-                          <div className="detail-card">
+
+                        <div className="detail-card">
 
                             <strong>Email</strong>
 
@@ -864,7 +827,7 @@ const handleSendInvitation = async () => {
                 </div>
 
 
- {/* =================================================
+                {/* =================================================
                     VISA INFORMATION
                 ================================================== */}
 
@@ -958,8 +921,6 @@ const handleSendInvitation = async () => {
                 </div>
 
 
-               
-
                 {/* =================================================
                     EDUCATION DETAILS
                 ================================================== */}
@@ -1006,7 +967,9 @@ const handleSendInvitation = async () => {
                                         <strong>Degree</strong>
 
                                         <p>
+
                                             {displayDegree}
+
                                         </p>
 
                                     </div>
@@ -1016,7 +979,9 @@ const handleSendInvitation = async () => {
                                         <strong>Institute Name</strong>
 
                                         <p>
+
                                             {edu.instituteName || "N/A"}
+
                                         </p>
 
                                     </div>
@@ -1026,7 +991,9 @@ const handleSendInvitation = async () => {
                                         <strong>Field Of Study</strong>
 
                                         <p>
+
                                             {edu.fieldOfStudy || "N/A"}
+
                                         </p>
 
                                     </div>
@@ -1036,7 +1003,9 @@ const handleSendInvitation = async () => {
                                         <strong>Passing Year</strong>
 
                                         <p>
+
                                             {edu.passingYear || "N/A"}
+
                                         </p>
 
                                     </div>
@@ -1086,7 +1055,9 @@ const handleSendInvitation = async () => {
                                     <strong>Company Name</strong>
 
                                     <p>
+
                                         {exp.companyName || "N/A"}
+
                                     </p>
 
                                 </div>
@@ -1096,7 +1067,9 @@ const handleSendInvitation = async () => {
                                     <strong>Job Title</strong>
 
                                     <p>
+
                                         {exp.designation || "N/A"}
+
                                     </p>
 
                                 </div>
@@ -1106,7 +1079,9 @@ const handleSendInvitation = async () => {
                                     <strong>Start Date</strong>
 
                                     <p>
+
                                         {exp.startDate || "N/A"}
+
                                     </p>
 
                                 </div>
@@ -1116,7 +1091,9 @@ const handleSendInvitation = async () => {
                                     <strong>End Date</strong>
 
                                     <p>
+
                                         {exp.endDate || "Present"}
+
                                     </p>
 
                                 </div>

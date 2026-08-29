@@ -1,8 +1,11 @@
 import { useState } from "react";
 import studentService from "../services/studentService";
+import { useToast } from "../../shared/components/ToastContext";
 import "../styles/student.css";
 
 export default function StudentSupportCard() {
+
+    const { showToast } = useToast();
 
     const [form, setForm] = useState({
         subject: "",
@@ -11,26 +14,18 @@ export default function StudentSupportCard() {
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const [statusMsg, setStatusMsg] = useState({
-        type: "",
-        text: ""
-    });
-
     const submitTicket = async () => {
 
         if (!form.subject.trim() || !form.message.trim()) {
-            setStatusMsg({
-                type: "error",
-                text: "Please fill out all fields before submitting."
-            });
+            showToast(
+                "Please fill out all fields before submitting.",
+                "error",
+                "Required Fields"
+            );
             return;
         }
 
         setIsLoading(true);
-        setStatusMsg({
-            type: "",
-            text: ""
-        });
 
         try {
 
@@ -42,10 +37,11 @@ export default function StudentSupportCard() {
 
             const res = await studentService.sendSupportTicket(payload);
 
-            setStatusMsg({
-                type: "success",
-                text: res.data || "Support ticket created successfully!"
-            });
+            showToast(
+                res.data || "Support ticket created successfully!",
+                "success",
+                "Request Submitted"
+            );
 
             setForm({
                 subject: "",
@@ -55,10 +51,11 @@ export default function StudentSupportCard() {
         } catch (err) {
             console.error(err);
 
-            setStatusMsg({
-                type: "error",
-                text: "Failed to create support ticket. Please try again."
-            });
+            showToast(
+                "Failed to create support ticket. Please try again.",
+                "error",
+                "Request Failed"
+            );
 
         } finally {
             setIsLoading(false);
@@ -66,7 +63,10 @@ export default function StudentSupportCard() {
     };
 
     return (
-        <div className="student-card support-card-container" style={{marginTop:"15px"}}>
+        <div
+            className="student-card support-card-container"
+            style={{ marginTop: "15px" }}
+        >
 
             <div className="support-card-header">
                 <h2>Create Support Request</h2>
@@ -75,13 +75,6 @@ export default function StudentSupportCard() {
                     Send a Request and our team will assist you shortly.
                 </p>
             </div>
-
-            {statusMsg.text && (
-                <div className={`support-status-alert ${statusMsg.type}`}>
-                    {statusMsg.type === "success" ? "✓ " : "⚠ "}
-                    {statusMsg.text}
-                </div>
-            )}
 
             <div className="support-form-group">
 

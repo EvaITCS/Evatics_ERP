@@ -559,9 +559,6 @@ function LeadAnalyticsPage() {
                   CONVERTED
                 </option>
 
-                <option value="RE_ENGAGEMENT">
-                  RE-ENGAGEMENT
-                </option>
 
               </select>
 
@@ -725,18 +722,22 @@ function LeadAnalyticsPage() {
 
                   </div>
 
+                  {/* =====================================
+              NOT INTERESTED
+          ===================================== */}
 
-                  <div className="analytics-card card-reengagement">
+                  <div className="analytics-card card-not-interested">
 
                     <p>
-                      Re-Engagement
+                      Not Interested
                     </p>
 
                     <h2>
-                      {summary.reEngagementLeads || 0}
+                      {summary.notInterestedLeads || 0}
                     </h2>
 
                   </div>
+
 
                 </div>
 

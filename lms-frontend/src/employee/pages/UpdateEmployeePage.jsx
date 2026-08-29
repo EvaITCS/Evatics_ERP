@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { useToast } from "../../shared/components/ToastContext";
 // =====================================================
 // EMPLOYEE
 // =====================================================
@@ -308,7 +308,7 @@ function UpdateEmployeePage() {
   // /admin/employees/update/:personId
   //
   // =================================================
-
+  const { showToast } = useToast();
   const {
     personId: routePersonId,
   } = useParams();
@@ -480,8 +480,9 @@ function UpdateEmployeePage() {
 
     if (!routePersonId) {
 
-      alert(
-          "Person ID is missing."
+      showToast(
+          "Person ID is missing.",
+          "error"
       );
 
       navigate(
@@ -808,7 +809,7 @@ function UpdateEmployeePage() {
           error?.message ||
           "Failed to load employee.";
 
-      alert(message);
+      showToast(message, "error");
 
       navigate(
           "/admin/employees"
@@ -2081,8 +2082,9 @@ function UpdateEmployeePage() {
 
     if (emailError) {
 
-      alert(
-          "Please fix the email error before updating."
+      showToast(
+          "Please fix the email error before updating.",
+          "error"
       );
 
       return;
@@ -2107,8 +2109,9 @@ function UpdateEmployeePage() {
         )
     ) {
 
-      alert(
-          "Primary Phone Number must be exactly 10 digits."
+      showToast(
+          "Primary Phone Number must be exactly 10 digits.",
+          "error"
       );
 
       return;
@@ -2134,10 +2137,10 @@ function UpdateEmployeePage() {
         )
     ) {
 
-      alert(
-          "Alternate Phone Number must be exactly 10 digits."
+      showToast(
+          "Alternate Phone Number must be exactly 10 digits.",
+          "error"
       );
-
       return;
     }
 
@@ -2165,8 +2168,9 @@ function UpdateEmployeePage() {
           )
       ) {
 
-        alert(
-            "Emergency Contact Phone Number must be exactly 10 digits."
+        showToast(
+            "Emergency Contact Phone Number must be exactly 10 digits.",
+            "error"
         );
 
         return;
@@ -2193,8 +2197,9 @@ function UpdateEmployeePage() {
 
     if (!personId) {
 
-      alert(
-          "Person ID is missing."
+      showToast(
+          "Person ID is missing.",
+          "error"
       );
 
       console.error(
@@ -2472,8 +2477,9 @@ function UpdateEmployeePage() {
       // SUCCESS
       // =============================================
 
-      alert(
-          "Employee Updated Successfully."
+      showToast(
+          "Employee Updated Successfully.",
+          "success"
       );
 
       // =============================================
@@ -2503,7 +2509,7 @@ function UpdateEmployeePage() {
           error?.message ||
           "Failed to update employee.";
 
-      alert(message);
+      showToast(message, "error");
 
     } finally {
 

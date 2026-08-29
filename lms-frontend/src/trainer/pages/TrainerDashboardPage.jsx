@@ -107,8 +107,8 @@ export default function TrainerDashboardPage() {
 
 
             const response = await api.get(
-                `/api/trainer-batches/batch/${batchId}/students`
-            );
+    `/api/trainer-batches/batch/${batchId}/students?type=ENROLLED`
+);
 
 
             setStudents(

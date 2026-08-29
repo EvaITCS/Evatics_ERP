@@ -596,11 +596,16 @@ public class DashboardService {
     // LEAD ANALYTICS
     // =====================================================
 
+
     public LeadAnalyticsResponse getLeadAnalytics(
             Long employeePersonId,
             LocalDateTime start,
             LocalDateTime end
     ) {
+
+        // =====================================================
+        // CURRENT USER
+        // =====================================================
 
         Long currentUserId =
                 currentUserService
@@ -612,6 +617,10 @@ public class DashboardService {
                         .getCurrentEmployee()
                         .getPersonId();
 
+
+        // =====================================================
+        // GET USER ROLES
+        // =====================================================
 
         List<UserRole> userRoles =
                 userRoleRepository
@@ -627,6 +636,10 @@ public class DashboardService {
         }
 
 
+        // =====================================================
+        // CHECK ADMIN
+        // =====================================================
+
         boolean isAdmin =
                 userRoles
                         .stream()
@@ -639,12 +652,20 @@ public class DashboardService {
                         );
 
 
+        // =====================================================
+        // NON ADMIN = CURRENT EMPLOYEE
+        // =====================================================
+
         if (!isAdmin) {
 
             employeePersonId =
                     currentEmployeePersonId;
         }
 
+
+        // =====================================================
+        // DEFAULT DATE RANGE
+        // =====================================================
 
         if (start == null) {
 
@@ -664,19 +685,33 @@ public class DashboardService {
         }
 
 
+        // =====================================================
+        // COUNSELLOR ANALYTICS
+        // =====================================================
+
         if (employeePersonId != null) {
 
             return LeadAnalyticsResponse
                     .builder()
 
+                    // =========================================
+                    // ALL
+                    // DATE = ACTION PERFORMED DATE
+                    // =========================================
+
                     .totalLeads(
                             leadRepository
-                                    .countCreatedByEmployeeBetween(
+                                    .countCounsellorAllActionLeadsByDate(
                                             employeePersonId,
                                             start,
                                             end
                                     )
                     )
+
+                    // =========================================
+                    // NEW
+                    // DATE = CREATED DATE
+                    // =========================================
 
                     .newLeads(
                             leadRepository
@@ -688,9 +723,14 @@ public class DashboardService {
                                     )
                     )
 
+                    // =========================================
+                    // INTERESTED
+                    // DATE = ACTION PERFORMED DATE
+                    // =========================================
+
                     .interestedLeads(
                             leadRepository
-                                    .countCreatedByEmployeeAndStatusBetween(
+                                    .countCounsellorActionByDate(
                                             employeePersonId,
                                             "INTERESTED",
                                             start,
@@ -698,9 +738,29 @@ public class DashboardService {
                                     )
                     )
 
+                    // =========================================
+                    // NOT INTERESTED
+                    // DATE = ACTION PERFORMED DATE
+                    // =========================================
+
+                    .notInterestedLeads(
+                            leadRepository
+                                    .countCounsellorActionByDate(
+                                            employeePersonId,
+                                            "NOT_INTERESTED",
+                                            start,
+                                            end
+                                    )
+                    )
+
+                    // =========================================
+                    // CONVERTED
+                    // DATE = ACTION PERFORMED DATE
+                    // =========================================
+
                     .convertedLeads(
                             leadRepository
-                                    .countCreatedByEmployeeAndStatusBetween(
+                                    .countCounsellorActionByDate(
                                             employeePersonId,
                                             "CONVERTED",
                                             start,
@@ -708,19 +768,29 @@ public class DashboardService {
                                     )
                     )
 
+                    // =========================================
+                    // CALLBACK
+                    // DATE = ACTION PERFORMED DATE
+                    // =========================================
+
                     .callbackLeads(
                             leadRepository
-                                    .countCreatedByEmployeeAndStatusBetween(
+                                    .countCounsellorActionByDate(
                                             employeePersonId,
-                                            "CALLBACK",
+                                            "CALLBACK_REQUESTED",
                                             start,
                                             end
                                     )
                     )
 
+                    // =========================================
+                    // RE-ENGAGEMENT
+                    // DATE = ACTION PERFORMED DATE
+                    // =========================================
+
                     .reEngagementLeads(
                             leadRepository
-                                    .countCreatedByEmployeeAndStatusBetween(
+                                    .countCounsellorActionByDate(
                                             employeePersonId,
                                             "RE_ENGAGEMENT",
                                             start,
@@ -732,16 +802,30 @@ public class DashboardService {
         }
 
 
+        // =====================================================
+        // ADMIN ANALYTICS
+        // =====================================================
+
         return LeadAnalyticsResponse
                 .builder()
 
+                // =========================================
+                // ALL
+                // DATE = ACTION PERFORMED DATE
+                // =========================================
+
                 .totalLeads(
                         leadRepository
-                                .countByCreatedAtBetweenAndIsArchivedFalse(
+                                .countAllActionLeadsByDate(
                                         start,
                                         end
                                 )
                 )
+
+                // =========================================
+                // NEW
+                // DATE = CREATED DATE
+                // =========================================
 
                 .newLeads(
                         leadRepository
@@ -752,36 +836,70 @@ public class DashboardService {
                                 )
                 )
 
+                // =========================================
+                // INTERESTED
+                // DATE = ACTION PERFORMED DATE
+                // =========================================
+
                 .interestedLeads(
                         leadRepository
-                                .countByLeadStatus_StatusNameAndCreatedAtBetweenAndIsArchivedFalse(
+                                .countActionByDate(
                                         "INTERESTED",
                                         start,
                                         end
                                 )
                 )
 
+                // =========================================
+                // NOT INTERESTED
+                // DATE = ACTION PERFORMED DATE
+                // =========================================
+
+                .notInterestedLeads(
+                        leadRepository
+                                .countActionByDate(
+                                        "NOT_INTERESTED",
+                                        start,
+                                        end
+                                )
+                )
+
+                // =========================================
+                // CONVERTED
+                // DATE = ACTION PERFORMED DATE
+                // =========================================
+
                 .convertedLeads(
                         leadRepository
-                                .countByLeadStatus_StatusNameAndCreatedAtBetweenAndIsArchivedFalse(
+                                .countActionByDate(
                                         "CONVERTED",
                                         start,
                                         end
                                 )
                 )
 
+                // =========================================
+                // CALLBACK
+                // DATE = ACTION PERFORMED DATE
+                // =========================================
+
                 .callbackLeads(
                         leadRepository
-                                .countByLeadStatus_StatusNameAndCreatedAtBetweenAndIsArchivedFalse(
-                                        "CALLBACK",
+                                .countActionByDate(
+                                        "CALLBACK_REQUESTED",
                                         start,
                                         end
                                 )
                 )
 
+                // =========================================
+                // RE-ENGAGEMENT
+                // DATE = ACTION PERFORMED DATE
+                // =========================================
+
                 .reEngagementLeads(
                         leadRepository
-                                .countByLeadStatus_StatusNameAndCreatedAtBetweenAndIsArchivedFalse(
+                                .countActionByDate(
                                         "RE_ENGAGEMENT",
                                         start,
                                         end
@@ -790,8 +908,6 @@ public class DashboardService {
 
                 .build();
     }
-
-
     // =====================================================
     // COUNT LEADS BY STATUS
     // =====================================================

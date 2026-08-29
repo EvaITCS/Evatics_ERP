@@ -5,11 +5,12 @@ import {
     getBatchDetails,
     updateBatch,
     getActivePrograms,
-    getAvailableTrainersForEdit,
-    getAllTrainers
+    getAvailableTrainersForEdit
 } from "../services/batchService";
 
 import "../styles/editBatch.css";
+
+import { useToast } from "../../shared/components/ToastContext";
 
 export default function EditBatchPage() {
 
@@ -19,6 +20,7 @@ export default function EditBatchPage() {
 
     const { batchId } = useParams();
     const navigate = useNavigate();
+    const { showToast } = useToast();
 
     // =========================
     // STATES
@@ -82,6 +84,7 @@ export default function EditBatchPage() {
     };
 
     const runDateCalculation = (programId, startDate) => {
+
         if (!programId || !startDate) {
             return "";
         }
@@ -102,7 +105,11 @@ export default function EditBatchPage() {
 
         const durationType = selectedProgram.durationType || "WEEK";
 
-        return calculateEndDate(startDate, durationValue, durationType);
+        return calculateEndDate(
+            startDate,
+            durationValue,
+            durationType
+        );
     };
 
     // =========================
@@ -125,10 +132,6 @@ export default function EditBatchPage() {
 
             const batch = batchResponse.data;
 
-            console.log(programResponse.data);
-
-            console.log("EDIT BATCH DATA:", batch);
-
             setPrograms(programResponse.data || []);
             setTrainers(trainerResponse.data || []);
 
@@ -144,7 +147,7 @@ export default function EditBatchPage() {
 
         } catch (error) {
             console.error("Edit Load Error:", error);
-            alert("Failed to load batch details");
+            showToast("Failed to load batch details", "error");
         } finally {
             setLoading(false);
         }
@@ -154,16 +157,13 @@ export default function EditBatchPage() {
         loadData();
     }, [batchId]);
 
-    // =========================
-    // INITIAL LOAD / DEPENDENCY RECALCULATION
-    // =========================
-
     useEffect(() => {
         if (form.programId && form.startDate && programs.length > 0) {
             const calculatedDate = runDateCalculation(
                 form.programId,
                 form.startDate
             );
+
             setForm(prev => ({
                 ...prev,
                 endDate: calculatedDate
@@ -172,20 +172,15 @@ export default function EditBatchPage() {
     }, [programs, form.programId, form.startDate]);
 
     // =========================
-    // HANDLE CHANGE (STEP 3)
+    // HANDLE CHANGE
     // =========================
 
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // =====================
-        // MAX STUDENT FIX
-        // =====================
-
         if (name === "maxStudents") {
             let number = Number(value);
 
-            // Empty value
             if (value === "") {
                 setForm((prev) => ({
                     ...prev,
@@ -194,12 +189,10 @@ export default function EditBatchPage() {
                 return;
             }
 
-            // Max limit
             if (number > 12) {
                 number = 12;
             }
 
-            // Min limit
             if (number < 4) {
                 number = 4;
             }
@@ -208,21 +201,24 @@ export default function EditBatchPage() {
                 ...prev,
                 maxStudents: number
             }));
+
             return;
         }
-
-        // =====================
-        // NORMAL FIELDS & AUTO DATE CALCULATION
-        // =====================
 
         let updatedEndDate = form.endDate;
 
         if (name === "programId") {
-            updatedEndDate = runDateCalculation(value, form.startDate);
+            updatedEndDate = runDateCalculation(
+                value,
+                form.startDate
+            );
         }
 
         if (name === "startDate") {
-            updatedEndDate = runDateCalculation(form.programId, value);
+            updatedEndDate = runDateCalculation(
+                form.programId,
+                value
+            );
         }
 
         setForm((prev) => ({
@@ -239,8 +235,6 @@ export default function EditBatchPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log("FORM DATA:", form);
-
         try {
             setIsUpdating(true);
 
@@ -254,22 +248,27 @@ export default function EditBatchPage() {
                 maxStudents: form.maxStudents
             };
 
-            console.log("UPDATE PAYLOAD", payload);
-
             await updateBatch(batchId, payload);
 
-            alert("Batch updated successfully");
+            showToast(
+                "Batch updated successfully",
+                "success"
+            );
+
             navigate(`/admin/batches/details/${batchId}`);
+
         } catch (error) {
             console.error("Update Error:", error);
+
+            showToast(
+                "Failed to update batch",
+                "error"
+            );
+
         } finally {
             setIsUpdating(false);
         }
     };
-
-    // =========================
-    // LOADING
-    // =========================
 
     if (loading) {
         return (
@@ -288,28 +287,32 @@ export default function EditBatchPage() {
     return (
         <div className="edit-batch-page">
 
-            {/* HEADER */}
-            <div className="edit-header">
-                <div>
-                    <h1>Edit Batch</h1>
-                    <p>Update batch details and trainer assignment</p>
-                </div>
-                <button
-                    className="back-btn"
-                    onClick={() => navigate(-1)}
-                >
-                    ← Back
-                </button>
-            </div>
-
-            {/* CARD */}
+            {/* CARD CONTAINER WITH INSIDE HEADER */}
             <div className="edit-card">
-                <form onSubmit={handleSubmit} className="edit-form">
+
+                {/* INNER HEADER */}
+                <div className="edit-card-header">
+                    <h1>Edit Batch</h1>
+
+                    <button
+                        type="button"
+                        className="back-btn"
+                        onClick={() => navigate(-1)}
+                    >
+                        ← Back
+                    </button>
+                </div>
+
+                <form
+                    onSubmit={handleSubmit}
+                    className="edit-form"
+                >
                     <div className="edit-grid">
 
                         {/* BATCH NAME */}
                         <div className="form-group">
                             <label>Batch Name</label>
+
                             <input
                                 type="text"
                                 name="batchName"
@@ -322,6 +325,7 @@ export default function EditBatchPage() {
                         {/* PROGRAM */}
                         <div className="form-group">
                             <label>Program</label>
+
                             <select
                                 name="programId"
                                 value={form.programId}
@@ -341,6 +345,7 @@ export default function EditBatchPage() {
                         {/* TRAINER */}
                         <div className="form-group">
                             <label>Trainer</label>
+
                             <select
                                 name="trainerId"
                                 value={form.trainerId}
@@ -360,6 +365,7 @@ export default function EditBatchPage() {
                         {/* START DATE */}
                         <div className="form-group">
                             <label>Start Date</label>
+
                             <input
                                 type="date"
                                 name="startDate"
@@ -368,9 +374,10 @@ export default function EditBatchPage() {
                             />
                         </div>
 
-                        {/* END DATE (STEP 5) */}
+                        {/* END DATE */}
                         <div className="form-group">
                             <label>End Date</label>
+
                             <input
                                 type="date"
                                 name="endDate"
@@ -386,6 +393,7 @@ export default function EditBatchPage() {
                         {/* MAX STUDENTS */}
                         <div className="form-group">
                             <label>Max Students</label>
+
                             <input
                                 type="number"
                                 name="maxStudents"
@@ -394,6 +402,7 @@ export default function EditBatchPage() {
                                 min="4"
                                 max="12"
                             />
+
                             <small>
                                 Allowed range: 4 to 12 students
                             </small>
@@ -408,9 +417,12 @@ export default function EditBatchPage() {
                             className="update-btn"
                             disabled={isUpdating}
                         >
-                            {isUpdating ? "Updating..." : "Update Batch"}
+                            {isUpdating
+                                ? "Updating..."
+                                : "Update Batch"}
                         </button>
                     </div>
+
                 </form>
             </div>
         </div>

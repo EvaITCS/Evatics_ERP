@@ -31,7 +31,6 @@ import com.lms_erp.user.repository.UserRepository;
 import com.lms_erp.user.repository.UserRoleRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,7 +46,6 @@ import java.util.stream.Stream;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -1357,43 +1355,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         String primaryEmail =
                 getPrimaryEmail(person);
 
-        EmployeeResponse response =
-                buildEmployeeResponse(
-                        employee
-                );
-
         if (primaryEmail != null &&
                 !primaryEmail.isBlank()) {
 
-            try {
-
-                emailService.sendCredentialsEmail(
-                        primaryEmail,
-                        user.getUsername(),
-                        temporaryPassword
-                );
-
-            } catch (Exception ex) {
-
-                log.error(
-                        "Credentials email could not be sent to {}." +
-                                " Employee created; temporary password" +
-                                " returned in response.",
-                        primaryEmail,
-                        ex
-                );
-
-                response.setTemporaryPassword(
-                        temporaryPassword
-                );
-            }
+            emailService.sendCredentialsEmail(
+                    primaryEmail,
+                    user.getUsername(),
+                    temporaryPassword
+            );
         }
 
         // =====================================
         // RESPONSE
         // =====================================
 
-        return response;
+        return buildEmployeeResponse(
+                employee
+        );
     }
     // =====================================================
     // UPDATE EMPLOYEE

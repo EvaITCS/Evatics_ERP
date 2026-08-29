@@ -1,178 +1,293 @@
-/* ==========================================================================
-   EVA ERP ENTERPRISE FORM MANAGEMENT STYLING
-   ========================================================================== */
+/* ================================
+   PAGE CONTAINER & ALIGNMENT
+================================ */
 
 .create-batch-container {
-    padding: 0px 10px;
     width: 100%;
-    box-sizing: border-box;
-    font-family: 'Cambria';
-}
-
-.form-header-zone {
-    margin-bottom: 24px;
-}
-
-.form-header-zone h1 {
-    font-size: 26px;
-    font-weight: 800;
-    color: #0f172a;
+    max-width: 100%;
     margin: 0;
-}
-
-.form-subtitle {
-    font-size: 14px;
-    color: #64748b;
-    margin: 4px 0 0 0;
-}
-
-/* Glassmorphic White Layout Content Card with Top Accent Border */
-.form-card-wrapper {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-top: 4px solid #2563eb; /* Top Accent Blue Line Added */
-    border-radius: 14px;
-    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.01), 0 4px 12px rgba(15, 23, 42, 0.02);
-    padding: 30px;
-    max-width: 800px; /* Safe readable desktop boundaries */
-    width: 100%;
+    padding: 0px 70px;
+    margin-left: -70px;
     box-sizing: border-box;
-}
-
-/* Grid alignment maps into standard clean columns */
-.form-fields-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-/* Utility to override column system for primary rows */
-.form-group.full-width {
-    grid-column: span 2;
-}
-
-.form-group label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #475569; /* Slate 600 subtle title indicator text */
-    margin-bottom: 8px;
-}
-
-/* Premium smooth border inputs design */
-.form-group input,
-.form-group select {
-    width: 100%;
-    padding: 12px 16px;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 10px;
-    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     color: #0f172a;
-    outline: none;
-    box-sizing: border-box;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: inherit;
 }
 
-.form-group input:focus,
-.form-group select:focus {
-    border-color: #0ea5e9; /* Sky blue branding focus */
-    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
-}
+/* ================================
+   STATUS ALERT
+================================ */
 
-.form-group input::placeholder {
-    color: #94a3b8;
-}
-
-/* Dynamic State Alerts (No Alert Popups) */
 .form-status-alert {
-    max-width: 800px;
+    width: 100%;
+    margin: 0 0 20px 0;
     padding: 14px 16px;
-    border-radius: 10px;
+    box-sizing: border-box;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 500;
-    margin-bottom: 20px;
-    box-sizing: border-box;
+    line-height: 1.4;
     animation: alertSlideIn 0.2s ease-out;
-    font-family: inherit;
 }
 
 .form-status-alert.success {
     background: #f0fdf4;
-    border: 1px solid rgba(22, 163, 74, 0.2);
-    color: #16a34a;
+    border: 1px solid #bbf7d0;
+    color: #15803d;
 }
 
 .form-status-alert.error {
     background: #fef2f2;
-    border: 1px solid rgba(220, 38, 38, 0.2);
+    border: 1px solid #fecaca;
     color: #dc2626;
 }
 
-/* Action Trigger Row */
+/* ================================
+   CARD WRAPPER (MATCHED TO CREATE PROGRAM)
+================================ */
+
+.form-card-wrapper {
+    width: 100%;
+    max-width: 980px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-top: 4px solid #2563eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.03);
+    overflow: hidden;
+}
+
+/* ================================
+   FORM CARD TITLE (EXACT FONT MATCH)
+================================ */
+
+.form-title,
+.form-card-wrapper > h1 {
+    margin: 0;
+    padding: 28px 32px 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #f1f5f9;
+    background: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: #0f172a;
+}
+
+/* ================================
+   FORM FIELDS GRID 
+================================ */
+
+.enterprise-form {
+    width: 100%;
+}
+
+.form-fields-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+    row-gap: 20px;
+    padding: 28px 32px 24px;
+    box-sizing: border-box;
+}
+
+/* ================================
+   FORM GROUP & LABELS
+================================ */
+
+.form-group {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.form-group.full-width {
+    grid-column: span 1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #1e293b;
+}
+
+/* ================================
+   INPUT & SELECT FORM CONTROLS
+================================ */
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    height: 40px;
+    min-height: 40px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #0f172a;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-group input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+.form-group input:hover,
+.form-group select:hover {
+    border-color: #94a3b8;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* ================================
+   DISABLED STATE
+================================ */
+
+.form-group input:disabled,
+.form-group select:disabled {
+    background-color: #f8fafc;
+    color: #64748b;
+    border-color: #e2e8f0;
+    cursor: not-allowed;
+}
+
+/* ================================
+   CUSTOM SELECT DROPDOWN
+================================ */
+
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 36px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+}
+
+/* ================================
+   AUTO DATE BADGE
+================================ */
+
+.auto-date-badge {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    color: #2563eb;
+    font-size: 11.5px;
+    font-weight: 500;
+}
+
+/* ================================
+   ACTION FOOTER & SUBMIT BUTTON
+================================ */
+
 .form-actions-footer {
+    width: 100%;
     display: flex;
     justify-content: flex-end;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #f1f5f9;
+    align-items: center;
+    padding: 0 32px 28px;
+    box-sizing: border-box;
 }
 
 .submit-form-btn {
-    background: #3b597f; /* Slate Executive dark button */
-    color: #ffffff;
-    padding: 12px 24px;
+    min-width: 150px;
+    height: 42px;
+    padding: 0 22px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
+    background: #2563eb;
+    color: #ffffff;
+    font-family: inherit;
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.15s ease;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease, transform 0.1s ease;
 }
 
 .submit-form-btn:hover {
-    background: #2a395b;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+    background: #1d4ed8;
+}
+
+.submit-form-btn:active {
+    transform: translateY(1px);
 }
 
 .submit-form-btn:disabled {
     background: #94a3b8;
     cursor: not-allowed;
-    transform: none;
 }
 
-.auto-date-badge {
-    background: #eef7ff;
-    color: #0d6efd;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    margin-top: 4px;
-    display: inline-block;
-}
+/* ================================
+   RESPONSIVE LAYOUT
+================================ */
 
-/* Responsive Fallbacks */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+    .create-batch-container {
+        padding: 16px;
+    }
+
+    .form-card-wrapper {
+        border-radius: 8px;
+    }
+
+    .form-title,
+    .form-card-wrapper > h1 {
+        padding: 20px;
+        font-size: 20px;
+    }
+
     .form-fields-grid {
         grid-template-columns: 1fr;
-    }
-    .form-group.full-width {
-        grid-column: span 1;
-    }
-    .create-batch-container {
+        row-gap: 16px;
         padding: 20px;
+    }
+
+    .form-actions-footer {
+        padding: 0 20px 20px;
+    }
+
+    .submit-form-btn {
+        width: 100%;
     }
 }
 
 @keyframes alertSlideIn {
-    from { opacity: 0; transform: translateY(-6px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

@@ -42,13 +42,11 @@ function Sidebar({ role }) {
 
         { name: "All Leads", path: "/admin/all-leads" },
 
-        { name: "My Leads", path: "/admin/my-leads" },
+
 
         { name: "Add Lead", path: "/admin/add-lead" },
 
-        { name: "Today's Followups", path: "/admin/today-followups" },
 
-        { name: "Pending Followups", path: "/admin/pending-followups" },
 
         { name: "Notifications", path: "/admin/notifications" },
 
@@ -99,10 +97,6 @@ function Sidebar({ role }) {
           path: "/admin/students",
         },
 
-        {
-          name: "My Students",
-          path: "/admin/my-students",
-        },
 
          {
       name: "Profile Change Requests",
@@ -174,10 +168,7 @@ function Sidebar({ role }) {
 
       links: [
 
-        {
-          name: "Batch Dashboard",
-          path: "/admin/batches/dashboard",
-        },
+     
 
         {
           name: "All Batches",

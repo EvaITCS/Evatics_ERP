@@ -93,15 +93,25 @@ public class FollowupService {
         FollowupStatus followupStatus =
                 getFollowupStatus(request.getActionResult());
 
-        LeadFollowup followup = LeadFollowup.builder()
-                .lead(lead)
-                .employee(employee)
-                .followupType(request.getFollowupType())
-                .followupStatus(followupStatus)
-                .remarks(request.getRemarks())
-                .scheduledAt(LocalDateTime.now())
-                .retryCount(retryCount)
-                .build();
+        LocalDateTime actionPerformedAt = LocalDateTime.now();
+
+        LeadFollowup.LeadFollowupBuilder followupBuilder =
+                LeadFollowup.builder()
+                        .lead(lead)
+                        .employee(employee)
+                        .followupType(request.getFollowupType())
+                        .followupStatus(followupStatus)
+                        .actionResult(request.getActionResult())
+                        .remarks(request.getRemarks())
+                        .scheduledAt(LocalDateTime.now())
+                        .actionPerformedAt(actionPerformedAt)
+                        .retryCount(retryCount);
+
+        if (followupStatus == FollowupStatus.COMPLETED) {
+            followupBuilder.completedAt(actionPerformedAt);
+        }
+
+        LeadFollowup followup = followupBuilder.build();
 
         followup = followupRepository.save(followup);
 
@@ -218,15 +228,18 @@ public class FollowupService {
 
 
         // =====================================================
-        // NOT INTERESTED
-        // =====================================================
+// NOT INTERESTED
+// =====================================================
 
-        if ("NOT_INTERESTED".equals(
+        if ("NOT_INTERESTED".equalsIgnoreCase(
                 request.getActionResult())) {
+
+            LocalDateTime reEngagementDate =
+                    actionPerformedAt.plusMonths(6);
 
             handleNotInterestedLead(
                     lead,
-                    employee
+                    reEngagementDate
             );
         }
 
@@ -256,17 +269,19 @@ public class FollowupService {
     // =====================================================
     // HANDLE NOT INTERESTED
     // =====================================================
+// =====================================================
+// HANDLE NOT INTERESTED
+// =====================================================
 
     private void handleNotInterestedLead(
             Lead lead,
-            Employee employee
+            LocalDateTime reEngagementDate
     ) {
 
         // -------------------------------------------------
-        // ARCHIVE LEAD
+        // DO NOT ARCHIVE
         // -------------------------------------------------
 
-//
         lead.setIsArchived(false);
 
         // -------------------------------------------------
@@ -278,21 +293,16 @@ public class FollowupService {
 
         lead.setLeadStatus(notInterestedStatus);
 
-
         // -------------------------------------------------
-        // SIX MONTH RE-ENGAGEMENT DATE
+        // RE-ENGAGEMENT DATE
         // -------------------------------------------------
-
-        LocalDateTime reEngagementDate =
-                LocalDateTime.now().plusMonths(6);
 
         lead.setReEngagementDate(
                 reEngagementDate
         );
 
-
         // -------------------------------------------------
-        // CLEAR NEXT FOLLOW-UP
+        // CLEAR NORMAL FOLLOW-UP
         // -------------------------------------------------
 
         lead.setNextFollowupDate(null);
@@ -561,12 +571,23 @@ public class FollowupService {
                                 : null
                 )
 
+                .actionResult(
+                        followup.getActionResult()
+                )
+
                 .remarks(
                         followup.getRemarks()
                 )
 
                 .scheduledAt(
                         followup.getScheduledAt()
+                )
+                .actionPerformedAt(
+                        followup.getActionPerformedAt()
+                )
+
+                .completedAt(
+                        followup.getCompletedAt()
                 )
 
                 .nextFollowupAt(
@@ -670,16 +691,14 @@ public class FollowupService {
 // =====================================================
 
     @Transactional
-    public void createReEngagementFollowup(
-            Lead lead) {
+    public void createReEngagementFollowup(Lead lead) {
 
         // =====================================================
-        // DUPLICATE FOLLOW-UP PROTECTION
+        // DUPLICATE PROTECTION
         // =====================================================
 
         String remarks =
                 "Automatic Re-Engagement Follow-up";
-
 
         boolean exists =
                 followupRepository
@@ -689,16 +708,7 @@ public class FollowupService {
                                 remarks
                         );
 
-
-        // =====================================================
-        // ALREADY EXISTS
-        // =====================================================
-
         if (exists) {
-
-            // Scheduler accidentally dobara process kare
-            // to duplicate follow-up create nahi hoga.
-
             return;
         }
 
@@ -715,7 +725,8 @@ public class FollowupService {
                         .orElseThrow(() ->
                                 new RuntimeException(
                                         "No active assignment found for re-engagement lead."
-                                ));
+                                )
+                        );
 
 
         // =====================================================
@@ -727,54 +738,42 @@ public class FollowupService {
 
 
         // =====================================================
-        // FOLLOW-UP AFTER 2 DAYS
+        // RE-ENGAGEMENT ACTION TIME
         // =====================================================
 
+        LocalDateTime actionPerformedAt =
+                LocalDateTime.now();
+
         LocalDateTime followupTime =
-                LocalDateTime.now().plusDays(2);
+                actionPerformedAt.plusDays(2);
 
 
         // =====================================================
         // CREATE FOLLOW-UP
         // =====================================================
-
         LeadFollowup followup =
                 LeadFollowup.builder()
-
                         .lead(lead)
-
                         .employee(employee)
+                        .followupType(FollowupType.CALL)
+                        .followupStatus(FollowupStatus.PENDING)
 
-                        .followupType(
-                                FollowupType.CALL
-                        )
+                        // Automatic re-engagement follow-up
+                        .actionResult("RE_ENGAGEMENT")
 
-                        .followupStatus(
-                                FollowupStatus.PENDING
-                        )
+                        .remarks(remarks)
 
-                        .remarks(
-                                remarks
-                        )
+                        // Follow-up created/scheduled now
+                        .scheduledAt(LocalDateTime.now())
 
-                        .scheduledAt(
-                                LocalDateTime.now()
-                        )
+                        // Actual action has NOT been performed yet
+                        .actionPerformedAt(null)
 
-                        .nextFollowupAt(
-                                followupTime
-                        )
+                        .nextFollowupAt(followupTime)
 
                         .retryCount(0)
 
                         .build();
-
-
-        followup =
-                followupRepository.save(
-                        followup
-                );
-
 
         // =====================================================
         // CREATE REMINDER
@@ -808,13 +807,12 @@ public class FollowupService {
 
 
         // =====================================================
-        // UPDATE LEAD NEXT FOLLOW-UP
+        // UPDATE NEXT FOLLOW-UP
         // =====================================================
 
         lead.setNextFollowupDate(
                 followupTime
         );
-
 
         leadRepository.save(
                 lead

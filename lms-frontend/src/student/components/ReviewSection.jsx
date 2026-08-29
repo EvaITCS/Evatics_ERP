@@ -1,14 +1,8 @@
 import React from "react";
 import {
-    User,
-    MapPin,
-    Globe,
-    GraduationCap,
-    Briefcase,
-    FileText,
+  
     CheckCircle,
     XCircle,
-    Edit3,
     ArrowLeft,
     Send,
     AlertTriangle,
@@ -299,6 +293,8 @@ export default function ReviewSection({
             .replace(/\b\w/g, (char) => char.toUpperCase());
     };
 
+    
+
     const getVisaName = (visaValue) => {
         if (!visaValue) return "-";
         const visa = visaOptions.find(
@@ -410,12 +406,10 @@ export default function ReviewSection({
             <div style={STYLES.card(COLORS.primary)}>
                 <div style={STYLES.cardHeader}>
                     <div style={STYLES.cardHeaderTitles}>
-                        <div style={STYLES.cardHeaderIcon(COLORS.primaryTint, COLORS.primary)}>
-                            <User size={20} />
-                        </div>
+                        
                         <div>
                             <h3 style={STYLES.cardHeaderTitle}>Personal Information</h3>
-                            <p style={STYLES.cardHeaderSubtitle}>Applicant Basic Details</p>
+                           
                         </div>
                     </div>
                     <button
@@ -429,7 +423,7 @@ export default function ReviewSection({
                         disabled={locked}
                         onClick={() => !locked && setCurrentStep(0)}
                     >
-                        <Edit3 size={14} />
+                       
                         <span>Edit</span>
                     </button>
                 </div>
@@ -451,12 +445,10 @@ export default function ReviewSection({
             <div style={STYLES.card(COLORS.teal)}>
                 <div style={STYLES.cardHeader}>
                     <div style={STYLES.cardHeaderTitles}>
-                        <div style={STYLES.cardHeaderIcon(COLORS.tealTint, COLORS.teal)}>
-                            <Globe size={20} />
-                        </div>
+                      
                         <div>
                             <h3 style={STYLES.cardHeaderTitle}>Visa Details</h3>
-                            <p style={STYLES.cardHeaderSubtitle}>Immigration & Visa Status</p>
+                           
                         </div>
                     </div>
                     <button
@@ -470,7 +462,7 @@ export default function ReviewSection({
                         disabled={locked}
                         onClick={() => !locked && setCurrentStep(0)}
                     >
-                        <Edit3 size={14} />
+                      
                         <span>Edit</span>
                     </button>
                 </div>
@@ -498,12 +490,10 @@ export default function ReviewSection({
             <div style={STYLES.card(COLORS.indigo)}>
                 <div style={STYLES.cardHeader}>
                     <div style={STYLES.cardHeaderTitles}>
-                        <div style={STYLES.cardHeaderIcon(COLORS.indigoTint, COLORS.indigo)}>
-                            <MapPin size={20} />
-                        </div>
+                     
                         <div>
                             <h3 style={STYLES.cardHeaderTitle}>Address Details</h3>
-                            <p style={STYLES.cardHeaderSubtitle}>Your current address and location details</p>
+                          
                         </div>
                     </div>
                     <button
@@ -517,7 +507,7 @@ export default function ReviewSection({
                         disabled={locked}
                         onClick={() => !locked && setCurrentStep(1)}
                     >
-                        <Edit3 size={14} />
+                       
                         <span>Edit</span>
                     </button>
                 </div>
@@ -541,12 +531,10 @@ export default function ReviewSection({
             <div style={STYLES.card(COLORS.purple)}>
                 <div style={STYLES.cardHeader}>
                     <div style={STYLES.cardHeaderTitles}>
-                        <div style={STYLES.cardHeaderIcon(COLORS.purpleTint, COLORS.purple)}>
-                            <GraduationCap size={20} />
-                        </div>
+                      
                         <div>
                             <h3 style={STYLES.cardHeaderTitle}>Education Details</h3>
-                            <p style={STYLES.cardHeaderSubtitle}>Academic Background & Qualifications</p>
+                            
                         </div>
                     </div>
                     <button
@@ -560,7 +548,7 @@ export default function ReviewSection({
                         disabled={locked}
                         onClick={() => !locked && setCurrentStep(2)}
                     >
-                        <Edit3 size={14} />
+                      
                         <span>Edit</span>
                     </button>
                 </div>
@@ -587,12 +575,10 @@ export default function ReviewSection({
             <div style={STYLES.card(COLORS.amber)}>
                 <div style={STYLES.cardHeader}>
                     <div style={STYLES.cardHeaderTitles}>
-                        <div style={STYLES.cardHeaderIcon(COLORS.amberTint, COLORS.amber)}>
-                            <Briefcase size={20} />
-                        </div>
+                        
                         <div>
                             <h3 style={STYLES.cardHeaderTitle}>Work Experience</h3>
-                            <p style={STYLES.cardHeaderSubtitle}>Professional Employment History</p>
+                      
                         </div>
                     </div>
                     <button
@@ -606,7 +592,7 @@ export default function ReviewSection({
                         disabled={locked}
                         onClick={() => !locked && setCurrentStep(3)}
                     >
-                        <Edit3 size={14} />
+                      
                         <span>Edit</span>
                     </button>
                 </div>
@@ -633,12 +619,10 @@ export default function ReviewSection({
             <div style={STYLES.card(COLORS.teal)}>
                 <div style={STYLES.cardHeader}>
                     <div style={STYLES.cardHeaderTitles}>
-                        <div style={STYLES.cardHeaderIcon(COLORS.tealTint, COLORS.teal)}>
-                            <FileText size={20} />
-                        </div>
+                       
                         <div>
                             <h3 style={STYLES.cardHeaderTitle}>Uploaded Documents</h3>
-                            <p style={STYLES.cardHeaderSubtitle}>Identity & Verification Attachments</p>
+                        
                         </div>
                     </div>
                     <button
@@ -652,7 +636,7 @@ export default function ReviewSection({
                         disabled={locked}
                         onClick={() => !locked && setCurrentStep(4)}
                     >
-                        <Edit3 size={14} />
+                      
                         <span>Edit</span>
                     </button>
                 </div>

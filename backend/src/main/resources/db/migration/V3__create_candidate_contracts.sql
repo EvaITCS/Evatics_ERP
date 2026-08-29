@@ -87,3 +87,8 @@ ALTER TABLE student_application_invitation_tokens
 
 ALTER TABLE student_drop_requests
     MODIFY COLUMN recommendation ENUM('APPROVE', 'HOLD', 'REJECT') NULL DEFAULT NULL;
+
+
+-- New Col
+ALTER TABLE lead_followups
+    ADD COLUMN action_performed_at TIMESTAMP NULL;

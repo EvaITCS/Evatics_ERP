@@ -12,8 +12,8 @@
     --erp-border-strong: #CBD5E1;
     --erp-input-border: #D1D5DB;
     --erp-input-border-hover: #94A3B8;
-    --erp-input-border-focus: #2563EB; /* Matching Stepper Active Blue */
-    --erp-input-focus-ring: rgba(37, 99, 235, 0.15); /* Matching Stepper Active Ring */
+    --erp-input-border-focus: #2563EB;
+    --erp-input-focus-ring: rgba(37, 99, 235, 0.15);
 
     /* Text Colors */
     --erp-text: #0F172A;
@@ -21,12 +21,12 @@
     --erp-text-subtle: #475569;
     --erp-text-faint: #94A3B8;
 
-    /* Brand Blue Theme Colors (Exact Match with Stepper) */
-    --erp-primary: #1E40AF;        /* Deep Blue (Matches Stepper Start) */
-    --erp-accent: #2563EB;         /* Primary Accent Blue (Matches Stepper Active) */
-    --erp-primary-gradient: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%); /* Same Gradient as Stepper */
-    --erp-primary-hover: #1D4ED8;    /* Smooth Blue Hover */
-    --erp-primary-soft: #EFF6FF;     /* Soft Light Blue Chip/Icon Background */
+    /* Brand Blue Theme Colors */
+    --erp-primary: #1E40AF; 
+    --erp-accent: #2563EB; 
+    --erp-primary-gradient: linear-gradient(135deg, #1E40AF 0%, #3B82F6 100%);
+    --erp-primary-hover: #1D4ED8; 
+    --erp-primary-soft: #EFF6FF; 
 
     /* Danger / Validation States */
     --erp-danger: #EF4444;
@@ -47,15 +47,17 @@
     --erp-control-height: 42px;
     --erp-ease: cubic-bezier(0.16, 1, 0.3, 1);
     --erp-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --erp-font-label: Georgia, Cambria, "Times New Roman", Times, serif;
+    --erp-font-label: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
+
 /* =========================================================
-   FORM STEP CONTAINER (SINGLE CARD WITH TOP BLUE LINE)
+   FORM STEP CONTAINER (SINGLE CARD WITH TOP BLUE ACCENT)
    ========================================================= */
 .form-step-container {
     width: 100%;
     background-color: var(--erp-surface);
-    border: 1px solid var(--erp-border);/* TOP BLUE ACCENT LINE */
+    border: 1px solid var(--erp-border);
+    border-top: 4px solid var(--erp-accent);
     border-radius: var(--erp-radius-lg);
     padding: 32px;
     margin-top: 24px;
@@ -65,7 +67,7 @@
     color: var(--erp-text);
 }
 
-/* Header Section */
+/* Header Section Clean */
 .form-section-header {
     display: flex;
     align-items: center;
@@ -75,30 +77,61 @@
     border-bottom: 1px solid var(--erp-border);
 }
 
-.section-header-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: var(--erp-radius-sm);
-    background-color: var(--erp-primary-soft);
-    color: var(--erp-accent);
-    flex-shrink: 0;
-}
-
+/* Removed Blue Accent Bar on Title Left Border */
 .form-section-title {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--erp-text);
     margin: 0;
     line-height: 1.2;
+    border-left: none !important; 
+    padding-left: 0 !important;
 }
 
 .form-section-subtitle {
     font-size: 12.5px;
     color: var(--erp-text-muted);
     margin: 2px 0 0 0;
+}
+
+/* Phone Input Group Layout */
+.phone-input-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+}
+
+/* Light Blue Country Badge */
+.country-chip {
+    background-color: #E0F2FE;
+    color: #025ec7;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 0 14px;
+    height: 42px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    user-select: none;
+}
+
+/* Input Field Alignment */
+.phone-input-group input {
+    flex: 1;
+    height: 40px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 0 14px;
+    font-size: 14px;
+    outline: none;
+}
+
+.phone-input-group input:focus {
+    border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 /* =========================================================
@@ -126,8 +159,8 @@
 .field-box label {
     display: flex;
     align-items: center;
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 13px;
+    font-weight: 600;
     font-family: var(--erp-font-label);
     color: #000000;
     margin-bottom: 8px;
@@ -162,7 +195,6 @@
 }
 
 .field-box select {
-   
     background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%22%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2364748B%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
     background-position: right 14px top 50%;
@@ -259,7 +291,7 @@
 
 .file-upload-box input[type="file"]::-webkit-file-upload-button:hover,
 .file-upload-box input[type="file"]::file-selector-button:hover {
-    background:rgb(228, 228, 228);
+    background: rgb(228, 228, 228);
 }
 
 .file-status {
@@ -589,6 +621,8 @@
     background-color: #FEE2E2;
     color: #B91C1C;
 }
+
+
 
 /* =========================================================
    RESPONSIVENESS

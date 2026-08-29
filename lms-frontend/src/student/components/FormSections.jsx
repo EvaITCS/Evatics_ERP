@@ -323,18 +323,12 @@ export default function FormSections({
     return (
       <div className="form-step-container">
         <div className="form-section-header">
-          <div className="section-header-icon">
-            <User size={20} />
-          </div>
-
+        
           <div>
             <h2 className="form-section-title">
               Personal Information
             </h2>
 
-            <p className="form-section-subtitle">
-              Candidate information and visa details
-            </p>
           </div>
         </div>
 
@@ -437,60 +431,43 @@ export default function FormSections({
             )}
           </div>
 
-          {/* PRIMARY PHONE */}
-          <div className="field-box">
-            <label>Primary Phone</label>
+         {/* PRIMARY PHONE */}
+<div className="field-box">
+  <label>
+    Primary Phone <span className="required">*</span>
+  </label>
+  <div className="phone-input-group">
+    <span className="country-chip">+1 USA</span>
+    <input
+      type="text"
+      name="phone"
+      placeholder="312-456-7890 *"
+      value={formData.phone || ""}
+      readOnly
+      className={`readonly-bg ${errors.phone ? "invalid-field" : ""}`}
+    />
+  </div>
+  {errors.phone && <span className="error-text">{errors.phone}</span>}
+</div>
 
-            <div className="phone-wrapper">
-              <div className="static-country-code">
-                <Phone size={14} />
-                <span>
-                  {formData.phoneCountryCode || "+1"}
-                </span>
-              </div>
-
-              <input
-                name="phone"
-                placeholder="000-000-0000"
-                value={formData.phone || ""}
-                readOnly
-                className={`readonly-bg ${
-                  errors.phone ? "invalid-field" : ""
-                }`}
-              />
-            </div>
-
-            {errors.phone && (
-              <span className="error-text">
-                {errors.phone}
-              </span>
-            )}
-          </div>
-
-          {/* ALTERNATE PHONE */}
-          <div className="field-box">
-            <label>Alternate Phone</label>
-
-            <div className="phone-wrapper">
-              <select
-                name="alternateCountryCode"
-                value={
-                  formData.alternateCountryCode || "+1"
-                }
-                onChange={handleChange}
-              >
-                <option value="+1">+1</option>
-              </select>
-
-              <input
-                type="text"
-                name="alternatePhone"
-                placeholder="000-000-0000"
-                value={formData.alternatePhone || ""}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
+{/* ALTERNATE PHONE */}
+<div className="field-box">
+  <label>Alternate Phone</label>
+  <div className="phone-input-group">
+    <span className="country-chip">+1 USA</span>
+    <input
+      type="text"
+      name="alternatePhone"
+      placeholder="312-456-7890"
+      value={formData.alternatePhone || ""}
+      onChange={handleChange}
+      className={errors.alternatePhone ? "invalid-field" : ""}
+    />
+  </div>
+  {errors.alternatePhone && (
+    <span className="error-text">{errors.alternatePhone}</span>
+  )}
+</div>
 
           {/* VISA TYPE */}
           <div className="field-box">
@@ -643,18 +620,13 @@ export default function FormSections({
     return (
       <div className="form-step-container">
         <div className="form-section-header">
-          <div className="section-header-icon">
-            <MapPin size={20} />
-          </div>
+          
 
           <div>
             <h2 className="form-section-title">
               Current Address
             </h2>
 
-            <p className="form-section-subtitle">
-              Your current address and location details
-            </p>
           </div>
         </div>
 

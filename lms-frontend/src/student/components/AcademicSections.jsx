@@ -47,12 +47,9 @@ export default function AcademicSections({
             <div className="form-step-container">
                 {/* Header with Lucide Icon */}
                 <div className="form-section-header">
-                    <div className="section-header-icon">
-                        <GraduationCap size={20} />
-                    </div>
+                   
                     <div>
                         <h2 className="form-section-title">Education Details</h2>
-                        <p className="form-section-subtitle">Academic background and qualifications</p>
                     </div>
                 </div>
 
@@ -198,12 +195,10 @@ export default function AcademicSections({
             <div className="form-step-container">
                 {/* Header with Lucide Icon */}
                 <div className="form-section-header">
-                    <div className="section-header-icon">
-                        <Briefcase size={20} />
-                    </div>
+                  
                     <div>
                         <h2 className="form-section-title">Work Experience<span style={{fontSize:"18px"}}> (If Required)</span></h2>
-                        <p className="form-section-subtitle">Professional employment history and roles</p>
+                   
                     </div>
                 </div>
 
@@ -383,12 +378,9 @@ export default function AcademicSections({
             <div className="form-step-container">
                 {/* Header with Lucide Icon */}
                 <div className="form-section-header">
-                    <div className="section-header-icon">
-                        <FileText size={20} />
-                    </div>
+                   
                     <div>
                         <h2 className="form-section-title">Upload Documents</h2>
-                        <p className="form-section-subtitle">Required identity and academic attachments</p>
                     </div>
                 </div>
 <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>

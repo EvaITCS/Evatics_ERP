@@ -16,9 +16,8 @@
     --stp-active-shadow: rgba(37, 99, 235, 0.25);
     --stp-active-label: #1e40af;
 
-    /* Completed State Colors Gradient (#1e40af -> #3b82f6) */
-    --stp-complete-start: #1e40af;  /* Darker Blue */
-    --stp-complete-end: #3b82f6;    /* Lighter Blue */
+    /* Completed State Colors */
+    --stp-complete-bg: #2563eb;     /* Solid Primary Blue */
     --stp-complete-shadow: rgba(37, 99, 235, 0.30);
     --stp-complete-label: #1e40af;
 
@@ -26,10 +25,9 @@
 
     --stp-ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 /* =========================================================
-   CONTAINER — white surface with a thin brand accent bar on
-   top and a "Step X of N" chip, the way large ERP suites
-   (Workday / SAP Fiori / ServiceNow) frame a wizard header.
+   CONTAINER — white surface with solid blue accent bar on top
 ========================================================= */
 .form-stepper-container {
     width: 100%;
@@ -45,6 +43,7 @@
     -webkit-overflow-scrolling: touch;
 }
 
+/* TOP BAR: Replaced Gradient with Solid Blue */
 .form-stepper-container::before {
     content: "";
     position: absolute;
@@ -53,7 +52,7 @@
     right: 0;
     height: 3px;
     border-radius: 14px 14px 0 0;
-    background: linear-gradient(90deg, var(--stp-complete-start), var(--stp-active-fg), var(--stp-complete-end));
+   
 }
 
 .stepper-meta-row {
@@ -61,6 +60,7 @@
     justify-content: flex-end;
     margin-bottom: 14px;
 }
+
 .stepper-count-chip {
     display: inline-flex;
     align-items: center;
@@ -70,21 +70,18 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--stp-active-fg);
-    background: linear-gradient(180deg, #eef3fd, #e4ecfb);
+    background: #eef3fd;
     border: 1px solid #d3e0f7;
     padding: 5px 12px;
     border-radius: 999px;
 }
+
 .stepper-count-chip strong {
-    color: var(--stp-complete-end);
+    color: var(--stp-active-fg);
 }
 
 /* =========================================================
-   PROGRESS ROW — CSS grid, one column per step. The track is
-   a single absolute line positioned between the center of the
-   first and last column (inset = half a column width each
-   side) so it always passes through every circle's true
-   center — independent of label length or step count.
+   PROGRESS ROW
 ========================================================= */
 .stepper-progress-bar {
     display: grid;
@@ -102,16 +99,19 @@
     height: 3px;
     z-index: 0;
 }
+
 .stepper-track {
     position: absolute;
     inset: 0;
     background: var(--stp-line-bg);
     border-radius: 3px;
 }
+
+/* TRACK PROGRESS: Replaced Gradient with Solid Blue */
 .stepper-track-progress {
     position: absolute;
     inset: 0 auto 0 0;
-    background: linear-gradient(90deg, var(--stp-complete-start), var(--stp-active-fg));
+    background: var(--stp-active-fg);
     box-shadow: 0 1px 6px var(--stp-active-shadow);
     border-radius: 3px;
     transition: width 0.5s var(--stp-ease);
@@ -138,20 +138,21 @@
 .stepper-node-wrapper.clickable {
     cursor: pointer;
 }
+
 .stepper-node-wrapper.clickable:hover .stepper-circle {
     transform: translateY(-1px);
 }
+
 .stepper-node-wrapper.clickable:hover .stepper-label {
     color: var(--stp-active-label);
 }
+
 .stepper-node-wrapper.clickable:focus-visible .stepper-circle {
     box-shadow: 0 0 0 3px var(--stp-active-ring);
 }
 
 /* =========================================================
-   CIRCLE — same 40px box for every state (keeps the track
-   centered) but pending/active/completed read very
-   differently through color + elevation, not size.
+   CIRCLE
 ========================================================= */
 .stepper-circle {
     width: 40px;
@@ -181,6 +182,7 @@
     padding-bottom: 6px;
     transition: color 0.3s var(--stp-ease);
 }
+
 .stepper-label::after {
     content: "";
     position: absolute;
@@ -198,9 +200,7 @@
    STATES
 ========================================================= */
 
-/* Active — white face, colored ring + lifted shadow (the
-   "halo" reads as emphasis without changing the box size, so
-   the connector line still hits its exact center). */
+/* Active */
 .stepper-node-wrapper.active .stepper-circle {
     background: var(--stp-surface);
     border-color: var(--stp-active-fg);
@@ -208,21 +208,24 @@
     color: var(--stp-active-fg);
     box-shadow: 0 0 0 5px var(--stp-active-ring), 0 6px 14px var(--stp-active-shadow);
 }
+
 .stepper-node-wrapper.active .stepper-label {
     color: var(--stp-active-label);
     font-weight: 700;
 }
+
 .stepper-node-wrapper.active .stepper-label::after {
     width: 22px;
 }
 
-/* Completed — filled brand gradient, white icon, elevated. */
+/* Completed: Replaced Gradient Background with Solid Blue */
 .stepper-node-wrapper.completed .stepper-circle {
-    background: linear-gradient(150deg, var(--stp-complete-start), var(--stp-complete-end));
+    background: var(--stp-complete-bg);
     border-color: transparent;
     color: #ffffff;
     box-shadow: 0 4px 10px var(--stp-complete-shadow);
 }
+
 .stepper-node-wrapper.completed .stepper-label {
     color: var(--stp-complete-label);
 }

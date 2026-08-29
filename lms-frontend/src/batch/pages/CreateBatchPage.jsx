@@ -1,6 +1,5 @@
-// src/batch/pages/CreateBatchPage.jsx
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom"; // For Feature 2
+import { useSearchParams } from "react-router-dom";
 
 import {
     createBatch,
@@ -10,9 +9,9 @@ import {
 } from "../services/batchService";
 
 import "../styles/createBatch.css";
-
+import { useToast } from "../../shared/components/ToastContext";
 export default function CreateBatchPage() {
-
+    const { showToast } = useToast();
     // =========================
     // DROPDOWN & QUERY PARAMS DATA
     // =========================
@@ -42,60 +41,55 @@ export default function CreateBatchPage() {
     // =========================
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [statusMessage, setStatusMessage] = useState({
-        type: "",
-        text: ""
-    });
+   
 
     // =========================
     // HELPER: AUTOMATED END DATE CALCULATION
     // =========================
     const calculateEndDate = (startDate, durationValue, durationType) => {
-    if (!startDate || !durationValue || !durationType) return "";
+        if (!startDate || !durationValue || !durationType) return "";
 
-    const date = new Date(startDate);
-    const value = Number(durationValue);
+        const date = new Date(startDate);
+        const value = Number(durationValue);
 
-    switch (durationType.toUpperCase()) {
+        switch (durationType.toUpperCase()) {
 
-        case "DAY":
-        case "DAYS":
-            date.setDate(date.getDate() + value);
-            break;
+            case "DAY":
+            case "DAYS":
+                date.setDate(date.getDate() + value);
+                break;
 
-        case "WEEK":
-        case "WEEKS":
-            date.setDate(date.getDate() + (value * 7));
-            break;
+            case "WEEK":
+            case "WEEKS":
+                date.setDate(date.getDate() + (value * 7));
+                break;
 
-        case "MONTH":
-        case "MONTHS":
-            date.setMonth(date.getMonth() + value);
-            break;
+            case "MONTH":
+            case "MONTHS":
+                date.setMonth(date.getMonth() + value);
+                break;
 
-        case "YEAR":
-        case "YEARS":
-            date.setFullYear(date.getFullYear() + value);
-            break;
+            case "YEAR":
+            case "YEARS":
+                date.setFullYear(date.getFullYear() + value);
+                break;
 
-        default:
-            return "";
-    }
+            default:
+                return "";
+        }
 
-    return date.toISOString().split("T")[0];
-};
+        return date.toISOString().split("T")[0];
+    };
 
     // Helper to update end date based on selected program and start date
     const runDateCalculation = (progId, currentStartDate) => {
         if (!currentStartDate || !progId) return "";
         
-        // Find the selected program metadata from our loaded list
         const selectedProg = programs.find(p => String(p.programId) === String(progId));
         
         if (selectedProg) {
-            // Foolproof Fallback: checks durationValue first, then falls back to durationMonths, defaults to 0 if missing
             const durationValue = selectedProg.durationValue || selectedProg.durationMonths || 0;
-            const durationType = selectedProg.durationType || "WEEK"; // Default fallback type
+            const durationType = selectedProg.durationType || "WEEK";
 
             if (durationValue > 0) {
                 return calculateEndDate(
@@ -156,25 +150,18 @@ export default function CreateBatchPage() {
 
         // Max Students Validation
         if (name === "maxStudents" && Number(value) > 12) {
-            setStatusMessage({
-                type: "error",
-                text: "❌ Maximum students cannot exceed 12"
-            });
+           showToast("Maximum students cannot exceed 12", "error");
             return;
         }
 
         // Min Students Validation
         if (name === "minStudents" && Number(value) < 4) {
-            setStatusMessage({
-                type: "error",
-                text: "❌ Minimum students must be at least 4"
-            });
+          showToast("Minimum students must be at least 4", "error");
             return;
         }
 
-        setStatusMessage({ type: "", text: "" });
+       
 
-        // Calculate dynamic dates or batch code generation based on target fields
         let updatedEndDate = form.endDate;
 
         if (name === "programId") {
@@ -189,7 +176,7 @@ export default function CreateBatchPage() {
         setForm((prev) => ({
             ...prev,
             [name]: value,
-            endDate: updatedEndDate // Dynamic allocation
+            endDate: updatedEndDate
         }));
     };
 
@@ -199,29 +186,33 @@ export default function CreateBatchPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (Number(form.minStudents) < 4) {
-            setStatusMessage({ type: "error", text: "❌ Minimum students should be at least 4" });
-            return;
-        }
-        if (Number(form.maxStudents) > 12) {
-            setStatusMessage({ type: "error", text: "❌ Maximum students cannot exceed 12" });
-            return;
-        }
-        if (Number(form.minStudents) > Number(form.maxStudents)) {
-            setStatusMessage({ type: "error", text: "❌ Minimum students cannot exceed maximum students" });
-            return;
-        }
+      if (Number(form.minStudents) < 4) {
+    showToast("Minimum students should be at least 4", "error");
+    return;
+}
+
+if (Number(form.maxStudents) > 12) {
+    showToast("Maximum students cannot exceed 12", "error");
+    return;
+}
+
+if (Number(form.minStudents) > Number(form.maxStudents)) {
+    showToast(
+        "Minimum students cannot exceed maximum students",
+        "error"
+    );
+    return;
+}
 
         setIsSubmitting(true);
 
         try {
             await createBatch(form);
-            setStatusMessage({
-                type: "success",
-                text: `✅ Batch ${form.batchCode} created successfully`
-            });
+           showToast(
+    `Batch ${form.batchCode} created successfully`,
+    "success"
+);
 
-            // Reset form back to base setup
             setForm({
                 batchCode: "",
                 personId: "",
@@ -239,7 +230,7 @@ export default function CreateBatchPage() {
 
         } catch (error) {
             console.error("Create Batch Error:", error);
-            setStatusMessage({ type: "error", text: "❌ Failed to create batch" });
+         showToast("Failed to create batch", "error");
         } finally {
             setIsSubmitting(false);
         }
@@ -252,7 +243,6 @@ export default function CreateBatchPage() {
         loadInitialData();
     }, []);
 
-    // Handles subsequent date recalculation if programs finish loading after form state initializes
     useEffect(() => {
         if (form.programId && form.startDate && programs.length > 0) {
             const calculated = runDateCalculation(form.programId, form.startDate);
@@ -266,7 +256,9 @@ export default function CreateBatchPage() {
     if (loading) {
         return (
             <div className="create-batch-container">
-                <h2>Loading Form...</h2>
+                <div className="form-card-wrapper">
+                    <h2>Loading Form...</h2>
+                </div>
             </div>
         );
     }
@@ -276,21 +268,15 @@ export default function CreateBatchPage() {
     // =========================
     return (
         <div className="create-batch-container">
-            {/* HEADER */}
-            <div className="form-header-zone">
-                <h1>Create New Batch</h1>
-                <p className="form-subtitle">Create and configure training batches</p>
-            </div>
 
-            {/* STATUS */}
-            {statusMessage.text && (
-                <div className={`form-status-alert ${statusMessage.type}`}>
-                    {statusMessage.text}
-                </div>
-            )}
+      
 
-            {/* FORM */}
+            {/* FORM CARD WRAPPER */}
             <div className="form-card-wrapper">
+
+                {/* HEADER INSIDE CARD TO MATCH PROGRAM FORM EXACT REPLICA */}
+                <h1 className="form-title">Create New Batch</h1>
+
                 <form onSubmit={handleSubmit} className="enterprise-form">
                     <div className="form-fields-grid">
 
@@ -303,6 +289,7 @@ export default function CreateBatchPage() {
                                 value={form.batchCode}
                                 placeholder="Select Program First"
                                 readOnly
+                                disabled
                             />
                         </div>
 
@@ -313,7 +300,7 @@ export default function CreateBatchPage() {
                                 name="programId"
                                 value={form.programId}
                                 onChange={handleChange}
-                                disabled={!!preselectedProgramId} // Disables if accessed via shortcut
+                                disabled={!!preselectedProgramId}
                                 required
                             >
                                 <option value="">Select Program</option>
@@ -340,11 +327,11 @@ export default function CreateBatchPage() {
                                 {Array.isArray(trainers) &&
                                     trainers.map((trainer) => (
                                         <option
-    key={trainer.trainerPersonId}
-    value={trainer.trainerPersonId}
->
-    {trainer.trainerName}
-</option>
+                                            key={trainer.trainerPersonId}
+                                            value={trainer.trainerPersonId}
+                                        >
+                                            {trainer.trainerName}
+                                        </option>
                                     ))
                                 }
                             </select>
@@ -362,16 +349,16 @@ export default function CreateBatchPage() {
                             />
                         </div>
 
-                        {/* END DATE (READONLY VIA AUTOMATION) */}
+                        {/* END DATE */}
                         <div className="form-group">
                             <label>End Date</label>
                             <input
                                 type="date"
                                 name="endDate"
-                                value={form.endDate || ""} 
-                                readOnly={true}            
+                                value={form.endDate || ""}
+                                readOnly={true}
+                                disabled
                                 required
-                                style={{ backgroundColor: "#f4f6f9", cursor: "not-allowed", color: "#333" }} 
                             />
                             {form.startDate && form.programId && (
                                 <div className="auto-date-badge">

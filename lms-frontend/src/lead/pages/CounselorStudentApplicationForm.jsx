@@ -2,18 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 import "../styles/StudentForm.css";
-import {
-  ArrowLeft,
-  User,
-  Phone,
-  Globe,
-  MapPin,
-  Building2,
-  GraduationCap,
-  CheckCircle2,
-  Loader2,
-} from "lucide-react";
-
+import { ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
+import { useToast } from "../../shared/components/ToastContext";
 // Static Options for Visa
 const visaOptions = [
   { visaId: "US_CITIZEN", visaName: "US Citizen" },
@@ -49,13 +39,13 @@ const educationOptions = [
 export default function CounselorStudentApplicationForm() {
   const { candidateId } = useParams();
   const navigate = useNavigate();
-
+  const { showToast } = useToast();
   const currentYear = new Date().getFullYear();
   const yearsArray = Array.from({ length: 30 }, (_, i) =>
     String(currentYear - i)
   );
 
-  const [formData, setFormData] = useState({
+  const initialFormState = {
     firstName: "",
     middleName: "",
     lastName: "",
@@ -63,21 +53,20 @@ export default function CounselorStudentApplicationForm() {
     phoneCountryCode: "+1",
     phone: "",
     country: "United States",
-
     state: "",
     visaType: "",
     eadType: "",
     otherEadType: "",
     visaExpiryDate: "",
-
     city: "",
     zipcode: "",
-
     qualification: "",
     instituteName: "",
     fieldOfStudy: "",
     passingYear: "",
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormState);
 
   const [errors, setErrors] = useState({
     firstName: "",
@@ -98,6 +87,8 @@ export default function CounselorStudentApplicationForm() {
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [registrationResponse, setRegistrationResponse] = useState(null);
   const [sendingEmail, setSendingEmail] = useState(false);
+
+
 
   useEffect(() => {
     if (!candidateId) return;
@@ -129,67 +120,66 @@ export default function CounselorStudentApplicationForm() {
     }
   };
 
-const fetchLocationByZipcode = async (zipcode) => {
-  if (!zipcode || zipcode.length < 5) {
-    setFormData((prev) => ({
-      ...prev,
-      state: "",
-      city: "",
-    }));
-    return;
-  }
-
-  try {
-    const response = await api.get(
-      `/api/locations/search?text=${encodeURIComponent(
-        zipcode
-      )}&countryCode=us`
-    );
-
-    const locations = Array.isArray(response.data)
-      ? response.data
-      : [];
-
-    // Extra frontend safety:
-    // Sirf US locations accept karenge
-    const usLocations = locations.filter(
-      (location) =>
-        location.countryCode?.toLowerCase() === "us"
-    );
-
-    if (usLocations.length > 0) {
-      const location = usLocations[0];
-
+  const fetchLocationByZipcode = async (zipcode) => {
+    if (!zipcode || zipcode.length !== 5) {
       setFormData((prev) => ({
         ...prev,
-        country: "United States",
-        state: location.state || "",
-        city: location.city || "",
-        zipcode: location.zipcode || zipcode,
+        state: "",
+        city: "",
       }));
-    } else {
-      // US zipcode ka result nahi mila
+      return;
+    }
+
+    try {
+      const response = await api.get(
+        `/api/locations/search?text=${encodeURIComponent(
+          zipcode
+        )}&countryCode=us`
+      );
+
+      const locations = Array.isArray(response.data) ? response.data : [];
+
+      const usLocations = locations.filter(
+        (location) => location.countryCode?.toLowerCase() === "us"
+      );
+
+      const location = usLocations.find(
+        (item) =>
+          item.state &&
+          item.state.trim() !== "" &&
+          item.city &&
+          item.city.trim() !== ""
+      );
+
+      if (location) {
+        setFormData((prev) => ({
+          ...prev,
+          country: "United States",
+          state: location.state,
+          city: location.city,
+          zipcode: location.zipcode || zipcode,
+        }));
+      } else {
+        setFormData((prev) => ({
+          ...prev,
+          country: "United States",
+          state: "",
+          city: "",
+          zipcode,
+        }));
+      }
+    } catch (error) {
+      console.error("US zipcode location lookup failed:", error);
       setFormData((prev) => ({
         ...prev,
         country: "United States",
         state: "",
         city: "",
+        zipcode,
       }));
     }
-  } catch (error) {
-    console.error(
-      "US zipcode location lookup failed:",
-      error
-    );
+  };
 
-    setFormData((prev) => ({
-      ...prev,
-      country: "United States",
-      state: "",
-      city: "",
-    }));
-  }
-};
   const formatPhoneNumber = (value) => {
     const cleanStr = value.replace(/\D/g, "");
     if (cleanStr.length <= 3) return cleanStr;
@@ -198,7 +188,6 @@ const fetchLocationByZipcode = async (zipcode) => {
     return `${cleanStr.slice(0, 3)}-${cleanStr.slice(3, 6)}-${cleanStr.slice(6, 10)}`;
   };
 
-  // Visibility logic flags
   const showEadType = formData.visaType === "EAD";
   const showOtherEadType = showEadType && formData.eadType === "Other";
   const showExpiryDate = formData.visaType === "EAD";
@@ -250,31 +239,40 @@ const fetchLocationByZipcode = async (zipcode) => {
     validateField(name, value);
   };
 
+  const capitalizeFirstLetter = (str) => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     setErrors((prev) => ({ ...prev, [name]: "" }));
 
+    if (["firstName", "middleName", "lastName", "city", "state"].includes(name)) {
+      const capitalizedValue = capitalizeFirstLetter(value);
+      setFormData((prev) => ({ ...prev, [name]: capitalizedValue }));
+      return;
+    }
+
     if (name === "zipcode") {
       const numericValue = value.replace(/\D/g, "");
-
       if (numericValue.length > 5) return;
 
       setFormData((prev) => ({
         ...prev,
         zipcode: numericValue,
-         ...(numericValue.length < 5
-      ? {
-          state: "",
-          city: "",
-        }
-      : {}),
+        ...(numericValue.length < 5
+          ? {
+              state: "",
+              city: "",
+            }
+          : {}),
       }));
 
       if (numericValue.length === 5) {
         fetchLocationByZipcode(numericValue);
       }
-
       return;
     }
 
@@ -302,7 +300,6 @@ const fetchLocationByZipcode = async (zipcode) => {
         otherEadType: "",
         visaExpiryDate: "",
       }));
-
       return;
     }
 
@@ -318,7 +315,6 @@ const fetchLocationByZipcode = async (zipcode) => {
         eadType: "",
         otherEadType: "",
       }));
-
       return;
     }
 
@@ -342,25 +338,15 @@ const fetchLocationByZipcode = async (zipcode) => {
       "passingYear",
     ];
 
-    if (showEadType) {
-      requiredFields.push("eadType");
-    }
-
-    if (showOtherEadType) {
-      requiredFields.push("otherEadType");
-    }
-
-    if (showExpiryDate) {
-      requiredFields.push("visaExpiryDate");
-    }
+    if (showEadType) requiredFields.push("eadType");
+    if (showOtherEadType) requiredFields.push("otherEadType");
+    if (showExpiryDate) requiredFields.push("visaExpiryDate");
 
     requiredFields.forEach((field) => {
       const msg = validateField(field, formData[field]);
       if (msg) {
         isValid = false;
-        if (!firstErrorField) {
-          firstErrorField = field;
-        }
+        if (!firstErrorField) firstErrorField = field;
       }
     });
 
@@ -378,17 +364,13 @@ const fetchLocationByZipcode = async (zipcode) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     try {
       const data = new FormData();
 
-      // Form Data preparation
       Object.keys(formData).forEach((key) => {
         if (key === "eadType" && formData.eadType === "Other") {
-          // Send custom entered value as eadType to DB
           data.append("eadType", formData.otherEadType);
         } else if (key !== "otherEadType") {
           data.append(key, formData[key]);
@@ -402,10 +384,10 @@ const fetchLocationByZipcode = async (zipcode) => {
       setRegistrationResponse(response.data);
       setShowEmailModal(true);
       setErrors({});
-    } catch (error) {
-      console.error("Submit Error:", error);
-      alert("Failed to register student.");
-    }
+   } catch (error) {
+  console.error("Submit Error:", error);
+  showToast("Failed to register student.", "error");
+}
   };
 
   const handleSendInvitationEmail = async () => {
@@ -413,47 +395,28 @@ const fetchLocationByZipcode = async (zipcode) => {
       setSendingEmail(true);
 
       await api.post("/student/send-invitation-email", {
-        personId: registrationResponse.personId,
-        username: registrationResponse.username,
-        temporaryPassword: registrationResponse.temporaryPassword,
+        personId: registrationResponse?.personId,
+        username: registrationResponse?.username,
+        temporaryPassword: registrationResponse?.temporaryPassword,
       });
 
-      alert("Invitation email sent successfully.");
+      showToast("Invitation email sent successfully!", "success");
+
       setShowEmailModal(false);
-
-      const role = localStorage.getItem("role");
-
-      if (role === "COUNSELLOR") {
-        navigate("/COUNSELLOR/my-students");
-      } else {
-        navigate("/admin/my-students");
-      }
-
-      setFormData({
-        firstName: "",
-        middleName: "",
-        lastName: "",
-        email: "",
-        phoneCountryCode: "+1",
-        phone: "",
-        country: "United States",
-        state: "",
-        visaType: "",
-        eadType: "",
-        otherEadType: "",
-        visaExpiryDate: "",
-        city: "",
-        zipcode: "",
-        qualification: "",
-        instituteName: "",
-        fieldOfStudy: "",
-        passingYear: "",
-      });
-
+      setFormData(initialFormState);
       setErrors({});
+
+      setTimeout(() => {
+        const role = localStorage.getItem("role");
+        if (role === "COUNSELLOR") {
+          navigate("/COUNSELLOR/my-students");
+        } else {
+          navigate("/admin/students");
+        }
+      }, 4000);
     } catch (error) {
-      console.error(error);
-      alert("Failed to send invitation email.");
+      console.error("Invitation Email Error:", error);
+    showToast("Failed to send invitation email.", "error");
     } finally {
       setSendingEmail(false);
     }
@@ -461,45 +424,19 @@ const fetchLocationByZipcode = async (zipcode) => {
 
   return (
     <div className="counselor-details-page registration-page">
-      {/* PAGE HEADER */}
-      <div className="registration-header">
-        <div className="registration-header-left">
-          <button
-            type="button"
-            className="back-link-btn"
-            onClick={() => window.history.back()}
-          >
-            <ArrowLeft size={16} />
-            <span>Back To Leads</span>
-          </button>
-          <div className="registration-title-group">
-            <h1>Candidate Registration</h1>
-            <p>Complete the following information to register the candidate.</p>
-          </div>
-        </div>
-
-        <div className="lead-id-badge">
-          <span className="lead-id-badge-text">
-            <span className="lead-id-badge-label">Lead ID:</span>
-            <span className="lead-id-badge-value">
-    {candidateId || "N/A"}
-</span>
-          </span>
-        </div>
-      </div>
-
-      {/* FORM CARDS WRAPPER */}
-      <form onSubmit={handleSubmit} noValidate className="registration-form">
-        {/* CARD 1: PERSONAL INFORMATION */}
-        <div className="registration-card">
-          <div className="registration-card-header">
-            <div className="registration-section-icon">
-              <User size={18} />
-            </div>
-            <div className="registration-section-text">
-              <h3>Personal Information</h3>
-              <span>Basic candidate details</span>
-            </div>
+  
+      <div className="registration-form-wrapper">
+        <form onSubmit={handleSubmit} noValidate className="registration-form">
+          <div className="form-card-header">
+            <h2>Candidate Registration</h2>
+            <button
+              type="button"
+              className="back-btn"
+              onClick={() => window.history.back()}
+            >
+              <ArrowLeft size={14} />
+              <span>Back</span>
+            </button>
           </div>
 
           <div className="registration-grid">
@@ -510,7 +447,7 @@ const fetchLocationByZipcode = async (zipcode) => {
               <input
                 id="firstName"
                 name="firstName"
-                placeholder="Enter first name"
+                placeholder="First Name *"
                 value={formData.firstName}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -526,7 +463,7 @@ const fetchLocationByZipcode = async (zipcode) => {
               <input
                 id="middleName"
                 name="middleName"
-                placeholder="Enter middle name"
+                placeholder="Middle Name"
                 value={formData.middleName}
                 onChange={handleChange}
               />
@@ -539,7 +476,7 @@ const fetchLocationByZipcode = async (zipcode) => {
               <input
                 id="lastName"
                 name="lastName"
-                placeholder="Enter last name"
+                placeholder="Last Name *"
                 value={formData.lastName}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -551,14 +488,39 @@ const fetchLocationByZipcode = async (zipcode) => {
             </div>
 
             <div className="registration-field">
+              <label htmlFor="phone">
+                Phone <span className="required">*</span>
+              </label>
+              <div
+                className={`phone-wrapper ${
+                  errors.phone ? "invalid-field-wrapper" : ""
+                }`}
+              >
+                <div className="static-country-code">+1 USA</div>
+                <input
+                  id="phone"
+                  name="phone"
+                  placeholder="312-456-7890 *"
+                  value={formatPhoneNumber(formData.phone)}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={errors.phone ? "invalid-field" : ""}
+                />
+              </div>
+              {errors.phone && (
+                <span className="error-msg-block">{errors.phone}</span>
+              )}
+            </div>
+
+            <div className="registration-field">
               <label htmlFor="email">
-                Email Address <span className="required">*</span>
+                Email <span className="required">*</span>
               </label>
               <input
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter email address"
+                placeholder="Email *"
                 value={formData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -569,50 +531,6 @@ const fetchLocationByZipcode = async (zipcode) => {
               )}
             </div>
 
-            <div className="registration-field">
-              <label htmlFor="phone">
-                Phone Number <span className="required">*</span>
-              </label>
-              <div
-                className={`phone-wrapper ${
-                  errors.phone ? "invalid-field-wrapper" : ""
-                }`}
-              >
-                <div className="static-country-code">
-                  <Phone size={13} />
-                  +1
-                </div>
-                <input
-                  id="phone"
-                  name="phone"
-                  placeholder="111-111-1111"
-                  value={formatPhoneNumber(formData.phone)}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={errors.phone ? "invalid-field" : ""}
-                  style={{ width: "100%", flex: "1 1 auto" }}
-                />
-              </div>
-              {errors.phone && (
-                <span className="error-msg-block">{errors.phone}</span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* CARD 2: VISA DETAILS */}
-        <div className="registration-card">
-          <div className="registration-card-header">
-            <div className="registration-section-icon">
-              <Globe size={18} />
-            </div>
-            <div className="registration-section-text">
-              <h3>Visa Details</h3>
-              <span>Immigration status and validity</span>
-            </div>
-          </div>
-
-          <div className="registration-grid">
             <div className="registration-field">
               <label htmlFor="visaType">
                 Visa Type <span className="required">*</span>
@@ -626,24 +544,19 @@ const fetchLocationByZipcode = async (zipcode) => {
                   onBlur={handleBlur}
                   className={errors.visaType ? "invalid-field" : ""}
                 >
-                  <option value="">Select Visa Type </option>
+                  <option value="">Select Visa Type</option>
                   {visaOptions.map((visa) => (
                     <option key={visa.visaId} value={visa.visaId}>
                       {visa.visaName}
                     </option>
                   ))}
-
-                  
                 </select>
-
-               
               </div>
               {errors.visaType && (
                 <span className="error-msg-block">{errors.visaType}</span>
               )}
             </div>
 
-            {/* Dynamic Type of EAD Field (Only when EAD is selected) */}
             {showEadType && (
               <div className="registration-field">
                 <label htmlFor="eadType">
@@ -672,7 +585,6 @@ const fetchLocationByZipcode = async (zipcode) => {
               </div>
             )}
 
-            {/* Specify Custom EAD Type (Only when 'Other' is selected) */}
             {showOtherEadType && (
               <div className="registration-field">
                 <label htmlFor="otherEadType">
@@ -695,7 +607,6 @@ const fetchLocationByZipcode = async (zipcode) => {
               </div>
             )}
 
-            {/* Dynamic Expiry Date Field (Only when EAD is selected) */}
             {showExpiryDate && (
               <div className="registration-field">
                 <label htmlFor="visaExpiryDate">
@@ -717,22 +628,7 @@ const fetchLocationByZipcode = async (zipcode) => {
                 )}
               </div>
             )}
-          </div>
-        </div>
 
-        {/* CARD 3: LOCATION DETAILS */}
-        <div className="registration-card">
-          <div className="registration-card-header">
-            <div className="registration-section-icon">
-              <MapPin size={18} />
-            </div>
-            <div className="registration-section-text">
-              <h3>Location Details</h3>
-              <span>Residential address information</span>
-            </div>
-          </div>
-
-          <div className="registration-grid">
             <div className="registration-field">
               <label htmlFor="zipcode">
                 Zipcode <span className="required">*</span>
@@ -740,7 +636,7 @@ const fetchLocationByZipcode = async (zipcode) => {
               <input
                 id="zipcode"
                 name="zipcode"
-                placeholder="Enter zipcode"
+                placeholder="Enter Zipcode *"
                 value={formData.zipcode}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -766,22 +662,18 @@ const fetchLocationByZipcode = async (zipcode) => {
               <label htmlFor="state">
                 State <span className="required">*</span>
               </label>
-
-             <input
-  id="state"
-  name="state"
-  type="text"
-  value={formData.state}
-  onChange={handleChange}
-  onBlur={handleBlur}
-  placeholder="Enter state"
-  className={errors.state ? "invalid-field" : ""}
-/>
-
+              <input
+                id="state"
+                name="state"
+                type="text"
+                value={formData.state}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="State *"
+                className={errors.state ? "invalid-field" : ""}
+              />
               {errors.state && (
-                <span className="error-msg-block">
-                  {errors.state}
-                </span>
+                <span className="error-msg-block">{errors.state}</span>
               )}
             </div>
 
@@ -789,40 +681,21 @@ const fetchLocationByZipcode = async (zipcode) => {
               <label htmlFor="city">
                 City <span className="required">*</span>
               </label>
-
-             <input
-  id="city"
-  name="city"
-  type="text"
-  value={formData.city}
-  onChange={handleChange}
-  onBlur={handleBlur}
-  placeholder="Enter city"
-  className={errors.city ? "invalid-field" : ""}
-/>
-
+              <input
+                id="city"
+                name="city"
+                type="text"
+                value={formData.city}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                placeholder="City *"
+                className={errors.city ? "invalid-field" : ""}
+              />
               {errors.city && (
-                <span className="error-msg-block">
-                  {errors.city}
-                </span>
+                <span className="error-msg-block">{errors.city}</span>
               )}
             </div>
-          </div>
-        </div>
 
-        {/* CARD 4: EDUCATION DETAILS */}
-        <div className="registration-card">
-          <div className="registration-card-header">
-            <div className="registration-section-icon">
-              <GraduationCap size={18} />
-            </div>
-            <div className="registration-section-text">
-              <h3>Education Details</h3>
-              <span>Academic background</span>
-            </div>
-          </div>
-
-          <div className="registration-grid">
             <div className="registration-field">
               <label htmlFor="qualification">
                 Education Level <span className="required">*</span>
@@ -875,18 +748,15 @@ const fetchLocationByZipcode = async (zipcode) => {
               )}
             </div>
           </div>
-        </div>
 
-        {/* ACTIONS / SUBMIT BUTTON */}
-        <div className="registration-actions">
-          <button type="submit" className="registration-submit-btn">
-          
-            Create Student Account
-          </button>
-        </div>
-      </form>
+          <div className="registration-actions">
+            <button type="submit" className="registration-submit-btn">
+              Register Candidate
+            </button>
+          </div>
+        </form>
+      </div>
 
-      {/* EMAIL INVITATION MODAL */}
       {showEmailModal && (
         <div className="email-modal-overlay">
           <div className="email-modal">

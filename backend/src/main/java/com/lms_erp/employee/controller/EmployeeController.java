@@ -113,7 +113,7 @@ public class EmployeeController {
     // GET COUNSELLORS
     // =====================================================
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COUNSELLOR')")
     @GetMapping("/Counsellors")
     public List<CounsellorDropdownResponse> getCounsellors() {
 

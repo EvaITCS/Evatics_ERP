@@ -1,5 +1,8 @@
 import React from "react";
 import "../../styles/employeefrom.css";
+
+
+
 function PersonalInformationSection({
                                         formData,
                                         handleChange,

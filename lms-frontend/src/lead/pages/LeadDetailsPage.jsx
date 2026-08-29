@@ -11,7 +11,7 @@ import {
 import { createFollowup } from "../services/followupService";
 import { getLeadFollowups } from "../services/followupService";
 import { completeReminder } from "../services/reminderService";
-
+import { useToast } from "../../shared/components/ToastContext";
 import api from "../../api/axios";
 import Timeline from "../components/Timeline";
 
@@ -23,6 +23,7 @@ import { assignLead } from "../services/leadService";
 
 function LeadDetailPage() {
   const role = localStorage.getItem("role");
+  const { showToast } = useToast();
   // =====================================
   // PARAMS
   // =====================================
@@ -224,8 +225,7 @@ function LeadDetailPage() {
           ),
         ),
       );
-
-      alert("Followup Added Successfully");
+      showToast("Followup Added Successfully", "success");
 
       setOpenFollowup(false);
 
@@ -243,7 +243,7 @@ function LeadDetailPage() {
     } catch (err) {
       console.error(err);
 
-      alert("Failed to save followup");
+      showToast("Failed to save followup", "error");
     }
   };
   // =====================================
@@ -254,13 +254,13 @@ function LeadDetailPage() {
     try {
       await convertLead(lead.personId);
 
-      alert("Lead Converted Successfully");
+      showToast("Lead Converted Successfully", "success");
 
       fetchLead();
     } catch (error) {
       console.log(error);
 
-      alert("Failed to Convert Lead");
+      showToast("Failed to Convert Lead", "error");
     }
   };
 
@@ -271,32 +271,31 @@ function LeadDetailPage() {
   const handleInsertLead = async () => {
     try {
       await insertLead(lead.personId);
-
-      alert("Lead Inserted Successfully");
+      showToast("Lead Inserted Successfully", "success");
 
       fetchLead();
     } catch (error) {
       console.log(error);
-
-      alert("Failed to Insert Lead");
+      showToast("Failed to Insert Lead", "error");
     }
   };
   const handleArchiveLead = async () => {
     try {
       await archiveLeadConversion(lead.personId);
 
-      alert("Lead Archived Successfully");
+      showToast("Lead Archive Successfully", "success");
 
       fetchLead();
     } catch (error) {
       console.log(error);
 
-      alert("Failed to Archive Lead");
+
+      showToast("Failed to Archive Lead", "error");
     }
   };
   const handleAssignLead = async () => {
     if (!selectedCOUNSELLOR) {
-      alert("Select COUNSELLOR");
+      showToast("Select COUNSELLOR", "error");
 
       return;
     }
@@ -308,13 +307,12 @@ function LeadDetailPage() {
         selectedCOUNSELLOR,
       );
 
-      alert("Lead Assigned Successfully");
+      showToast("Lead Assigned Successfully", "success");
 
       fetchLead();
     } catch (error) {
       console.log(error);
-
-      alert("Assignment Failed");
+      showToast("Assignment Failed", "error");
     }
   };
   // const fetchAssignmentHistory = async () => {

@@ -2,7 +2,6 @@
 
 import { Routes, Route } from "react-router-dom";
 
-import BatchDashboardPage from "../pages/BatchDashboardPage";
 import BatchListPage from "../pages/BatchListPage";
 import CreateBatchPage from "../pages/CreateBatchPage";
 
@@ -16,11 +15,7 @@ export default function BatchRoutes() {
     return (
         <Routes>
 
-            <Route
-                path="/dashboard"
-                element={<BatchDashboardPage />}
-            />
-
+           
             <Route
                 path="/list"
                 element={<BatchListPage />}

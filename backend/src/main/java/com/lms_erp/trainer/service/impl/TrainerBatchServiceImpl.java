@@ -341,21 +341,20 @@ public class TrainerBatchServiceImpl implements TrainerBatchService {
                     String stage =
                             batchStage.getApplicationStageName();
 
-                    if ("ENROLLED".equalsIgnoreCase(type)) {
+                    if (type == null || "ALL".equalsIgnoreCase(type)) {
+                        return true;
+                    }
 
+                    if ("ENROLLED".equalsIgnoreCase(type)) {
                         return "ENROLLED".equalsIgnoreCase(stage);
                     }
 
                     if ("GRADUATED".equalsIgnoreCase(type)) {
-
-                        return "COURSE_COMPLETED"
-                                .equalsIgnoreCase(stage);
+                        return "COURSE_COMPLETED".equalsIgnoreCase(stage);
                     }
 
                     if ("DROPPED".equalsIgnoreCase(type)) {
-
-                        return "DROPPED"
-                                .equalsIgnoreCase(stage);
+                        return "DROPPED".equalsIgnoreCase(stage);
                     }
 
                     return false;

@@ -2,13 +2,13 @@ import React, {
     useEffect,
     useState
 } from "react";
-
+import { useToast } from "../../shared/components/ToastContext";
 import workModeService
 from "../services/workModeService";
 import PageTitle from "../../shared/components/PageTitle";
 import "../styles/employee.css";
 function WorkModesPage() {
-
+    const { showToast } = useToast();
     const [workModes,
         setWorkModes] = useState([]);
 
@@ -58,8 +58,9 @@ function WorkModesPage() {
                         }
                     );
 
-                alert(
-                    "Work Mode Updated Successfully"
+                showToast(
+                    "Work Mode Updated Successfully",
+                    "success"
                 );
 
             } else {
@@ -71,8 +72,9 @@ function WorkModesPage() {
                         }
                     );
 
-                alert(
-                    "Work Mode Added Successfully"
+                showToast(
+                    "Work Mode Added Successfully",
+                    "success"
                 );
             }
 
@@ -119,8 +121,9 @@ function WorkModesPage() {
                     modeId
                 );
 
-            alert(
-                "Work Mode Deleted Successfully"
+            showToast(
+                "Work Mode Deleted Successfully",
+                "success"
             );
 
             fetchWorkModes();

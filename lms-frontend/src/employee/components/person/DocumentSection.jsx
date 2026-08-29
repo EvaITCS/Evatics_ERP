@@ -59,11 +59,7 @@ function DocumentSection({
                     "noopener,noreferrer"
                 );
 
-            if (!newWindow) {
-                alert(
-                    "Please allow pop-ups to view the document."
-                );
-            }
+
 
             setTimeout(() => {
                 window.URL.revokeObjectURL(blobUrl);
@@ -305,7 +301,7 @@ function DocumentSection({
                                         }
                                         onClick={() =>
                                             handleViewDocument(
-                                                document.fileUrl,
+                                                document.personDocumentId,
                                                 index
                                             )
                                         }
@@ -330,29 +326,36 @@ function DocumentSection({
                         {/* ================================================= */}
 
                         {documents.length > 1 && (
-
                             <div
-                                className="form-group"
                                 style={{
-                                    gridColumn:
-                                        "span 3",
+                                    gridColumn: "1 / -1",
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                    alignItems: "center",
+                                    width: "100%",
+                                    margin: 0,
                                 }}
                             >
-
                                 <button
                                     type="button"
                                     className="btn btn-danger"
                                     onClick={() =>
-                                        removeDocument(
-                                            index
-                                        )
+                                        removeDocument(index)
                                     }
+                                    style={{
+                                        width: "2cm",
+                                        height: "0.8cm",
+                                        padding: "0",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        whiteSpace: "nowrap",
+                                        marginLeft: "auto",
+                                    }}
                                 >
-                                    Remove Document
+                                    Remove
                                 </button>
-
                             </div>
-
                         )}
 
 
@@ -379,22 +382,32 @@ function DocumentSection({
             {/* ADD DOCUMENT */}
             {/* ================================================= */}
 
-            <div
-                style={{
-                    gridColumn:
-                        "span 3",
-                }}
-            >
-
-                <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={addDocument}
+                <div
+                    style={{
+                        gridColumn: "span 3",
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        alignItems: "center",
+                        marginTop: "10px",
+                    }}
                 >
-                    + Add Document
-                </button>
-
-            </div>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={addDocument}
+                        style={{
+                            width: "2cm",
+                            height: "0.8cm",
+                            padding: "0",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            whiteSpace: "nowrap",
+                        }}
+                    >
+                       + Add
+                    </button>
+                </div>
 
         </div>
 </>

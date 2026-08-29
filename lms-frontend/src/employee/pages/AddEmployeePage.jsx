@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { useToast } from "../../shared/components/ToastContext";
 // =====================================================
 // EMPLOYEE
 // =====================================================
@@ -316,7 +316,7 @@ function AddEmployeePage() {
   // =================================================
   // EMPLOYEE MASTER DATA
   // =================================================
-
+  const { showToast } = useToast();
   const [departments, setDepartments] =
       useState([]);
 
@@ -736,9 +736,10 @@ function AddEmployeePage() {
           error
       );
 
-      alert(
+      showToast(
           error?.response?.data?.message ||
-          "Failed to load employee master data."
+          "Failed to load employee master data.",
+          "error"
       );
 
     } finally {
@@ -1137,8 +1138,9 @@ function AddEmployeePage() {
 
     if (emailError) {
 
-      alert(
-          "Please fix the email error before saving."
+      showToast(
+          "Please fix the email error before saving.",
+          "error"
       );
 
       return;
@@ -1178,8 +1180,9 @@ function AddEmployeePage() {
         )
     ) {
 
-      alert(
-          "Primary Phone Number must be exactly 10 digits."
+      showToast(
+          "Primary Phone Number must be exactly 10 digits.",
+          "error"
       );
 
       return;
@@ -1196,8 +1199,9 @@ function AddEmployeePage() {
         )
     ) {
 
-      alert(
-          "Alternate Phone Number must be exactly 10 digits."
+      showToast(
+          "Alternate Phone Number must be exactly 10 digits.",
+          "error"
       );
 
       return;
@@ -1228,8 +1232,9 @@ function AddEmployeePage() {
           )
       ) {
 
-        alert(
-            "Emergency Contact Phone Number must be exactly 10 digits."
+        showToast(
+            "Emergency Contact Phone Number must be exactly 10 digits.",
+            "error"
         );
 
         return;
@@ -1286,13 +1291,13 @@ function AddEmployeePage() {
       // =============================================
 
       if (!zipcode) {
-
-        alert(
+        showToast(
             `${
                 i === 0
                     ? "Permanent"
                     : "Current"
-            } Address Zip Code is required.`
+            } Address Zip Code is required.`,
+            "error"
         );
 
         return;
@@ -1573,33 +1578,18 @@ function AddEmployeePage() {
 
       try {
 
-        const response =
-            await employeeService.createEmployee(
-                multipartData
-            );
+        await employeeService.createEmployee(
+            multipartData
+        );
 
       // =============================================
       // SUCCESS
       // =============================================
 
-      const created = response?.data;
-
-      if (created?.temporaryPassword) {
-
-        alert(
-            "Employee Created Successfully.\n\n" +
-            "The credentials email could not be sent.\n" +
-            "Hand these login details over manually:\n\n" +
-            "Username: " + created.generatedUsername + "\n" +
-            "Password: " + created.temporaryPassword
+        showToast(
+            "Employee Created Successfully.",
+            "success"
         );
-
-      } else {
-
-        alert(
-            "Employee Created Successfully."
-        );
-      }
 
       // =============================================
       // RESET
@@ -1643,7 +1633,7 @@ function AddEmployeePage() {
           error?.response?.data?.detail ||
           "Failed to Create Employee.";
 
-      alert(message);
+        showToast(message, "error");
     }
   };
 

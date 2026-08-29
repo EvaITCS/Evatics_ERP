@@ -77,7 +77,7 @@ public class LeadResponse {
     // =====================================================
 
     private List<TimelineEventResponse> timeline;
-
+    private LocalDateTime actionPerformedAt;
     // =====================================================
     // AUDIT
     // =====================================================

@@ -7,6 +7,7 @@ import com.lms_erp.lead.repository.LeadRepository;
 import com.lms_erp.lead.repository.LeadStatusMasterRepository;
 import com.lms_erp.person.entity.*;
 import com.lms_erp.person.repository.*;
+import com.lms_erp.security.CurrentUserService;
 import com.lms_erp.student.dto.*;
 import com.lms_erp.student.entity.ApplicationStageMaster;
 import com.lms_erp.student.entity.StudentApplication;
@@ -42,7 +43,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StudentApplicationService {
 
-    private final PasswordEncoder passwordEncoder;
     private final PersonAddressRepository personAddressRepository;
     private final PersonEducationRepository personEducationRepository;
     private final PersonVisaRepository personVisaRepository;
@@ -62,7 +62,7 @@ public class StudentApplicationService {
     private final ContactTypeMasterRepository contactTypeMasterRepository;
     private final LeadStatusMasterRepository leadStatusMasterRepository;
     private final LeadAssignmentRepository leadAssignmentRepository;
-
+    private final CurrentUserService currentUserService;
 
     private static final String DOC_RESUME = "Resume";
     private static final String DOC_ID_PROOF = "ID Proof";
@@ -175,20 +175,6 @@ public class StudentApplicationService {
         PersonAddress address = new PersonAddress();
 
         address.setPerson(person);
-
-        /*
-         * Frontend:
-         *
-         * houseNumber  = 1111
-         * addressLine  = Eastman Brook Trail
-         *
-         * Database:
-         *
-         * address_line_1 = 1111 Eastman Brook Trail
-         *
-         * Database mein house number ke liye separate column nahi hai,
-         * isliye dono ko ek hi address_line_1 mein save kar rahe hain.
-         */
 
         String houseNumber = request.getHouseNumber();
         String streetAddress = request.getAddressLine();

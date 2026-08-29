@@ -1,8 +1,7 @@
 import { Route } from "react-router-dom";
 import RejectedLeadsReportPage
 from "../pages/RejectedLeadsReportPage";
-import TodayFollowupsPage from "../pages/TodayFollowupsPage";
-import MyLeadsPage from "../pages/MyLeadsPage";
+
 import DashboardPage from "../pages/DashboardPage";
 import LeadsPage from "../pages/LeadsPage";
 import AddLeadPage from "../pages/AddLeadPage";
@@ -15,7 +14,7 @@ import LeadDetailPage from "../pages/LeadDetailsPage";
 import LeadAnalyticsPage from "../pages/LeadAnalyticsPage";
 import AdminDropRequestsPage from "../../trainer/pages/AdminDropRequestsPage";
 import StudentSupportPage from "../pages/StudentSupportPage";
-import PendingFollowupsPage from "../pages/PendingFollowupsPage";
+
 import ProgramRoutes from "../../program/routes/ProgramRoutes";
 import BatchRoutes from "../../batch/routes/BatchRoutes";
 
@@ -119,14 +118,7 @@ element={<DashboardPage />}
     path="lead-import/report/:importJobId"
     element={<RejectedLeadsReportPage />}
 />
-    <Route
-        path="pending-followups"
-        element={<PendingFollowupsPage />}
-    />
-    <Route
-        path="today-followups"
-        element={<TodayFollowupsPage />}
-    />
+
 <Route
 
  path="students"
@@ -142,10 +134,7 @@ element={<DashboardPage />}
     path="change-password"
     element={<ChangePasswordPage />}
 />
-    <Route
-        path="my-leads"
-        element={<MyLeadsPage />}
-    />
+
 <Route path="student-application/:candidateId" element={<CounselorStudentApplicationForm />} />
     <Route path="student-support" element={<StudentSupportPage />} />
 

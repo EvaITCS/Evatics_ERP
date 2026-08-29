@@ -443,4 +443,174 @@ public class LeadController {
                 leadService.getMyInterestedLeads()
         );
     }
+
+    @GetMapping("/interested/filter")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<LeadResponse>> filterInterestedLeads(
+
+            @RequestParam(required = false)
+            String keyword,
+
+            @RequestParam(required = false)
+            String fromDate,
+
+            @RequestParam(required = false)
+            String toDate
+    ) {
+
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
+        if (fromDate != null && !fromDate.isBlank()) {
+
+            start = LocalDate
+                    .parse(fromDate)
+                    .atStartOfDay();
+        }
+
+        if (toDate != null && !toDate.isBlank()) {
+
+            end = LocalDate
+                    .parse(toDate)
+                    .plusDays(1)
+                    .atStartOfDay();
+        }
+
+        return ResponseEntity.ok(
+                leadService.filterInterestedLeads(
+                        keyword,
+                        start,
+                        end
+                )
+        );
+    }
+
+
+    @GetMapping("/my-interested/filter")
+    @PreAuthorize("hasRole('COUNSELLOR')")
+    public ResponseEntity<List<LeadResponse>> filterMyInterestedLeads(
+
+            @RequestParam(required = false)
+            String keyword,
+
+            @RequestParam(required = false)
+            String fromDate,
+
+            @RequestParam(required = false)
+            String toDate
+    ) {
+
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
+        if (fromDate != null && !fromDate.isBlank()) {
+
+            start = LocalDate
+                    .parse(fromDate)
+                    .atStartOfDay();
+        }
+
+        if (toDate != null && !toDate.isBlank()) {
+
+            end = LocalDate
+                    .parse(toDate)
+                    .plusDays(1)
+                    .atStartOfDay();
+        }
+
+        return ResponseEntity.ok(
+                leadService.filterMyInterestedLeads(
+                        keyword,
+                        start,
+                        end
+                )
+        );
+    }
+
+    @GetMapping("/re-engagement/filter")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<LeadResponse>> filterReEngagementLeads(
+
+            @RequestParam(required = false)
+            String keyword,
+
+            @RequestParam(required = false)
+            Long counsellorPersonId,
+
+            @RequestParam(required = false)
+            String fromDate,
+
+            @RequestParam(required = false)
+            String toDate
+    ) {
+
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
+        if (fromDate != null && !fromDate.isBlank()) {
+
+            start = LocalDate
+                    .parse(fromDate)
+                    .atStartOfDay();
+        }
+
+        if (toDate != null && !toDate.isBlank()) {
+
+            end = LocalDate
+                    .parse(toDate)
+                    .plusDays(1)
+                    .atStartOfDay();
+        }
+
+        return ResponseEntity.ok(
+                leadService.filterReEngagementLeads(
+                        counsellorPersonId,
+                        keyword,
+                        start,
+                        end
+                )
+        );
+    }
+
+
+    @GetMapping("/my-re-engagement/filter")
+    @PreAuthorize("hasRole('COUNSELLOR')")
+    public ResponseEntity<List<LeadResponse>> filterMyReEngagementLeads(
+
+            @RequestParam(required = false)
+            String keyword,
+
+            @RequestParam(required = false)
+            String fromDate,
+
+            @RequestParam(required = false)
+            String toDate
+    ) {
+
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
+        if (fromDate != null && !fromDate.isBlank()) {
+
+            start = LocalDate
+                    .parse(fromDate)
+                    .atStartOfDay();
+        }
+
+        if (toDate != null && !toDate.isBlank()) {
+
+            end = LocalDate
+                    .parse(toDate)
+                    .plusDays(1)
+                    .atStartOfDay();
+        }
+
+        return ResponseEntity.ok(
+                leadService.filterMyReEngagementLeads(
+                        keyword,
+                        start,
+                        end
+                )
+        );
+    }
 }

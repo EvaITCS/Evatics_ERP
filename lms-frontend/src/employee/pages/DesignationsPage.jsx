@@ -408,15 +408,7 @@ Role: ${designation.roleName || "N/A"}`
 
                                             <td>
 
-                                                <button
-                                                    onClick={() =>
-                                                        handleView(
-                                                            designation
-                                                        )
-                                                    }
-                                                >
-                                                    View
-                                                </button>
+
 
                                                 {" "}
 

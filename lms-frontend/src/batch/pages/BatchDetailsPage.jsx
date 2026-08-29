@@ -14,7 +14,6 @@ export default function BatchDetailsPage() {
         try {
             setLoading(true);
             const response = await getBatchDetails(batchId);
-            console.log("BATCH DETAILS:", response.data);
             setBatch(response.data);
         } catch (error) {
             console.error("Batch Details Error:", error);
@@ -50,23 +49,17 @@ export default function BatchDetailsPage() {
 
     const currentStrength = batch.currentStrength || 0;
     const maxStudents = batch.maxStudents || 0;
-    const remainingSeats =
-    Math.max(
-        0,
-        maxStudents - currentStrength
-    );
+    const remainingSeats = Math.max(0, maxStudents - currentStrength);
 
     return (
         <div className="batch-details-page">
             
-            {/* GLOBAL MANAGEMENT HEADER ZONE */}
+            {/* TOP HEADER ZONE (NO BOTTOM LINE & COMPACT SPACING) */}
             <div className="details-header">
                 <div>
                     <h1>Batch Details</h1>
-                    <p>Complete operational batch overview and analytics</p>
                 </div>
                 
-                {/* 🌟 ACTION HUB TRANSFERRED TO THE TOP */}
                 <div className="header-action-hub">
                     <button 
                         className="back-btn" 
@@ -78,7 +71,7 @@ export default function BatchDetailsPage() {
                         className="edit-prime-btn"
                         onClick={() => navigate(`/admin/batches/edit/${batch.batchId}`)}
                     >
-                         Edit Batch
+                        Edit Batch
                     </button>
                 </div>
             </div>
@@ -119,7 +112,6 @@ export default function BatchDetailsPage() {
                     </div>
                     <div className="detail-box">
                         <span>Duration</span>
-                        {/* 🛠️ ONLY CHANGE HERE: Converted Days to Weeks */}
                         <h3>
                             {batch.durationInDays 
                                 ? `${(batch.durationInDays / 7).toFixed(1).replace(".0", "")} Weeks` 
@@ -139,11 +131,11 @@ export default function BatchDetailsPage() {
                 <h2>Capacity Metrics</h2>
                 <div className="analytics-grid">
                     <div className="analytics-box metric-current">
-                        <span>Corporate Active Students</span>
+                        <span>Active Students</span>
                         <h2>{currentStrength}</h2>
                     </div>
                     <div className="analytics-box metric-max">
-                        <span>Maximum Threshold Capacity</span>
+                        <span>Maximum Capacity</span>
                         <h2>{maxStudents}</h2>
                     </div>
                     <div className="analytics-box metric-rem">
@@ -156,22 +148,22 @@ export default function BatchDetailsPage() {
             {/* BENTO SECTION: STUDENTS ALLOCATION ROSTER */}
             <div className="details-card">
                 <div className="card-title-row">
-                    <h2>Assigned Candidates Roster</h2>
+                    <h2>Assigned Candidates</h2>
                     <span className="student-count-chip">
-                        {batch.students?.length || 0} Students Allocated
+                        {batch.students?.length || 0} Students
                     </span>
                 </div>
 
                 {batch.students && batch.students.length > 0 ? (
                     <div className="student-table-wrapper">
                         <table className="student-table">
-                            <thead>
+                          
                                 <tr>
                                     <th>Student Name</th>
-                                    <th>Corporate Email</th>
+                                    <th>Email</th>
                                     <th>Allocation Status</th>
                                 </tr>
-                            </thead>
+                          
                             <tbody>
                                 {batch.students.map((student) => (
                                     <tr key={student.studentId}>
@@ -189,7 +181,7 @@ export default function BatchDetailsPage() {
                     </div>
                 ) : (
                     <div className="empty-student-box">
-                         No candidates have been assigned to this batch registry yet.
+                        No candidates assigned yet.
                     </div>
                 )}
             </div>

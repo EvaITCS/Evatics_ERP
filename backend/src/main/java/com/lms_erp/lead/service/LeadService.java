@@ -506,18 +506,6 @@ public class LeadService {
         );
     }
 
-//     =========================================
-    // GET ALL ACTIVE LEADS
-    // =========================================
-//
-//    public List<LeadResponse> getAllLeads() {
-//
-//        return leadRepository
-//                .findAllWithLeadSource()
-//                .stream()
-//                .map(this::mapToResponse)
-//                .collect(Collectors.toList());
-//    }
 
     // =========================================
     // GET LEAD BY ID
@@ -535,51 +523,7 @@ public class LeadService {
         return mapToResponse(lead);
     }
 
-    // =========================================
-    // GET CONSULTANT ACTIVE LEADS
-    // =========================================
 
-
-    // =========================================
-    // GET RE-ENGAGEMENT LEADS
-    // =========================================
-
-    //
-//    public List<LeadResponse> getMyReEngagementLeads() {
-//
-//        Long employeePersonId =
-//                currentUserService.getCurrentEmployee().getPersonId();
-//
-//        System.out.println("Employee = " + employeePersonId);
-//
-//        List<Lead> leads =
-//                leadRepository.findReEngagementLeadsByEmployee(employeePersonId);
-//
-//        System.out.println("ReEngagement Leads Count = " + leads.size());
-//
-//        leads.forEach(l ->
-//                System.out.println(
-//                        l.getPersonId() + " -> " +
-//                                l.getLeadStatus().getStatusName()
-//                ));
-//
-//        return leads.stream()
-//                .map(this::mapToResponse)
-//                .toList();
-//    }
-//    public List<LeadResponse> getLeadsByStatus(
-//            String status
-//    ) {
-//
-//        LeadStatusMaster leadStatus =
-//                getLeadStatus(status);
-//
-//        return leadRepository
-//                .findByLeadStatus(leadStatus)
-//                .stream()
-//                .map(this::mapToResponse)
-//                .collect(Collectors.toList());
-//    }
 
     // =========================================
 // UPDATE STATUS
@@ -978,158 +922,7 @@ public class LeadService {
 
         leadStatusHistoryRepository.save(history);
     }
-    // =========================================
-    // MAP RESPONSE
-    // =========================================
 
-//    private LeadResponse mapToResponse(Lead lead) {
-//
-//        // =====================================
-//        // ACTIVE ASSIGNMENT
-//        // =====================================
-//
-//        LeadAssignment assignment = leadAssignmentRepository
-//                .findByLead_PersonIdAndIsActiveTrue(lead.getPersonId())
-//                .orElse(null);
-//
-//        // =====================================
-//        // ASSIGNED EMPLOYEE NAME
-//        // =====================================
-//
-//        String assignedEmployeeName = "Unassigned";
-//
-//        if (assignment != null
-//                && assignment.getEmployee() != null
-//                && assignment.getEmployee().getPerson() != null) {
-//
-//            assignedEmployeeName =
-//                    assignment.getEmployee().getPerson().getFirstName()
-//                            + " "
-//                            + assignment.getEmployee().getPerson().getLastName();
-//        }
-//
-//        // =====================================
-//        // CREATED BY (TEMPORARILY DISABLED)
-//        // =====================================
-//
-////        Employee createdBy = null;
-////
-////        String createdByName = null;
-//        Employee createdBy = lead.getCreatedBy();
-//
-//        String createdByName = null;
-//
-//        if (createdBy != null
-//                && createdBy.getPerson() != null) {
-//
-//            createdByName =
-//                    createdBy.getPerson().getFirstName()
-//                            + " "
-//                            + createdBy.getPerson().getLastName();
-//        }
-//        // =====================================
-//        // RESPONSE
-//        // =====================================
-//
-//        return LeadResponse.builder()
-//
-//                // =====================================
-//                // PERSON
-//                // =====================================
-//
-//                .personId(lead.getPersonId())
-//
-//                .firstName(lead.getPerson().getFirstName())
-//                .middleName(lead.getPerson().getMiddleName())
-//                .lastName(lead.getPerson().getLastName())
-//
-//                .email(getPrimaryEmail(lead.getPerson()))
-//                .phone(getPrimaryPhone(lead.getPerson()))
-//
-//                // =====================================
-//                // STATUS
-//                // =====================================
-//
-//                .leadStatusId(
-//                        lead.getLeadStatus() != null
-//                                ? lead.getLeadStatus().getLeadStatusId()
-//                                : null
-//                )
-//
-//                .leadStatus(
-//                        lead.getLeadStatus() != null
-//                                ? lead.getLeadStatus().getStatusName()
-//                                : null
-//                )
-//
-//                // =====================================
-//                // ASSIGNED EMPLOYEE
-//                // =====================================
-//
-//                .employeePersonId(
-//                        assignment != null
-//                                && assignment.getEmployee() != null
-//                                ? assignment.getEmployee().getPersonId()
-//                                : null
-//                )
-//
-//                .assignedEmployeeName(
-//                        assignedEmployeeName
-//                )
-//
-//                // =====================================
-//                // CREATED BY (TEMPORARILY DISABLED)
-//                // =====================================
-////
-////                .createdByPersonId(null)
-////
-////                .createdByName(null)
-//
-//                .createdByPersonId(
-//                        createdBy != null
-//                                ? createdBy.getPersonId()
-//                                : null
-//                )
-//
-//                .createdByName(createdByName)
-//
-//                // =====================================
-//                // SOURCE
-//                // =====================================
-//
-//                .leadSourceId(
-//                        lead.getLeadSource() != null
-//                                ? lead.getLeadSource().getSourceId()
-//                                : null
-//                )
-//
-//                .leadSourceName(
-//                        lead.getLeadSource() != null
-//                                ? lead.getLeadSource().getSourceName()
-//                                : "-"
-//                )
-//                .customLeadSource(
-//                        lead.getCustomLeadSource()
-//                )
-//                // =====================================
-//                // OTHER DETAILS
-//                // =====================================
-//
-//                .leadPriority(lead.getLeadPriority())
-//
-//                .computerExperience(
-//                        lead.getComputerExperience()
-//                )
-//
-//                .createdAt(
-//                        lead.getCreatedAt()
-//                )
-//
-//                .timeline(List.of())
-////          .timeline(buildTimeline(lead.getPersonId()))
-//
-//                .build();
-//    }
 
     public List<LeadStatusHistoryResponse> getLeadStatusHistory(Long personId) {
 
@@ -1508,34 +1301,7 @@ public class LeadService {
         leadActivityRepository.save(activity);
     }
 
-//    public List<LeadResponse> getMyReEngagementLeads() {
-//
-//        Long employeePersonId =
-//                currentUserService.getCurrentEmployee().getPersonId();
-//
-//        System.out.println("Logged Employee = " + employeePersonId);
-//
-//        List<Lead> leads =
-//                leadRepository.findReEngagementLeadsByEmployee(
-//                        employeePersonId
-//                );
-//
-//        System.out.println("Count = " + leads.size());
-//
-//        for (Lead l : leads) {
-//            System.out.println(
-//                    l.getPersonId()
-//                            + " Archived=" + l.getIsArchived()
-//                            + " StatusId=" + (l.getLeadStatus() != null
-//                            ? l.getLeadStatus().getLeadStatusId()
-//                            : null)
-//            );
-//        }
-//
-//        return leads.stream()
-//                .map(this::mapToResponse)
-//                .toList();
-//    }
+
 
 
     public List<LeadResponse> getInterestedLeads() {
@@ -1732,7 +1498,23 @@ public class LeadService {
                         .findLeadFollowups(
                                 lead.getPersonId()
                         );
-
+        LocalDateTime interestedActionPerformedAt =
+                leadFollowups.stream()
+                        .filter(followup ->
+                                "INTERESTED".equalsIgnoreCase(
+                                        followup.getActionResult()
+                                )
+                        )
+                        .filter(followup ->
+                                followup.getActionPerformedAt() != null
+                        )
+                        .map(
+                                LeadFollowup::getActionPerformedAt
+                        )
+                        .max(
+                                LocalDateTime::compareTo
+                        )
+                        .orElse(null);
         nextFollowupAt =
                 leadFollowups
                         .stream()
@@ -1914,6 +1696,9 @@ public class LeadService {
                 // =====================================
                 // CREATED AT
                 // =====================================
+                .actionPerformedAt(
+                        interestedActionPerformedAt
+                )
 
                 .createdAt(
                         lead.getCreatedAt()
@@ -1930,4 +1715,102 @@ public class LeadService {
 
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public List<LeadResponse> filterInterestedLeads(
+            String keyword,
+            LocalDateTime start,
+            LocalDateTime end
+    ) {
+
+        return leadRepository
+                .filterInterestedLeads(
+                        keyword,
+                        start,
+                        end
+                )
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<LeadResponse> filterMyInterestedLeads(
+            String keyword,
+            LocalDateTime start,
+            LocalDateTime end
+    ) {
+
+        Long employeePersonId =
+                currentUserService
+                        .getCurrentEmployee()
+                        .getPersonId();
+
+        return leadRepository
+                .filterMyInterestedLeads(
+                        employeePersonId,
+                        keyword,
+                        start,
+                        end
+                )
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    // =====================================================
+// FILTER RE-ENGAGEMENT LEADS - ADMIN
+// =====================================================
+
+    @Transactional(readOnly = true)
+    public List<LeadResponse> filterReEngagementLeads(
+            Long counsellorPersonId,
+            String keyword,
+            LocalDateTime start,
+            LocalDateTime end
+    ) {
+
+        return leadRepository
+                .filterReEngagementLeads(
+                        counsellorPersonId,
+                        keyword,
+                        start,
+                        end
+                )
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+
+    // =====================================================
+// FILTER MY RE-ENGAGEMENT LEADS
+// =====================================================
+
+    @Transactional(readOnly = true)
+    public List<LeadResponse> filterMyReEngagementLeads(
+            String keyword,
+            LocalDateTime start,
+            LocalDateTime end
+    ) {
+
+        Long employeePersonId =
+                currentUserService
+                        .getCurrentEmployee()
+                        .getPersonId();
+
+        return leadRepository
+                .filterMyReEngagementLeads(
+                        employeePersonId,
+                        keyword,
+                        start,
+                        end
+                )
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+
 }

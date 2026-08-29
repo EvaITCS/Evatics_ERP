@@ -144,6 +144,7 @@ function EmployeeReviewSection({
             employeeStatuses,
             data.employeeStatusId,
             "employeeStatusId",
+            "statusName",
             "employeeStatus",
             "employeeStatusName",
             "name"

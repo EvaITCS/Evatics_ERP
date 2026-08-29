@@ -769,203 +769,695 @@ body{
 }
 
 /* ==========================================================================
-   SUPPORT TICKET COMPONENT PREMIUM REDESIGN
+   STUDENT SUPPORT CARD — PREMIUM ERP UI
    ========================================================================== */
 
-/* Container Setup Layout */
+/* --------------------------------------------------------------------------
+   MAIN SUPPORT CARD
+   -------------------------------------------------------------------------- */
+
 .support-card-container {
-    max-width: 680px; 
-     
-    background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
-    padding: 35px !important;
-    border-radius: 16px !important;
+    width: 100%;
+    max-width: 820px;
+
+    margin: 15px auto 0;
+
+    position: relative;
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #fbfdff 100%
+        ) !important;
+
+    border: 1px solid #dbe4ee !important;
+
+    border-radius: 20px !important;
+
+    padding: 34px 38px 32px !important;
+
+    box-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.03),
+        0 6px 18px rgba(15, 23, 42, 0.05),
+        0 18px 45px rgba(15, 23, 42, 0.06);
+
+    transition:
+        box-shadow 0.3s ease,
+        transform 0.3s ease,
+        border-color 0.3s ease;
 }
 
+/* subtle top accent */
+
+.support-card-container::before {
+    content: "";
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 4px;
+
+    background:
+       #1d5fe0;
+}
+
+
+
+
+/* --------------------------------------------------------------------------
+   HEADER
+   -------------------------------------------------------------------------- */
+
 .support-card-header {
-    margin-bottom: 25px;
-    border-bottom: 1px solid #f1f5f9;
-    padding-bottom: 18px;
+    position: relative;
+    z-index: 1;
+
+    margin-bottom: 30px;
+
+    padding-bottom: 22px;
+
+    border-bottom: 1px solid #edf2f7;
+}
+
+/* small visual indicator */
+
+.support-card-header::before {
+    content: "HELP & SUPPORT";
+
+    display: inline-flex;
+    align-items: center;
+
+    height: 26px;
+
+    padding: 0 11px;
+
+    margin-bottom: 12px;
+
+    border-radius: 7px;
+
+    background: #eef5fc;
+
+    border: 1px solid #d8e7f5;
+
+    color: #1f4e8c;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
 }
 
 .support-card-header h2 {
-    font-size: 22px;
+    margin: 0 0 7px;
+
+    color: #172b4d;
+
+    font-size: 24px;
     font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 6px;
+
+    line-height: 1.25;
+
+    letter-spacing: -0.35px;
+
     text-align: left;
 }
 
 .support-card-header p {
-    font-size: 14px;
+    margin: 0;
+
+    max-width: 650px;
+
     color: #64748b !important;
-    line-height: 1.5;
+
+    font-size: 14px;
+
+    line-height: 1.65;
 }
 
-/* Form Structure Grouping */
+
+/* --------------------------------------------------------------------------
+   STATUS ALERT
+   -------------------------------------------------------------------------- */
+
+.support-status-alert {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+
+    min-height: 46px;
+
+    margin-bottom: 25px;
+
+    padding: 12px 15px 12px 17px;
+
+    border-radius: 11px;
+
+    font-size: 13.5px;
+
+    font-weight: 600;
+
+    line-height: 1.5;
+
+    animation: supportFadeIn 0.3s ease forwards;
+
+    z-index: 2;
+}
+
+.support-status-alert.success {
+    color: #166534;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f0fdf4,
+            #f7fff9
+        );
+
+    border: 1px solid #bbf7d0;
+
+    box-shadow:
+        0 4px 12px rgba(22, 101, 52, 0.06);
+}
+
+.support-status-alert.error {
+    color: #b91c1c;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff5f5,
+            #fffafa
+        );
+
+    border: 1px solid #fecaca;
+
+    box-shadow:
+        0 4px 12px rgba(185, 28, 28, 0.06);
+}
+
+
+/* --------------------------------------------------------------------------
+   FORM GROUP
+   -------------------------------------------------------------------------- */
+
 .support-form-group {
+    position: relative;
+
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 20px;
+
+    gap: 9px;
+
+    margin-bottom: 22px;
+
+    z-index: 2;
 }
 
 .support-input-label {
-    font-size: 13px;
-    font-weight: 600;
+    display: flex;
+    align-items: center;
+
     color: #334155;
-    letter-spacing: 0.3px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    line-height: 1.4;
+
+    letter-spacing: 0.15px;
 }
+
+
+/* --------------------------------------------------------------------------
+   INPUT WRAPPER
+   -------------------------------------------------------------------------- */
 
 .support-input-wrapper {
     position: relative;
+
     width: 100%;
 }
 
-/* Form Fields Styling (Inputs & Textarea) */
+
+/* --------------------------------------------------------------------------
+   INPUT + TEXTAREA
+   -------------------------------------------------------------------------- */
+
 .support-text-input,
 .support-textarea-input {
+    display: block;
+
     width: 100%;
-    background-color: #f8fafc;
+
+    box-sizing: border-box;
+
+    background: #f8fafc;
+
     border: 1px solid #cbd5e1;
-    padding: 12px 16px;
-    border-radius: 10px;
+
+    border-radius: 11px;
+
+    padding: 13px 15px;
+
+    color: #172b4d;
+
+    font-family: Cambria, Georgia, serif;
+
     font-size: 14px;
-    color: #0f172a;
-    font-family: cambria;
+
+    font-weight: 400;
+
+    line-height: 1.5;
+
     outline: none;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+
+    appearance: none;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
 }
+
+/* input */
+
+.support-text-input {
+    min-height: 48px;
+}
+
+/* textarea */
 
 .support-textarea-input {
-    resize: vertical; 
-    min-height: 120px;
-    line-height: 1.6;
+    min-height: 135px;
+
+    resize: vertical;
+
+    line-height: 1.65;
 }
 
-/* Interactive States */
+
+/* --------------------------------------------------------------------------
+   INPUT HOVER
+   -------------------------------------------------------------------------- */
+
+.support-text-input:hover:not(:disabled),
+.support-textarea-input:hover:not(:disabled) {
+    background: #ffffff;
+
+    border-color: #aebdcd;
+}
+
+
+/* --------------------------------------------------------------------------
+   INPUT FOCUS
+   -------------------------------------------------------------------------- */
+
 .support-text-input:focus,
 .support-textarea-input:focus {
-    background-color: #ffffff;
-    border-color: #0ea5e9; /* EVA Active Sky Blue */
-    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12), inset 0 1px 2px rgba(0, 0, 0, 0.02);
+    background: #ffffff;
+
+    border-color: #2563a6;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 166, 0.10),
+        0 5px 14px rgba(37, 99, 166, 0.06);
+
+    transform: translateY(-1px);
 }
+
+
+/* --------------------------------------------------------------------------
+   PLACEHOLDER
+   -------------------------------------------------------------------------- */
 
 .support-text-input::placeholder,
 .support-textarea-input::placeholder {
     color: #94a3b8;
-    font-size: 13.5px;
+
+    font-size: 13px;
+
+    font-family: Cambria, Georgia, serif;
+
+    opacity: 1;
+
+    transition: opacity 0.2s ease;
 }
+
+.support-text-input:focus::placeholder,
+.support-textarea-input:focus::placeholder {
+    opacity: 0.55;
+}
+
+
+/* --------------------------------------------------------------------------
+   DISABLED STATE
+   -------------------------------------------------------------------------- */
 
 .support-text-input:disabled,
 .support-textarea-input:disabled {
-    background-color: #f1f5f9;
+    background: #f1f5f9;
+
+    border-color: #e2e8f0;
+
     color: #94a3b8;
+
     cursor: not-allowed;
+
+    box-shadow: none;
+
+    transform: none;
 }
 
+
+/* --------------------------------------------------------------------------
+   TEXTAREA SCROLLBAR
+   -------------------------------------------------------------------------- */
+
+.support-textarea-input::-webkit-scrollbar {
+    width: 7px;
+}
+
+.support-textarea-input::-webkit-scrollbar-track {
+    background: #f1f5f9;
+
+    border-radius: 10px;
+}
+
+.support-textarea-input::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+
+    border-radius: 10px;
+}
+
+.support-textarea-input::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+
+/* --------------------------------------------------------------------------
+   ACTION AREA
+   -------------------------------------------------------------------------- */
 
 .support-action-zone {
     display: flex;
+
+    align-items: center;
     justify-content: flex-end;
-    margin-top: 10px;
+
+    margin-top: 28px;
+
+    padding-top: 22px;
+
+    border-top: 1px solid #edf2f7;
+
+    position: relative;
+    z-index: 2;
 }
 
+
+/* --------------------------------------------------------------------------
+   SUBMIT BUTTON
+   -------------------------------------------------------------------------- */
+
 .support-submit-btn {
-    background: #3b597f; 
-    color: #ffffff;
-    border: none;
-    padding: 13px 28px;
-    font-size: 14px;
-    font-weight: 600;
-    border-radius: 10px;
-    cursor: pointer;
+    position: relative;
+
+    min-width: 145px;
+
+    min-height: 46px;
+
+    padding: 12px 22px;
+
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
-    transition: all 0.2s ease-in-out;
+
+    gap: 9px;
+
+    border: 1px solid #1f4e8c;
+
+    border-radius: 10px;
+
+    background:#1d5fe0;
+
+    color: #ffffff;
+
+    font-family: Cambria, Georgia, serif;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.15px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 12px rgba(31, 78, 140, 0.20);
+
+    transition:
+        background 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease,
+        border-color 0.2s ease;
 }
 
 .support-submit-btn:hover:not(:disabled) {
-    background: #2a395b;
-    box-shadow: 0 6px 16px rgba(14, 165, 233, 0.35);
-    transform: translateY(-1px);
+    background:
+     #1d5fe0;
+
+    border-color: #193f73;
+
+    box-shadow:
+        0 8px 18px rgba(31, 78, 140, 0.27);
+
+    transform: translateY(-2px);
 }
 
 .support-submit-btn:active:not(:disabled) {
     transform: translateY(0);
+
+    box-shadow:
+        0 4px 9px rgba(31, 78, 140, 0.20);
 }
+
+.support-submit-btn:focus-visible {
+    outline: none;
+
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 166, 0.15),
+        0 7px 16px rgba(31, 78, 140, 0.22);
+}
+
+
+/* --------------------------------------------------------------------------
+   DISABLED BUTTON
+   -------------------------------------------------------------------------- */
 
 .support-submit-btn:disabled {
     background: #94a3b8;
-    box-shadow: none;
+
+    border-color: #94a3b8;
+
+    color: #ffffff;
+
     cursor: not-allowed;
-    opacity: 0.8;
+
+    box-shadow: none;
+
+    transform: none;
+
+    opacity: 0.82;
 }
 
-/* Built-in Status Messages UI */
-.support-status-alert {
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 22px;
-    display: flex;
-    align-items: center;
-    line-height: 1.4;
-    animation: fadeInSlide 0.3s ease-out forwards;
-}
 
-.support-status-alert.success {
-    background-color: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    color: #15803d;
-}
+/* --------------------------------------------------------------------------
+   LOADING SPINNER
+   -------------------------------------------------------------------------- */
 
-.support-status-alert.error {
-    background-color: #fef2f2;
-    border: 1px solid #fca5a5;
-    color: #b91c1c;
-}
-
-/* Smooth Spinner Animation for Loading State */
 .support-spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+
+    flex: 0 0 15px;
+
+    border: 2px solid rgba(255, 255, 255, 0.35);
+
     border-top-color: #ffffff;
-    animation: spinRotate 0.8s linear infinite;
+
+    border-right-color: #ffffff;
+
+    border-radius: 50%;
+
+    animation: supportSpin 0.75s linear infinite;
 }
 
-@keyframes spinRotate {
-    to { transform: rotate(360deg); }
+
+/* --------------------------------------------------------------------------
+   ANIMATIONS
+   -------------------------------------------------------------------------- */
+
+@keyframes supportSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
-@keyframes fadeInSlide {
+@keyframes supportFadeIn {
     from {
         opacity: 0;
-        transform: translateY(-8px);
+
+        transform: translateY(-6px);
     }
+
     to {
         opacity: 1;
+
         transform: translateY(0);
     }
 }
 
-/* Screen Size Optimizations */
-@media (max-width: 600px) {
+
+/* --------------------------------------------------------------------------
+   TABLET
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
     .support-card-container {
-        padding: 22px !important;
+        max-width: 100%;
+
+        padding: 30px 28px 28px !important;
     }
-    .support-submit-btn {
-        width: 100%; 
+
+    .support-card-header h2 {
+        font-size: 22px;
     }
 }
 
+
+/* --------------------------------------------------------------------------
+   MOBILE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 600px) {
+
+    .support-card-container {
+        margin-top: 12px;
+
+        padding: 27px 20px 22px !important;
+
+        border-radius: 16px !important;
+    }
+
+    .support-card-header {
+        margin-bottom: 24px;
+
+        padding-bottom: 18px;
+    }
+
+    .support-card-header::before {
+        font-size: 9px;
+
+        height: 24px;
+
+        padding: 0 9px;
+    }
+
+    .support-card-header h2 {
+        font-size: 20px;
+
+        letter-spacing: -0.2px;
+    }
+
+    .support-card-header p {
+        font-size: 13px;
+
+        line-height: 1.55;
+    }
+
+    .support-form-group {
+        margin-bottom: 18px;
+    }
+
+    .support-text-input,
+    .support-textarea-input {
+        font-size: 14px;
+
+        padding: 12px 13px;
+
+        border-radius: 9px;
+    }
+
+    .support-textarea-input {
+        min-height: 125px;
+    }
+
+    .support-action-zone {
+        margin-top: 23px;
+
+        padding-top: 19px;
+    }
+
+    .support-submit-btn {
+        width: 100%;
+
+        min-height: 47px;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   SMALL MOBILE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 380px) {
+
+    .support-card-container {
+        padding: 24px 16px 20px !important;
+    }
+
+    .support-card-header h2 {
+        font-size: 19px;
+    }
+
+    .support-card-header p {
+        font-size: 12.5px;
+    }
+
+    .support-input-label {
+        font-size: 12.5px;
+    }
+}
+
+
+/* --------------------------------------------------------------------------
+   REDUCED MOTION ACCESSIBILITY
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .support-card-container,
+    .support-text-input,
+    .support-textarea-input,
+    .support-submit-btn,
+    .support-status-alert {
+        transition: none;
+        animation: none;
+    }
+}
 
 
 .erp-profile-wrapper {

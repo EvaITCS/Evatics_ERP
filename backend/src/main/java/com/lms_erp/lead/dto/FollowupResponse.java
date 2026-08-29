@@ -65,6 +65,8 @@ public class FollowupResponse {
     // =====================================================
     // AUDIT
     // =====================================================
-
+    private LocalDateTime actionPerformedAt;
+    private LocalDateTime completedAt;
     private LocalDateTime createdAt;
+    private String actionResult;
 }

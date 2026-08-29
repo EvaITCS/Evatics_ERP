@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import api from "../../api/axios";
 import "../styles/employeefrom.css";
+import { useToast } from "../../shared/components/ToastContext";
 // =====================================================
 // PERSON COMPONENTS
 // =====================================================
@@ -78,7 +79,7 @@ function EmployeeForm({
   // =====================================================
   // CURRENT STEP
   // =====================================================
-
+  const { showToast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
 
   // =====================================================
@@ -745,8 +746,9 @@ function EmployeeForm({
 
     if (file.size > maxFileSize) {
 
-      alert(
-          "File size must be less than 5 MB."
+      showToast(
+          "File size must be less than 5 MB.",
+          "error"
       );
 
       e.target.value = "";
@@ -767,8 +769,9 @@ function EmployeeForm({
 
     if (!allowedTypes.includes(file.type)) {
 
-      alert(
-          "Only PDF, JPG, JPEG, PNG, DOC and DOCX files are allowed."
+      showToast(
+          "Only PDF, JPG, JPEG, PNG, DOC and DOCX files are allowed.",
+          "error"
       );
 
       e.target.value = "";
@@ -873,7 +876,7 @@ function EmployeeForm({
 
     if (error) {
 
-      alert(error);
+      showToast(error, "error");
 
       return;
     }

@@ -2,7 +2,7 @@ import React, {
     useEffect,
     useState
 } from "react";
-
+import { useToast } from "../../shared/components/ToastContext";
 import employeeLeaveService
     from "../services/employeeLeaveService";
 
@@ -17,7 +17,7 @@ function EmployeeLeavePage() {
     // =====================================================
     // STATE
     // =====================================================
-
+    const { showToast } = useToast();
     const [
         leaveRequests,
         setLeaveRequests
@@ -122,8 +122,9 @@ function EmployeeLeavePage() {
                     );
 
 
-                alert(
-                    "Leave Approved Successfully"
+                showToast(
+                    "Leave Approved Successfully",
+                    "success"
                 );
 
 
@@ -144,10 +145,11 @@ function EmployeeLeavePage() {
                 );
 
 
-                alert(
+                showToast(
                     error?.response?.data?.message ||
                     error?.response?.data ||
-                    "Failed To Approve Leave"
+                    "Failed To Approve Leave",
+                    "error"
                 );
 
             } finally {
@@ -196,8 +198,9 @@ function EmployeeLeavePage() {
                     );
 
 
-                alert(
-                    "Leave Rejected Successfully"
+                showToast(
+                    "Leave Rejected Successfully",
+                    "success"
                 );
 
 
@@ -218,10 +221,11 @@ function EmployeeLeavePage() {
                 );
 
 
-                alert(
+                showToast(
                     error?.response?.data?.message ||
                     error?.response?.data ||
-                    "Failed To Reject Leave"
+                    "Failed To Reject Leave",
+                    "error"
                 );
 
             } finally {
