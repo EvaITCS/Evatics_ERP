@@ -44,6 +44,8 @@ public class ReminderScheduler {
     //
     // Then counsellor receives notification.
     // =====================================================
+//
+//    @Scheduled(fixedRate = 1800000)
 
     @Scheduled(fixedRate = 1800000)
     public void processPendingReminders() {
@@ -587,6 +589,237 @@ public class ReminderScheduler {
 
                 System.err.println(
                         "Error processing admin escalation | Reminder = "
+                                + (
+                                reminder != null
+                                        ? reminder.getReminderId()
+                                        : null
+                        )
+                );
+
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // =====================================================
+// 5-MINUTE BEFORE FOLLOW-UP NOTIFICATION
+// =====================================================
+//
+// Example:
+//
+// Follow-up time = 03:00 PM
+//
+// 02:55 PM
+//      ↓
+// Notification created
+//
+// 03:00 PM
+//      ↓
+// Existing normal reminder notification
+//
+// =====================================================
+
+    @Scheduled(fixedRate = 10000)
+    public void processFiveMinuteNotifications() {
+
+        LocalDateTime now =
+                LocalDateTime.now();
+
+        LocalDateTime fiveMinutesLater =
+                now.plusMinutes(5);
+
+
+        System.out.println(
+                "===== 5-MINUTE FOLLOW-UP CHECK ====="
+        );
+
+        System.out.println(
+                "Now              : " + now
+        );
+
+        System.out.println(
+                "Five minutes later: " + fiveMinutesLater
+        );
+
+
+        List<ReminderSchedule> reminders =
+                reminderRepository
+                        .findRemindersWithinFiveMinutes(
+                                now,
+                                fiveMinutesLater
+                        );
+
+
+        System.out.println(
+                "5-minute reminders found : "
+                        + reminders.size()
+        );
+
+
+        for (ReminderSchedule reminder :
+                reminders) {
+
+            try {
+
+                // =============================================
+                // NULL CHECK
+                // =============================================
+
+                if (reminder == null) {
+                    continue;
+                }
+
+
+                // =============================================
+                // ALREADY COMPLETED
+                // =============================================
+
+                if (Boolean.TRUE.equals(
+                        reminder.getIsCompleted()
+                )) {
+                    continue;
+                }
+
+
+                // =============================================
+                // ALREADY SENT
+                // =============================================
+
+                if (Boolean.TRUE.equals(
+                        reminder.getFiveMinuteNotificationSent()
+                )) {
+                    continue;
+                }
+
+
+                // =============================================
+                // FOLLOW-UP VALIDATION
+                // =============================================
+
+                if (reminder.getFollowup() == null) {
+                    continue;
+                }
+
+
+                if (reminder
+                        .getFollowup()
+                        .getLead() == null) {
+
+                    continue;
+                }
+
+
+                Employee employee =
+                        reminder
+                                .getFollowup()
+                                .getEmployee();
+
+
+                if (employee == null) {
+                    continue;
+                }
+
+
+                // =============================================
+                // LEAD
+                // =============================================
+
+                var lead =
+                        reminder
+                                .getFollowup()
+                                .getLead();
+
+
+                // =============================================
+                // CREATE NOTIFICATION
+                // =============================================
+
+                LeadNotification notification =
+                        new LeadNotification();
+
+
+                notification.setEmployee(
+                        employee
+                );
+
+
+                notification.setLead(
+                        lead
+                );
+
+
+                notification.setFollowup(
+                        reminder.getFollowup()
+                );
+
+
+                notification.setTitle(
+                        "Follow-Up Reminder"
+                );
+
+
+                notification.setMessage(
+                        "Follow-up scheduled in 5 minutes for lead: "
+                                + (
+                                lead.getPerson() != null
+                                        ? lead.getPerson()
+                                        .getFirstName()
+                                        : "Lead"
+                        )
+                );
+
+
+                notification.setNotificationType(
+                        NotificationType.FOLLOWUP
+                );
+
+
+                notification.setIsRead(
+                        false
+                );
+
+
+                // =============================================
+                // SAVE NOTIFICATION
+                // =============================================
+
+                notificationRepository.save(
+                        notification
+                );
+
+
+                // =============================================
+                // MARK 5-MINUTE NOTIFICATION AS SENT
+                // =============================================
+
+                reminder.setFiveMinuteNotificationSent(
+                        true
+                );
+
+
+                reminderRepository.save(
+                        reminder
+                );
+
+
+                System.out.println(
+                        "5-MINUTE NOTIFICATION CREATED | "
+                                + "Reminder = "
+                                + reminder.getReminderId()
+                                + " | Followup = "
+                                + reminder
+                                .getFollowup()
+                                .getFollowupId()
+                                + " | Reminder Time = "
+                                + reminder.getReminderTime()
+                );
+
+
+            } catch (Exception e) {
+
+                System.err.println(
+                        "Error processing 5-minute notification | "
+                                + "Reminder = "
                                 + (
                                 reminder != null
                                         ? reminder.getReminderId()

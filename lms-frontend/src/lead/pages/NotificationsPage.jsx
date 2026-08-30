@@ -6,7 +6,15 @@ import NotificationSummary from "../components/NotificationSummary";
 import ReminderCard from "../components/ReminderCard";
 
 import {
-    getNotificationPage
+    FiCalendar,
+    FiClock,
+    FiBell,
+    FiPhone
+} from "react-icons/fi";
+
+import {
+    getNotificationPage,
+    markNotificationAsRead
 } from "../services/notificationService";
 
 import {
@@ -39,6 +47,15 @@ function NotificationsPage() {
         useState([]);
 
     const [pendingReminders, setPendingReminders] =
+        useState([]);
+
+    const [callbackNotifications, setCallbackNotifications] =
+        useState([]);
+
+    const [smsReplyNotifications, setSmsReplyNotifications] =
+        useState([]);
+
+    const [followupNotifications, setFollowupNotifications] =
         useState([]);
 
     const [escalatedNotifications, setEscalatedNotifications] =
@@ -112,35 +129,112 @@ function NotificationsPage() {
 
 
     // =====================================================
+    // FOLLOW-UP NOTIFICATION CLICK
+    // =====================================================
+
+    const handleFollowupNotification = async (
+        notification
+    ) => {
+
+        if (!notification) {
+            return;
+        }
+
+        try {
+
+            // ---------------------------------------------
+            // MARK AS READ
+            // ---------------------------------------------
+
+            if (
+                notification.notificationId &&
+                notification.isRead !== true
+            ) {
+
+                await markNotificationAsRead(
+                    notification.notificationId
+                );
+            }
+
+
+            // ---------------------------------------------
+            // UPDATE OTHER COMPONENTS
+            // ---------------------------------------------
+
+            window.dispatchEvent(
+                new Event("notification-read")
+            );
+
+
+            // ---------------------------------------------
+            // OPEN FOLLOW-UP
+            // ---------------------------------------------
+
+            if (notification.followupId) {
+
+                navigate(
+                    `/leads/${notification.leadPersonId}/followups`
+                );
+
+                return;
+            }
+
+
+            // ---------------------------------------------
+            // FALLBACK
+            // ---------------------------------------------
+
+            if (notification.leadPersonId) {
+
+                navigate(
+                    `/leads/${notification.leadPersonId}`
+                );
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Failed to process follow-up notification:",
+                error
+            );
+        }
+    };
+
+
+    // =====================================================
     // UNIQUE ESCALATIONS
     // =====================================================
 
-    const getUniqueEscalations = (notifications) => {
+    const getUniqueEscalations = (
+        notifications
+    ) => {
 
         const uniqueEscalations =
             new Map();
 
-        notifications.forEach((notification) => {
+        notifications.forEach(
+            (notification) => {
 
-            const leadPersonId =
-                notification?.leadPersonId;
+                const leadPersonId =
+                    notification?.leadPersonId;
 
-            if (!leadPersonId) {
-                return;
+                if (!leadPersonId) {
+                    return;
+                }
+
+                if (
+                    !uniqueEscalations.has(
+                        leadPersonId
+                    )
+                ) {
+
+                    uniqueEscalations.set(
+                        leadPersonId,
+                        notification
+                    );
+                }
             }
-
-            if (
-                !uniqueEscalations.has(
-                    leadPersonId
-                )
-            ) {
-
-                uniqueEscalations.set(
-                    leadPersonId,
-                    notification
-                );
-            }
-        });
+        );
 
         return Array.from(
             uniqueEscalations.values()
@@ -152,7 +246,9 @@ function NotificationsPage() {
     // COUNSELLOR NAME
     // =====================================================
 
-    const getCounsellorName = (notification) => {
+    const getCounsellorName = (
+        notification
+    ) => {
 
         if (notification?.counsellorName) {
             return notification.counsellorName;
@@ -186,9 +282,13 @@ function NotificationsPage() {
     // SCHEDULED TIME
     // =====================================================
 
-    const getScheduledTime = (notification) => {
+    const getScheduledTime = (
+        notification
+    ) => {
 
         return (
+            notification?.nextFollowupAt ||
+            notification?.callbackScheduledAt ||
             notification?.followupScheduledAt ||
             notification?.scheduledAt ||
             notification?.followUpScheduledAt ||
@@ -201,7 +301,9 @@ function NotificationsPage() {
     // OVERDUE HOURS
     // =====================================================
 
-    const getOverdueHours = (notification) => {
+    const getOverdueHours = (
+        notification
+    ) => {
 
         const scheduledAt =
             getScheduledTime(notification);
@@ -249,9 +351,13 @@ function NotificationsPage() {
         try {
 
             if (!background) {
+
                 setLoading(true);
+
             } else {
+
                 setRefreshing(true);
+
             }
 
 
@@ -268,11 +374,20 @@ function NotificationsPage() {
                     ? data.today
                     : [];
 
-            setTodayReminders(
-                getUniquePersons(
-                    rawToday
-                )
-            );
+
+            if (role !== "ADMIN") {
+
+                setTodayReminders(
+                    getUniquePersons(
+                        rawToday
+                    )
+                );
+
+            } else {
+
+                setTodayReminders([]);
+
+            }
 
 
             // =================================================
@@ -284,11 +399,304 @@ function NotificationsPage() {
                     ? data.pending
                     : [];
 
-            setPendingReminders(
-                getUniquePersons(
-                    rawPending
-                )
-            );
+
+            if (role !== "ADMIN") {
+
+                setPendingReminders(
+                    getUniquePersons(
+                        rawPending
+                    )
+                );
+
+            } else {
+
+                setPendingReminders([]);
+
+            }
+
+
+            // =================================================
+            // ALL NOTIFICATIONS
+            // =================================================
+
+            const allNotifications =
+                Array.isArray(data?.notifications)
+                    ? data.notifications
+                    : [];
+
+
+            // =================================================
+            // NORMAL FOLLOW-UP NOTIFICATIONS
+            // =================================================
+
+            if (role !== "ADMIN") {
+
+                const normalFollowupNotifications =
+                    allNotifications.filter(
+                        (notification) =>
+                            notification?.notificationType ===
+                            "FOLLOWUP" &&
+                            notification?.actionResult !==
+                            "SMS_REPLIED" &&
+                            notification?.isRead !== true
+                    );
+
+
+                setFollowupNotifications(
+                    normalFollowupNotifications
+                );
+
+
+                // =================================================
+                // SMS REPLIED NOTIFICATIONS
+                //
+                // Important:
+                // Backend must return:
+                //
+                // notificationType = FOLLOWUP
+                // actionResult = SMS_REPLIED
+                // nextFollowupAt = selected date/time
+                // =================================================
+
+                // =================================================
+// SMS REPLY FOLLOW-UP NOTIFICATIONS
+//
+// SMS_REPLIED follow-ups come from ReminderResponse
+// inside TODAY / PENDING, not necessarily from
+// data.notifications.
+//
+// Backend ReminderResponse contains:
+// actionResult
+// nextFollowupAt
+// =================================================
+
+                const smsReplyReminders = [
+                    ...rawToday,
+                    ...rawPending
+                ].filter(
+                    (reminder) =>
+                        reminder?.actionResult === "SMS_REPLIED" &&
+                        reminder?.nextFollowupAt
+                );
+
+// Remove duplicate person + follow-up combinations
+                const uniqueSmsReplies = [];
+
+                const smsReplyKeys = new Set();
+
+                smsReplyReminders.forEach((reminder) => {
+
+                    const personId =
+                        reminder?.personId;
+
+                    const followupTime =
+                        reminder?.nextFollowupAt;
+
+                    const key =
+                        `${personId}_${followupTime}`;
+
+                    if (!smsReplyKeys.has(key)) {
+
+                        smsReplyKeys.add(key);
+
+                        uniqueSmsReplies.push({
+                            ...reminder,
+
+                            // Keep same naming convention
+                            leadPersonId:
+                            reminder?.personId,
+
+                            notificationType:
+                                "FOLLOWUP",
+
+                            title:
+                                "SMS Reply Received",
+
+                            message:
+                                "SMS reply received. Follow-up has been scheduled.",
+
+                            isRead:
+                                false,
+
+                            createdAt:
+                            reminder?.reminderTime
+                        });
+                    }
+                });
+
+                setSmsReplyNotifications(
+                    uniqueSmsReplies
+                );
+
+            } else {
+
+                setFollowupNotifications([]);
+
+                setSmsReplyNotifications([]);
+
+            }
+
+
+            // =================================================
+            // CALLBACK NOTIFICATIONS
+            // =================================================
+
+            if (role !== "ADMIN") {
+
+                // -------------------------------------------------
+                // TODAY CALLBACKS
+                // -------------------------------------------------
+
+                const todayCallbacks =
+                    rawToday
+                        .filter(
+                            (reminder) =>
+                                reminder?.callbackScheduledAt
+                        )
+                        .map(
+                            (reminder) => ({
+
+                                notificationId:
+                                    null,
+
+                                notificationType:
+                                    "CALLBACK_REMINDER",
+
+                                title:
+                                    "Callback Scheduled",
+
+                                message:
+                                    "Callback is scheduled.",
+
+                                isRead:
+                                    false,
+
+                                createdAt:
+                                    reminder?.reminderTime ||
+                                    reminder?.callbackScheduledAt,
+
+                                leadPersonId:
+                                reminder?.personId,
+
+                                followupScheduledAt:
+                                reminder?.callbackScheduledAt,
+
+                                callbackScheduledAt:
+                                reminder?.callbackScheduledAt,
+
+                                personId:
+                                reminder?.personId,
+
+                                firstName:
+                                reminder?.firstName,
+
+                                middleName:
+                                reminder?.middleName,
+
+                                lastName:
+                                reminder?.lastName,
+
+                                email:
+                                reminder?.email,
+
+                                phone:
+                                reminder?.phone
+                            })
+                        );
+
+
+                // -------------------------------------------------
+                // REAL CALLBACK NOTIFICATIONS
+                // -------------------------------------------------
+
+                const notificationCallbacks =
+                    allNotifications.filter(
+                        (notification) =>
+                            (
+                                notification?.notificationType ===
+                                "CALLBACK_REMINDER" ||
+
+                                notification?.notificationType ===
+                                "CALLBACK_DUE"
+                            )
+                            &&
+                            notification?.isRead !== true
+                    );
+
+
+                // -------------------------------------------------
+                // MERGE
+                // -------------------------------------------------
+
+                const mergedCallbacks = [
+
+                    ...todayCallbacks,
+
+                    ...notificationCallbacks
+
+                ];
+
+
+                // -------------------------------------------------
+                // REMOVE DUPLICATES
+                // -------------------------------------------------
+
+                const uniqueCallbacks = [];
+
+                const callbackKeys =
+                    new Set();
+
+
+                mergedCallbacks.forEach(
+                    (callback) => {
+
+                        const leadId =
+                            callback?.leadPersonId ||
+                            callback?.personId;
+
+
+                        const callbackTime =
+                            callback?.callbackScheduledAt ||
+                            callback?.followupScheduledAt ||
+                            "";
+
+
+                        const notificationType =
+                            callback?.notificationType ||
+                            "";
+
+
+                        const key =
+                            `${leadId}_${callbackTime}_${notificationType}`;
+
+
+                        if (
+                            !callbackKeys.has(
+                                key
+                            )
+                        ) {
+
+                            callbackKeys.add(
+                                key
+                            );
+
+                            uniqueCallbacks.push(
+                                callback
+                            );
+                        }
+                    }
+                );
+
+
+                setCallbackNotifications(
+                    uniqueCallbacks
+                );
+
+            } else {
+
+                setCallbackNotifications([]);
+
+            }
 
 
             // =================================================
@@ -296,14 +704,6 @@ function NotificationsPage() {
             // =================================================
 
             if (role === "ADMIN") {
-
-                const allNotifications =
-                    Array.isArray(
-                        data?.notifications
-                    )
-                        ? data.notifications
-                        : [];
-
 
                 const escalations =
                     allNotifications.filter(
@@ -333,9 +733,10 @@ function NotificationsPage() {
             } else {
 
                 setEscalatedNotifications([]);
-                setEscalatedCount(0);
-            }
 
+                setEscalatedCount(0);
+
+            }
 
         } catch (error) {
 
@@ -347,7 +748,9 @@ function NotificationsPage() {
         } finally {
 
             setLoading(false);
+
             setRefreshing(false);
+
         }
     };
 
@@ -362,11 +765,14 @@ function NotificationsPage() {
 
 
         const interval =
-            setInterval(() => {
+            setInterval(
+                () => {
 
-                loadNotifications(true);
+                    loadNotifications(true);
 
-            }, 30000);
+                },
+                30000
+            );
 
 
         return () =>
@@ -399,6 +805,7 @@ function NotificationsPage() {
                 reminderId
             );
 
+
             await loadNotifications();
 
         } catch (error) {
@@ -407,6 +814,7 @@ function NotificationsPage() {
                 "Failed to complete reminder:",
                 error
             );
+
 
             alert(
                 "Failed to complete reminder."
@@ -433,9 +841,79 @@ function NotificationsPage() {
         }
 
 
-        navigate(
-            `/admin/lead/${leadPersonId}`
-        );
+        if (role === "ADMIN") {
+
+            navigate(
+                `/admin/lead/${leadPersonId}`
+            );
+
+        } else {
+
+            navigate(
+                `/COUNSELLOR/lead/${leadPersonId}`
+            );
+
+        }
+    };
+
+
+    // =====================================================
+    // CALLBACK NOTIFICATION
+    // =====================================================
+
+    const handleCallbackNotification = async (
+        notification
+    ) => {
+
+        try {
+
+            if (
+                notification?.notificationId &&
+                notification?.isRead !== true
+            ) {
+
+                await markNotificationAsRead(
+                    notification.notificationId
+                );
+            }
+
+
+            window.dispatchEvent(
+                new Event("notification-read")
+            );
+
+
+            if (!notification?.leadPersonId) {
+
+                console.error(
+                    "Lead person ID is missing from callback notification."
+                );
+
+                return;
+            }
+
+
+            if (role === "ADMIN") {
+
+                navigate(
+                    `/admin/lead/${notification.leadPersonId}`
+                );
+
+            } else {
+
+                navigate(
+                    `/COUNSELLOR/lead/${notification.leadPersonId}`
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Failed to process callback notification:",
+                error
+            );
+        }
     };
 
 
@@ -473,7 +951,9 @@ function NotificationsPage() {
                 error
             );
 
+
             setCounsellors([]);
+
 
             alert(
                 "Failed to load counsellors."
@@ -482,6 +962,7 @@ function NotificationsPage() {
         } finally {
 
             setLoadingCounsellors(false);
+
         }
     };
 
@@ -504,21 +985,18 @@ function NotificationsPage() {
         }
 
 
-        // Toggle
-
         if (
             assigningNotificationId ===
             notification.notificationId
         ) {
 
             setAssigningNotificationId(null);
+
             setSelectedCounsellor("");
 
             return;
         }
 
-
-        // Open
 
         setAssigningNotificationId(
             notification.notificationId
@@ -527,11 +1005,12 @@ function NotificationsPage() {
         setSelectedCounsellor("");
 
 
-        // Load counsellors
-
-        if (counsellors.length === 0) {
+        if (
+            counsellors.length === 0
+        ) {
 
             await loadCounsellors();
+
         }
     };
 
@@ -546,14 +1025,16 @@ function NotificationsPage() {
             return;
         }
 
+
         setAssigningNotificationId(null);
+
         setSelectedCounsellor("");
+
     };
 
 
     // =====================================================
     // RESET FOLLOW-UP
-    // SAME COUNSELLOR
     // =====================================================
 
     const handleResetCycle = async (
@@ -595,10 +1076,6 @@ function NotificationsPage() {
             );
 
 
-            // =================================================
-            // REMOVE ESCALATION IMMEDIATELY
-            // =================================================
-
             setEscalatedNotifications(
                 (previous) =>
                     previous.filter(
@@ -619,12 +1096,9 @@ function NotificationsPage() {
 
 
             setAssigningNotificationId(null);
+
             setSelectedCounsellor("");
 
-
-            // =================================================
-            // RELOAD BACKEND STATE
-            // =================================================
 
             await loadNotifications();
 
@@ -640,10 +1114,12 @@ function NotificationsPage() {
                 error
             );
 
+
             console.error(
                 "SERVER RESPONSE:",
                 error?.response?.data
             );
+
 
             alert(
                 error?.response?.data?.message ||
@@ -654,6 +1130,7 @@ function NotificationsPage() {
         } finally {
 
             setActionLoading(false);
+
         }
     };
 
@@ -668,6 +1145,7 @@ function NotificationsPage() {
 
         const notificationId =
             notification?.notificationId;
+
 
         const leadPersonId =
             notification?.leadPersonId;
@@ -728,19 +1206,11 @@ function NotificationsPage() {
             setActionLoading(true);
 
 
-            // =================================================
-            // BACKEND EXPECTS NOTIFICATION ID
-            // =================================================
-
             await reassignCounsellor(
                 notificationId,
                 employeePersonId
             );
 
-
-            // =================================================
-            // REMOVE ADMIN ESCALATION
-            // =================================================
 
             setEscalatedNotifications(
                 (previous) =>
@@ -761,17 +1231,10 @@ function NotificationsPage() {
             );
 
 
-            // =================================================
-            // CLOSE ASSIGN PANEL
-            // =================================================
-
             setAssigningNotificationId(null);
+
             setSelectedCounsellor("");
 
-
-            // =================================================
-            // RELOAD EVERYTHING
-            // =================================================
 
             await loadNotifications();
 
@@ -787,10 +1250,12 @@ function NotificationsPage() {
                 error
             );
 
+
             console.error(
                 "SERVER RESPONSE:",
                 error?.response?.data
             );
+
 
             alert(
                 error?.response?.data?.message ||
@@ -801,6 +1266,7 @@ function NotificationsPage() {
         } finally {
 
             setActionLoading(false);
+
         }
     };
 
@@ -824,6 +1290,7 @@ function NotificationsPage() {
                 </div>
 
             </div>
+
         );
     }
 
@@ -868,10 +1335,13 @@ function NotificationsPage() {
                             }
                             disabled={refreshing}
                         >
-                            {refreshing
-                                ? "Refreshing..."
-                                : "↻ Refresh"
+
+                            {
+                                refreshing
+                                    ? "Refreshing..."
+                                    : "↻ Refresh"
                             }
+
                         </button>
 
 
@@ -882,7 +1352,9 @@ function NotificationsPage() {
                                 navigate(-1)
                             }
                         >
+
                             ← Back
+
                         </button>
 
                     </div>
@@ -910,6 +1382,14 @@ function NotificationsPage() {
                             escalatedCount
                         }
 
+                        callbackCount={
+                            callbackNotifications.length
+                        }
+
+                        smsReplyCount={
+                            smsReplyNotifications.length
+                        }
+
                         role={
                             role
                         }
@@ -923,158 +1403,495 @@ function NotificationsPage() {
                 {/* TODAY */}
                 {/* ================================================= */}
 
-                <section className="notification-section">
+                {role !== "ADMIN" && (
 
-                    <div className="section-header">
+                    <section className="notification-section">
 
-                        <div className="section-title">
+                        <div className="section-header">
 
-                            <span className="status-dot green" />
+                            <div className="section-title">
 
-                            <h2>
-                                Today's Followups
-                            </h2>
+                                <span className="status-dot green" />
+
+                                <h2>
+                                    Today's Followups
+                                </h2>
+
+                            </div>
+
+
+                            <span className="count-badge today">
+
+                                {
+                                    todayReminders.length
+                                }
+
+                            </span>
 
                         </div>
 
 
-                        <span className="count-badge today">
-                            {todayReminders.length}
-                        </span>
+                        {
+                            todayReminders.length === 0
 
-                    </div>
+                                ? (
 
+                                    <div className="empty-card">
 
-                    {todayReminders.length === 0
+                                        <h3>
+                                            🎉 No Followups Scheduled Today
+                                        </h3>
 
-                        ? (
+                                        <p>
+                                            You're all caught up for today.
+                                        </p>
 
-                            <div className="empty-card">
+                                    </div>
 
-                                <h3>
-                                    🎉 No Followups Scheduled Today
-                                </h3>
+                                )
 
-                                <p>
-                                    You're all caught up for today.
-                                </p>
+                                : (
 
-                            </div>
+                                    <div className="notification-grid">
 
-                        )
+                                        {
+                                            todayReminders.map(
+                                                (reminder) => (
 
-                        : (
+                                                    <ReminderCard
 
-                            <div className="notification-grid">
+                                                        key={
+                                                            reminder.personId
+                                                        }
 
-                                {todayReminders.map(
-                                    (reminder) => (
+                                                        reminder={
+                                                            reminder
+                                                        }
 
-                                        <ReminderCard
+                                                        type="TODAY"
 
-                                            key={
-                                                reminder.personId
-                                            }
+                                                        onComplete={
+                                                            handleComplete
+                                                        }
 
-                                            reminder={
-                                                reminder
-                                            }
+                                                    />
 
-                                            type="TODAY"
+                                                )
+                                            )
+                                        }
 
-                                            onComplete={
-                                                handleComplete
-                                            }
+                                    </div>
 
-                                        />
+                                )
+                        }
 
-                                    )
-                                )}
+                    </section>
 
-                            </div>
-                        )
-                    }
-
-                </section>
+                )}
 
 
                 {/* ================================================= */}
                 {/* PENDING */}
                 {/* ================================================= */}
 
-                <section className="notification-section">
+                {role !== "ADMIN" && (
 
-                    <div className="section-header">
+                    <section className="notification-section">
 
-                        <div className="section-title">
+                        <div className="section-header">
 
-                            <span className="status-dot orange" />
+                            <div className="section-title">
 
-                            <h2>
-                                Incomplete Followups
-                            </h2>
+                                <span className="status-dot orange" />
+
+                                <h2>
+                                    Incomplete Followups
+                                </h2>
+
+                            </div>
+
+
+                            <span className="count-badge pending">
+
+                                {
+                                    pendingReminders.length
+                                }
+
+                            </span>
 
                         </div>
 
 
-                        <span className="count-badge pending">
-                            {pendingReminders.length}
-                        </span>
+                        {
+                            pendingReminders.length === 0
 
-                    </div>
+                                ? (
+
+                                    <div className="empty-card">
+
+                                        <h3>
+                                            No Incomplete Followups
+                                        </h3>
+
+                                        <p>
+                                            Great! There are no pending followups.
+                                        </p>
+
+                                    </div>
+
+                                )
+
+                                : (
+
+                                    <div className="notification-grid">
+
+                                        {
+                                            pendingReminders.map(
+                                                (reminder) => (
+
+                                                    <ReminderCard
+
+                                                        key={
+                                                            reminder.personId
+                                                        }
+
+                                                        reminder={
+                                                            reminder
+                                                        }
+
+                                                        type="PENDING"
+
+                                                        onComplete={
+                                                            handleComplete
+                                                        }
+
+                                                    />
+
+                                                )
+                                            )
+                                        }
+
+                                    </div>
+
+                                )
+                        }
+
+                    </section>
+
+                )}
 
 
-                    {pendingReminders.length === 0
+                {/* ================================================= */}
+                {/* NORMAL FOLLOW-UP NOTIFICATIONS */}
+                {/* ================================================= */}
 
-                        ? (
 
-                            <div className="empty-card">
 
-                                <h3>
-                                    No Incomplete Followups
-                                </h3>
 
-                                <p>
-                                    Great! There are no pending followups.
-                                </p>
+                {/* ================================================= */}
+                {/* SMS REPLY FOLLOW-UPS */}
+                {/* ================================================= */}
+
+                {role !== "ADMIN" && (
+
+                    <section className="notification-section">
+
+                        <div className="section-header">
+
+                            <div className="section-title">
+
+                                <span className="status-dot green" />
+
+                                <h2>
+                                    SMS Reply Follow-Ups
+                                </h2>
 
                             </div>
 
-                        )
 
-                        : (
+                            <span className="count-badge today">
 
-                            <div className="notification-grid">
+                                {
+                                    smsReplyNotifications.length
+                                }
 
-                                {pendingReminders.map(
-                                    (reminder) => (
+                            </span>
 
-                                        <ReminderCard
+                        </div>
 
-                                            key={
-                                                reminder.personId
-                                            }
 
-                                            reminder={
-                                                reminder
-                                            }
+                        {
+                            smsReplyNotifications.length === 0
 
-                                            type="PENDING"
+                                ? (
 
-                                            onComplete={
-                                                handleComplete
-                                            }
+                                    <div className="empty-card">
 
-                                        />
+                                        <h3
+                                            style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: "8px"
+                                            }}
+                                        >
 
-                                    )
-                                )}
+                                            <FiBell
+                                                size={20}
+                                            />
 
-                            </div>
-                        )
-                    }
+                                            No SMS Reply Follow-Ups
 
-                </section>
+                                        </h3>
+
+
+                                        <p>
+                                            No SMS reply follow-up has been scheduled.
+                                        </p>
+
+                                    </div>
+
+                                )
+
+                                : (
+
+                                    <div className="notification-grid">
+
+                                        {
+                                            smsReplyNotifications.map(
+                                                (notification) => {
+
+                                                    const nextFollowup =
+                                                        notification?.nextFollowupAt ||
+                                                        notification?.followupScheduledAt ||
+                                                        notification?.scheduledAt;
+
+
+                                                    return (
+
+                                                        <div
+                                                            className="admin-escalation-card"
+                                                            key={
+                                                                notification.notificationId ||
+                                                                notification.followupId
+                                                            }
+                                                        >
+
+                                                            {/* ========================= */}
+                                                            {/* HEADER */}
+                                                            {/* ========================= */}
+
+                                                            <div className="admin-escalation-header">
+
+                                                                <div>
+
+                                                                    <h3
+                                                                        style={{
+                                                                            display: "flex",
+                                                                            alignItems: "center",
+                                                                            gap: "8px"
+                                                                        }}
+                                                                    >
+
+                                                                        <FiBell
+                                                                            size={20}
+                                                                        />
+
+                                                                        SMS Reply Received
+
+                                                                    </h3>
+
+
+                                                                    <span className="escalation-label">
+
+                                                                        SMS REPLIED
+
+                                                                    </span>
+
+                                                                </div>
+
+                                                            </div>
+
+
+                                                            {/* ========================= */}
+                                                            {/* INFORMATION */}
+                                                            {/* ========================= */}
+
+                                                            <div className="escalation-info">
+
+
+                                                                {/* MESSAGE */}
+
+                                                                <div className="escalation-info-row">
+
+                                                                    <span className="info-label">
+                                                                        Message
+                                                                    </span>
+
+                                                                    <strong className="info-value">
+
+                                                                        {
+                                                                            notification?.message ||
+                                                                            "SMS reply received. Follow-up has been scheduled."
+                                                                        }
+
+                                                                    </strong>
+
+                                                                </div>
+
+
+                                                                {/* NEXT FOLLOW-UP DATE */}
+
+                                                                <div className="escalation-info-row">
+
+                                                                    <span className="info-label">
+                                                                        Next Follow-Up
+                                                                    </span>
+
+                                                                    <strong
+                                                                        className="info-value"
+                                                                        style={{
+                                                                            display: "flex",
+                                                                            alignItems: "center",
+                                                                            gap: "6px"
+                                                                        }}
+                                                                    >
+
+                                                                        <FiCalendar
+                                                                            size={15}
+                                                                        />
+
+                                                                        {
+                                                                            nextFollowup
+                                                                                ? new Date(
+                                                                                    nextFollowup
+                                                                                ).toLocaleDateString(
+                                                                                    "en-IN",
+                                                                                    {
+                                                                                        day: "2-digit",
+                                                                                        month: "short",
+                                                                                        year: "numeric"
+                                                                                    }
+                                                                                )
+                                                                                : "-"
+                                                                        }
+
+                                                                    </strong>
+
+                                                                </div>
+
+
+                                                                {/* NEXT FOLLOW-UP TIME */}
+
+                                                                <div className="escalation-info-row">
+
+                                                                    <span className="info-label">
+                                                                        Scheduled Time
+                                                                    </span>
+
+                                                                    <strong
+                                                                        className="info-value"
+                                                                        style={{
+                                                                            display: "flex",
+                                                                            alignItems: "center",
+                                                                            gap: "6px"
+                                                                        }}
+                                                                    >
+
+                                                                        <FiClock
+                                                                            size={15}
+                                                                        />
+
+                                                                        {
+                                                                            nextFollowup
+                                                                                ? new Date(
+                                                                                    nextFollowup
+                                                                                ).toLocaleTimeString(
+                                                                                    "en-IN",
+                                                                                    {
+                                                                                        hour: "2-digit",
+                                                                                        minute: "2-digit"
+                                                                                    }
+                                                                                )
+                                                                                : "-"
+                                                                        }
+
+                                                                    </strong>
+
+                                                                </div>
+
+
+                                                                {/* CREATED */}
+
+                                                                <div className="escalation-info-row">
+
+                                                                    <span className="info-label">
+                                                                        Created
+                                                                    </span>
+
+                                                                    <strong className="info-value">
+
+                                                                        {
+                                                                            notification?.createdAt
+                                                                                ? new Date(
+                                                                                    notification.createdAt
+                                                                                ).toLocaleString(
+                                                                                    "en-IN"
+                                                                                )
+                                                                                : "-"
+                                                                        }
+
+                                                                    </strong>
+
+                                                                </div>
+
+                                                            </div>
+
+
+                                                            {/* ========================= */}
+                                                            {/* ACTION */}
+                                                            {/* ========================= */}
+
+                                                            <div className="admin-escalation-actions">
+
+                                                                <button
+                                                                    type="button"
+                                                                    className="primary-btn"
+                                                                    onClick={() =>
+                                                                        handleViewLead(
+                                                                            notification?.leadPersonId ||
+                                                                            notification?.personId
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <FiBell
+                                                                        size={15}
+                                                                        style={{
+                                                                            marginRight: "6px",
+                                                                            verticalAlign: "middle"
+                                                                        }}
+                                                                    />
+
+                                                                    View Follow-Up
+                                                                </button>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    );
+
+                                                }
+                                            )
+                                        }
+
+                                    </div>
+
+                                )
+                        }
+
+                    </section>
+
+                )}
 
 
                 {/* ================================================= */}
@@ -1099,301 +1916,578 @@ function NotificationsPage() {
 
 
                             <span className="count-badge pending">
-                                {escalatedNotifications.length}
+
+                                {
+                                    escalatedNotifications.length
+                                }
+
                             </span>
 
                         </div>
 
 
-                        {escalatedNotifications.length === 0
+                        {
+                            escalatedNotifications.length === 0
 
-                            ? (
+                                ? (
 
-                                <div className="empty-card">
+                                    <div className="empty-card">
 
-                                    <h3>
-                                        🎉 No 48-Hour Escalations
-                                    </h3>
+                                        <h3>
+                                            🎉 No 48-Hour Escalations
+                                        </h3>
 
-                                    <p>
-                                        No follow-up has been escalated to Admin.
-                                    </p>
+                                        <p>
+                                            No follow-up has been escalated to Admin.
+                                        </p>
 
-                                </div>
+                                    </div>
 
-                            )
+                                )
 
-                            : (
+                                : (
 
-                                <div className="notification-grid admin-escalation-grid">
+                                    <div className="notification-grid admin-escalation-grid">
 
-                                    {escalatedNotifications.map(
-                                        (notification) => {
+                                        {
+                                            escalatedNotifications.map(
+                                                (notification) => {
 
-                                            const isAssignOpen =
-                                                assigningNotificationId ===
-                                                notification.notificationId;
-
-
-                                            const counsellorName =
-                                                getCounsellorName(
-                                                    notification
-                                                );
+                                                    const isAssignOpen =
+                                                        assigningNotificationId ===
+                                                        notification.notificationId;
 
 
-                                            const overdueHours =
-                                                getOverdueHours(
-                                                    notification
-                                                );
+                                                    const counsellorName =
+                                                        getCounsellorName(
+                                                            notification
+                                                        );
 
 
-                                            return (
-
-                                                <div
-                                                    className="admin-escalation-card"
-                                                    key={
-                                                        notification.notificationId ||
-                                                        notification.leadPersonId
-                                                    }
-                                                >
-
-                                                    {/* ================================= */}
-                                                    {/* HEADER */}
-                                                    {/* ================================= */}
-
-                                                    <div className="admin-escalation-header">
-
-                                                        <div>
-
-                                                            <h3>
-                                                                Follow-Up Overdue
-                                                            </h3>
-
-                                                            <span className="escalation-label">
-                                                                48+ Hour Escalation
-                                                            </span>
-
-                                                        </div>
-
-                                                    </div>
+                                                    const overdueHours =
+                                                        getOverdueHours(
+                                                            notification
+                                                        );
 
 
-                                                    {/* ================================= */}
-                                                    {/* INFORMATION */}
-                                                    {/* ================================= */}
+                                                    return (
 
-                                                    <div className="escalation-info">
-
-                                                        <div className="escalation-info-row">
-
-                                                            <span className="info-label">
-                                                                Counsellor
-                                                            </span>
-
-                                                            <strong className="info-value">
-                                                                {counsellorName}
-                                                            </strong>
-
-                                                        </div>
-
-
-                                                        <div className="escalation-info-row">
-
-                                                            <span className="info-label">
-                                                                Overdue
-                                                            </span>
-
-                                                            <strong className="overdue-value">
-
-                                                                {
-                                                                    overdueHours !== null
-                                                                        ? `${overdueHours} hours`
-                                                                        : "48+ hours"
-                                                                }
-
-                                                            </strong>
-
-                                                        </div>
-
-                                                    </div>
-
-
-                                                    {/* ================================= */}
-                                                    {/* ACTIONS */}
-                                                    {/* ================================= */}
-
-                                                    <div className="admin-escalation-actions">
-
-                                                        <button
-                                                            type="button"
-                                                            className="primary-btn"
-                                                            onClick={() =>
-                                                                handleViewLead(
-                                                                    notification.leadPersonId
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                actionLoading
+                                                        <div
+                                                            className="admin-escalation-card"
+                                                            key={
+                                                                notification.notificationId ||
+                                                                notification.leadPersonId
                                                             }
                                                         >
-                                                            View Lead
-                                                        </button>
+
+                                                            <div className="admin-escalation-header">
+
+                                                                <div>
+
+                                                                    <h3>
+                                                                        Follow-Up Overdue
+                                                                    </h3>
+
+                                                                    <span className="escalation-label">
+                                                                        48+ Hour Escalation
+                                                                    </span>
+
+                                                                </div>
+
+                                                            </div>
 
 
-                                                        <button
-                                                            type="button"
-                                                            className="secondary-btn"
-                                                            onClick={() =>
-                                                                handleResetCycle(
-                                                                    notification
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                actionLoading
-                                                            }
-                                                        >
-                                                            {
-                                                                actionLoading
-                                                                    ? "Processing..."
-                                                                    : "Reset Follow-up"
-                                                            }
-                                                        </button>
+                                                            <div className="escalation-info">
+
+                                                                <div className="escalation-info-row">
+
+                                                                    <span className="info-label">
+                                                                        Counsellor
+                                                                    </span>
+
+                                                                    <strong className="info-value">
+                                                                        {
+                                                                            counsellorName
+                                                                        }
+                                                                    </strong>
+
+                                                                </div>
 
 
-                                                        <button
-                                                            type="button"
-                                                            className="primary-btn assign-counsellor-btn"
-                                                            onClick={() =>
-                                                                handleOpenAssign(
-                                                                    notification
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                actionLoading
-                                                            }
-                                                        >
-                                                            {
-                                                                isAssignOpen
-                                                                    ? "Close"
-                                                                    : "Assign Counsellor"
-                                                            }
-                                                        </button>
+                                                                <div className="escalation-info-row">
 
-                                                    </div>
+                                                                    <span className="info-label">
+                                                                        Overdue
+                                                                    </span>
 
+                                                                    <strong className="overdue-value">
 
-                                                    {/* ================================= */}
-                                                    {/* COUNSELLOR PANEL */}
-                                                    {/* ================================= */}
+                                                                        {
+                                                                            overdueHours !== null
+                                                                                ? `${overdueHours} hours`
+                                                                                : "48+ hours"
+                                                                        }
 
-                                                    {isAssignOpen && (
+                                                                    </strong>
 
-                                                        <div className="inline-counsellor-panel">
+                                                                </div>
 
-                                                            <label>
-                                                                Select Counsellor
-                                                            </label>
+                                                            </div>
 
 
-                                                            <select
-                                                                value={
-                                                                    selectedCounsellor
-                                                                }
-                                                                onChange={
-                                                                    (event) =>
-                                                                        setSelectedCounsellor(
-                                                                            event.target.value
-                                                                        )
-                                                                }
-                                                                disabled={
-                                                                    loadingCounsellors ||
-                                                                    actionLoading
-                                                                }
-                                                            >
-
-                                                                <option value="">
-
-                                                                    {
-                                                                        loadingCounsellors
-                                                                            ? "Loading Counsellors..."
-                                                                            : "Select Counsellor"
-                                                                    }
-
-                                                                </option>
-
-
-                                                                {counsellors.map(
-                                                                    (counsellor) => (
-
-                                                                        <option
-                                                                            key={
-                                                                                counsellor.personId
-                                                                            }
-                                                                            value={
-                                                                                counsellor.personId
-                                                                            }
-                                                                        >
-                                                                            {
-                                                                                counsellor.counsellorName
-                                                                            }
-                                                                        </option>
-
-                                                                    )
-                                                                )}
-
-                                                            </select>
-
-
-                                                            <div className="inline-assign-actions">
-
-                                                                <button
-                                                                    type="button"
-                                                                    className="secondary-btn"
-                                                                    onClick={
-                                                                        handleCloseAssign
-                                                                    }
-                                                                    disabled={
-                                                                        actionLoading
-                                                                    }
-                                                                >
-                                                                    Cancel
-                                                                </button>
-
+                                                            <div className="admin-escalation-actions">
 
                                                                 <button
                                                                     type="button"
                                                                     className="primary-btn"
                                                                     onClick={() =>
-                                                                        handleAssignAndReset(
+                                                                        handleViewLead(
+                                                                            notification.leadPersonId
+                                                                        )
+                                                                    }
+                                                                    disabled={
+                                                                        actionLoading
+                                                                    }
+                                                                >
+
+                                                                    View Lead
+
+                                                                </button>
+
+
+                                                                <button
+                                                                    type="button"
+                                                                    className="secondary-btn"
+                                                                    onClick={() =>
+                                                                        handleResetCycle(
                                                                             notification
                                                                         )
                                                                     }
                                                                     disabled={
-                                                                        actionLoading ||
-                                                                        loadingCounsellors ||
-                                                                        !selectedCounsellor
+                                                                        actionLoading
                                                                     }
                                                                 >
+
                                                                     {
                                                                         actionLoading
-                                                                            ? "Assigning..."
-                                                                            : "Assign & Reset"
+                                                                            ? "Processing..."
+                                                                            : "Reset Follow-up"
                                                                     }
+
+                                                                </button>
+
+
+                                                                <button
+                                                                    type="button"
+                                                                    className="primary-btn assign-counsellor-btn"
+                                                                    onClick={() =>
+                                                                        handleOpenAssign(
+                                                                            notification
+                                                                        )
+                                                                    }
+                                                                    disabled={
+                                                                        actionLoading
+                                                                    }
+                                                                >
+
+                                                                    {
+                                                                        isAssignOpen
+                                                                            ? "Close"
+                                                                            : "Assign Counsellor"
+                                                                    }
+
+                                                                </button>
+
+                                                            </div>
+
+
+                                                            {/* ================================================= */}
+                                                            {/* COUNSELLOR PANEL */}
+                                                            {/* ================================================= */}
+
+                                                            {
+                                                                isAssignOpen && (
+
+                                                                    <div className="inline-counsellor-panel">
+
+                                                                        <label>
+                                                                            Select Counsellor
+                                                                        </label>
+
+
+                                                                        <select
+                                                                            value={
+                                                                                selectedCounsellor
+                                                                            }
+                                                                            onChange={
+                                                                                (event) =>
+                                                                                    setSelectedCounsellor(
+                                                                                        event.target.value
+                                                                                    )
+                                                                            }
+                                                                            disabled={
+                                                                                loadingCounsellors ||
+                                                                                actionLoading
+                                                                            }
+                                                                        >
+
+                                                                            <option value="">
+
+                                                                                {
+                                                                                    loadingCounsellors
+                                                                                        ? "Loading Counsellors..."
+                                                                                        : "Select Counsellor"
+                                                                                }
+
+                                                                            </option>
+
+
+                                                                            {
+                                                                                counsellors.map(
+                                                                                    (counsellor) => (
+
+                                                                                        <option
+                                                                                            key={
+                                                                                                counsellor.personId
+                                                                                            }
+                                                                                            value={
+                                                                                                counsellor.personId
+                                                                                            }
+                                                                                        >
+
+                                                                                            {
+                                                                                                counsellor.counsellorName
+                                                                                            }
+
+                                                                                        </option>
+
+                                                                                    )
+                                                                                )
+                                                                            }
+
+                                                                        </select>
+
+
+                                                                        <div className="inline-assign-actions">
+
+                                                                            <button
+                                                                                type="button"
+                                                                                className="secondary-btn"
+                                                                                onClick={
+                                                                                    handleCloseAssign
+                                                                                }
+                                                                                disabled={
+                                                                                    actionLoading
+                                                                                }
+                                                                            >
+
+                                                                                Cancel
+
+                                                                            </button>
+
+
+                                                                            <button
+                                                                                type="button"
+                                                                                className="primary-btn"
+                                                                                onClick={() =>
+                                                                                    handleAssignAndReset(
+                                                                                        notification
+                                                                                    )
+                                                                                }
+                                                                                disabled={
+                                                                                    actionLoading ||
+                                                                                    loadingCounsellors ||
+                                                                                    !selectedCounsellor
+                                                                                }
+                                                                            >
+
+                                                                                {
+                                                                                    actionLoading
+                                                                                        ? "Assigning..."
+                                                                                        : "Assign & Reset"
+                                                                                }
+
+                                                                            </button>
+
+                                                                        </div>
+
+                                                                    </div>
+
+                                                                )
+                                                            }
+
+                                                        </div>
+
+                                                    );
+
+                                                }
+                                            )
+                                        }
+
+                                    </div>
+
+                                )
+                        }
+
+                    </section>
+
+                )}
+
+
+                {/* ================================================= */}
+                {/* CALLBACK NOTIFICATIONS */}
+                {/* ================================================= */}
+
+                {role !== "ADMIN" && (
+
+                    <section className="notification-section">
+
+                        <div className="section-header">
+
+                            <div className="section-title">
+
+                                <span className="status-dot red" />
+
+                                <h2>
+                                    Callback Notifications
+                                </h2>
+
+                            </div>
+
+
+                            <span className="count-badge pending">
+
+                                {
+                                    callbackNotifications.length
+                                }
+
+                            </span>
+
+                        </div>
+
+
+                        {
+                            callbackNotifications.length === 0
+
+                                ? (
+
+                                    <div className="empty-card">
+
+                                        <h3>
+
+                                            <FiPhone
+                                                size={20}
+                                            />
+
+                                            No Callback Notifications
+
+                                        </h3>
+
+
+                                        <p>
+                                            You have no pending callback notifications.
+                                        </p>
+
+                                    </div>
+
+                                )
+
+                                : (
+
+                                    <div className="notification-grid">
+
+                                        {
+                                            callbackNotifications.map(
+                                                (notification) => {
+
+                                                    const callbackTime =
+                                                        notification?.callbackScheduledAt ||
+                                                        notification?.followupScheduledAt ||
+                                                        notification?.scheduledAt;
+
+
+                                                    const isDue =
+                                                        notification?.notificationType ===
+                                                        "CALLBACK_DUE"
+                                                        ||
+                                                        (
+                                                            callbackTime &&
+                                                            new Date(
+                                                                callbackTime
+                                                            ).getTime() <=
+                                                            Date.now()
+                                                        );
+
+
+                                                    return (
+
+                                                        <div
+                                                            className={
+                                                                `admin-escalation-card ${
+                                                                    isDue
+                                                                        ? "callback-due"
+                                                                        : ""
+                                                                }`
+                                                            }
+                                                            key={
+                                                                notification.notificationId ||
+                                                                `${notification.leadPersonId}_${callbackTime}`
+                                                            }
+                                                        >
+
+                                                            <div className="admin-escalation-header">
+
+                                                                <div>
+
+                                                                    <h3>
+
+                                                                        {
+                                                                            isDue ? (
+
+                                                                                <>
+                                                                                    <FiBell
+                                                                                        size={20}
+                                                                                    />
+
+                                                                                    Callback Due
+                                                                                </>
+
+                                                                            ) : (
+
+                                                                                <>
+                                                                                    <FiClock
+                                                                                        size={20}
+                                                                                    />
+
+                                                                                    Callback Reminder
+                                                                                </>
+
+                                                                            )
+                                                                        }
+
+                                                                    </h3>
+
+
+                                                                    <span className="escalation-label">
+
+                                                                        {
+                                                                            isDue
+                                                                                ? "CALL NOW"
+                                                                                : "5 Minutes Before"
+                                                                        }
+
+                                                                    </span>
+
+                                                                </div>
+
+                                                            </div>
+
+
+                                                            <div className="escalation-info">
+
+                                                                <div className="escalation-info-row">
+
+                                                                    <span className="info-label">
+                                                                        Message
+                                                                    </span>
+
+
+                                                                    <strong className="info-value">
+
+                                                                        {
+                                                                            notification?.message
+                                                                            ||
+                                                                            (
+                                                                                isDue
+                                                                                    ? "Callback is due now."
+                                                                                    : "Callback is scheduled in 5 minutes."
+                                                                            )
+                                                                        }
+
+                                                                    </strong>
+
+                                                                </div>
+
+
+                                                                <div className="escalation-info-row">
+
+                                                                    <span className="info-label">
+                                                                        Created
+                                                                    </span>
+
+
+                                                                    <strong className="info-value">
+
+                                                                        {
+                                                                            notification?.createdAt
+
+                                                                                ? new Date(
+                                                                                    notification.createdAt
+                                                                                ).toLocaleString(
+                                                                                    "en-IN"
+                                                                                )
+
+                                                                                : "-"
+                                                                        }
+
+                                                                    </strong>
+
+                                                                </div>
+
+                                                            </div>
+
+
+                                                            <div className="admin-escalation-actions">
+
+                                                                <button
+                                                                    type="button"
+                                                                    className="primary-btn"
+                                                                    onClick={() =>
+                                                                        handleCallbackNotification(
+                                                                            notification
+                                                                        )
+                                                                    }
+                                                                >
+
+                                                                    {
+                                                                        isDue ? (
+
+                                                                            <>
+                                                                                <FiPhone
+                                                                                    size={15}
+                                                                                />
+
+                                                                                Call Now
+                                                                            </>
+
+                                                                        ) : (
+
+                                                                            <>
+                                                                                <FiClock
+                                                                                    size={15}
+                                                                                />
+
+                                                                                View Callback
+                                                                            </>
+
+                                                                        )
+                                                                    }
+
                                                                 </button>
 
                                                             </div>
 
                                                         </div>
 
-                                                    )}
+                                                    );
 
-                                                </div>
-                                            );
+                                                }
+                                            )
                                         }
-                                    )}
 
-                                </div>
-                            )
+                                    </div>
+
+                                )
                         }
 
                     </section>
@@ -1403,7 +2497,9 @@ function NotificationsPage() {
             </div>
 
         </div>
+
     );
+
 }
 
 

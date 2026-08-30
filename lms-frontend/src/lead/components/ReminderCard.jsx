@@ -6,7 +6,8 @@ import {
     FiMessageSquare,
     FiUser,
     FiExternalLink,
-    FiCheck
+    FiCheck,
+    FiClock
 } from "react-icons/fi";
 
 import "../styles/notification.css";
@@ -21,67 +22,124 @@ function ReminderCard({
     const navigate = useNavigate();
 
 
-    // =====================================
+    // =====================================================
+    // CALLBACK CHECK
+    // =====================================================
+
+    const isCallback =
+        reminder?.callbackScheduledAt != null;
+
+
+    // =====================================================
     // REMINDER ICON
-    // =====================================
+    // =====================================================
 
     const getReminderIcon = () => {
+
+        if (isCallback) {
+
+            return (
+                <FiPhone size={14} />
+            );
+        }
+
 
         switch (reminder?.reminderType) {
 
             case "CALL":
+
                 return (
                     <FiPhone size={14} />
                 );
 
+
             case "EMAIL":
+
                 return (
                     <FiMail size={14} />
                 );
 
+
             case "SMS":
+
                 return (
                     <FiMessageSquare size={14} />
                 );
 
+
             default:
+
                 return (
                     <FiUser size={14} />
                 );
-
         }
-
     };
 
 
-    // =====================================
+    // =====================================================
     // FULL NAME
-    // =====================================
+    // =====================================================
 
     const getFullName = () => {
 
         return [
-                reminder?.firstName,
-                reminder?.middleName,
-                reminder?.lastName
-            ]
-                .filter(Boolean)
-                .join(" ")
-            || "Unknown Lead";
 
+                reminder?.firstName,
+
+                reminder?.middleName,
+
+                reminder?.lastName
+
+            ]
+
+                .filter(Boolean)
+
+                .join(" ")
+
+            || "Unknown Lead";
     };
 
 
-    // =====================================
+    // =====================================================
+    // CALLBACK DATE
+    // =====================================================
+
+    const getCallbackDate = () => {
+
+        if (!reminder?.callbackScheduledAt) {
+
+            return null;
+        }
+
+
+        const callbackDate =
+            new Date(
+                reminder.callbackScheduledAt
+            );
+
+
+        return callbackDate.toLocaleString(
+            [],
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+    };
+
+
+    // =====================================================
     // TIME
-    // =====================================
+    // =====================================================
 
     const getTimeText = () => {
 
         if (!reminder?.reminderTime) {
 
             return "-";
-
         }
 
 
@@ -90,8 +148,10 @@ function ReminderCard({
                 reminder.reminderTime
             );
 
+
         const now =
             new Date();
+
 
         const diff =
             reminderDate.getTime()
@@ -99,9 +159,9 @@ function ReminderCard({
             now.getTime();
 
 
-        // =====================================
+        // =================================================
         // OVERDUE
-        // =====================================
+        // =================================================
 
         if (diff < 0) {
 
@@ -138,7 +198,6 @@ function ReminderCard({
                     +
                     `Day${days > 1 ? "s" : ""}`
                 );
-
             }
 
 
@@ -149,7 +208,6 @@ function ReminderCard({
                     +
                     `Hour${hours > 1 ? "s" : ""}`
                 );
-
             }
 
 
@@ -158,13 +216,12 @@ function ReminderCard({
                 +
                 `Min${minutes !== 1 ? "s" : ""}`
             );
-
         }
 
 
-        // =====================================
+        // =================================================
         // TODAY
-        // =====================================
+        // =================================================
 
         if (
             reminderDate.toDateString()
@@ -183,13 +240,12 @@ function ReminderCard({
                     }
                 )
             );
-
         }
 
 
-        // =====================================
+        // =================================================
         // FUTURE
-        // =====================================
+        // =================================================
 
         return reminderDate.toLocaleString(
             [],
@@ -201,13 +257,12 @@ function ReminderCard({
                 minute: "2-digit"
             }
         );
-
     };
 
 
-    // =====================================
+    // =====================================================
     // OVERDUE
-    // =====================================
+    // =====================================================
 
     const isOverdue =
         reminder?.reminderTime
@@ -219,11 +274,25 @@ function ReminderCard({
         new Date().getTime();
 
 
-    // =====================================
+    // =====================================================
+    // CALLBACK DUE
+    // =====================================================
+
+    const isCallbackDue =
+        isCallback
+        &&
+        reminder?.callbackScheduledAt
+        &&
+        new Date(
+            reminder.callbackScheduledAt
+        ).getTime()
+        <=
+        new Date().getTime();
+
+
+    // =====================================================
     // VIEW LEAD
-    //
-    // SAME ROUTE AS MY LEADS
-    // =====================================
+    // =====================================================
 
     const handleViewLead = () => {
 
@@ -235,7 +304,6 @@ function ReminderCard({
             );
 
             return;
-
         }
 
 
@@ -245,9 +313,9 @@ function ReminderCard({
             );
 
 
-        // =====================================
+        // =================================================
         // ADMIN
-        // =====================================
+        // =================================================
 
         if (role === "ADMIN") {
 
@@ -256,13 +324,12 @@ function ReminderCard({
             );
 
             return;
-
         }
 
 
-        // =====================================
+        // =================================================
         // COUNSELLOR
-        // =====================================
+        // =================================================
 
         if (role === "COUNSELLOR") {
 
@@ -271,44 +338,76 @@ function ReminderCard({
             );
 
             return;
-
         }
 
 
-        // =====================================
+        // =================================================
         // FALLBACK
-        // =====================================
+        // =================================================
 
         navigate(
             `/lead/${reminder.personId}`
         );
-
     };
 
 
-    // =====================================
+    // =====================================================
     // COMPLETE
-    // =====================================
+    // =====================================================
 
     const handleComplete = () => {
 
         if (!reminder?.reminderId) {
 
             return;
-
         }
 
 
         onComplete?.(
             reminder.reminderId
         );
-
     };
 
 
-    // =====================================
+    // =====================================================
+    // CALLBACK ACTION
+    // =====================================================
+
+    const handleCallNow = () => {
+
+        if (!reminder?.personId) {
+
+            return;
+        }
+
+
+        /*
+         * For now we open the lead.
+         *
+         * Counsellor can perform the call
+         * from Lead Details.
+         */
+
+        handleViewLead();
+    };
+
+
+    // =====================================================
+    // DISPLAY TYPE
+    // =====================================================
+
+    const displayType =
+        isCallback
+            ? "CALLBACK"
+            : (
+                reminder?.reminderType
+                || "GENERAL"
+            );
+
+
+    // =====================================================
     // RENDER
-    // =====================================
+    // =====================================================
 
     return (
 
@@ -318,14 +417,22 @@ function ReminderCard({
                     type === "TODAY"
                         ? "today-card"
                         : "pending-card"
+                } ${
+                    isCallback
+                        ? "callback-card"
+                        : ""
+                } ${
+                    isCallbackDue
+                        ? "callback-due"
+                        : ""
                 }`
             }
         >
 
 
-            {/* ================================= */}
-            {/* HEADER */}
-            {/* ================================= */}
+            {/* =================================================
+                HEADER
+            ================================================= */}
 
             <div className="reminder-header">
 
@@ -335,6 +442,7 @@ function ReminderCard({
                         {getFullName()}
                     </h3>
 
+
                     <small
                         className={
                             isOverdue
@@ -342,7 +450,12 @@ function ReminderCard({
                                 : ""
                         }
                     >
-                        {getTimeText()}
+
+                        {isCallbackDue
+                            ? "⚠️ CALLBACK DUE"
+                            : getTimeText()
+                        }
+
                     </small>
 
                 </div>
@@ -353,8 +466,7 @@ function ReminderCard({
                     {getReminderIcon()}
 
                     <span>
-                        {reminder?.reminderType
-                            || "GENERAL"}
+                        {displayType}
                     </span>
 
                 </span>
@@ -362,14 +474,40 @@ function ReminderCard({
             </div>
 
 
-            {/* ================================= */}
-            {/* BODY */}
-            {/* ================================= */}
+            {/* =================================================
+                BODY
+            ================================================= */}
 
             <div className="reminder-body">
 
 
-                {/* TYPE */}
+                {/* =================================================
+                    CALLBACK
+                ================================================= */}
+
+                {isCallback && (
+
+                    <div className="info-row">
+
+                        <strong>
+                            <FiClock size={14} />
+                            {" "}Callback:
+                        </strong>
+
+                        <span>
+
+                            {getCallbackDate()}
+
+                        </span>
+
+                    </div>
+
+                )}
+
+
+                {/* =================================================
+                    TYPE
+                ================================================= */}
 
                 <div className="info-row">
 
@@ -387,15 +525,16 @@ function ReminderCard({
 
                         {getReminderIcon()}
 
-                        {reminder?.reminderType
-                            || "-"}
+                        {displayType}
 
                     </span>
 
                 </div>
 
 
-                {/* EMAIL */}
+                {/* =================================================
+                    EMAIL
+                ================================================= */}
 
                 <div className="info-row">
 
@@ -404,14 +543,32 @@ function ReminderCard({
                     </strong>
 
                     <span>
-                        {reminder?.email
-                            || "-"}
+                        {reminder?.email || "-"}
                     </span>
 
                 </div>
 
 
-                {/* LEAD STATUS */}
+                {/* =================================================
+                    PHONE
+                ================================================= */}
+
+                <div className="info-row">
+
+                    <strong>
+                        Phone:
+                    </strong>
+
+                    <span>
+                        {reminder?.phone || "-"}
+                    </span>
+
+                </div>
+
+
+                {/* =================================================
+                    LEAD STATUS
+                ================================================= */}
 
                 {reminder?.leadStatus && (
 
@@ -434,20 +591,56 @@ function ReminderCard({
             </div>
 
 
-            {/* ================================= */}
-            {/* FOOTER */}
-            {/* ================================= */}
+            {/* =================================================
+                FOOTER
+            ================================================= */}
 
             <div className="reminder-footer">
 
 
-                {/* VIEW LEAD */}
+                {/* =================================================
+                    CALLBACK → CALL NOW
+                ================================================= */}
+
+                {isCallback && isCallbackDue && (
+
+                    <button
+
+                        type="button"
+
+                        className="primary-btn"
+
+                        onClick={handleCallNow}
+
+                        disabled={!reminder?.personId}
+
+                    >
+
+                        <FiPhone
+                            size={14}
+                        />
+
+                        Call Now
+
+                    </button>
+
+                )}
+
+
+                {/* =================================================
+                    VIEW LEAD
+                ================================================= */}
 
                 <button
+
                     type="button"
+
                     className="secondary-btn"
+
                     onClick={handleViewLead}
+
                     disabled={!reminder?.personId}
+
                 >
 
                     <FiExternalLink
@@ -459,13 +652,22 @@ function ReminderCard({
                 </button>
 
 
-                {/* COMPLETE */}
+                {/* =================================================
+                    COMPLETE
+                ================================================= */}
 
                 <button
+
                     type="button"
+
                     className="primary-btn"
+
                     onClick={handleComplete}
-                    disabled={!reminder?.reminderId}
+
+                    disabled={
+                        !reminder?.reminderId
+                    }
+
                 >
 
                     <FiCheck
@@ -479,9 +681,7 @@ function ReminderCard({
             </div>
 
         </div>
-
     );
-
 }
 
 

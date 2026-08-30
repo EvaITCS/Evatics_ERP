@@ -1,6 +1,8 @@
 package com.lms_erp.lead.repository;
 
+import com.lms_erp.lead.entity.LeadFollowup;
 import com.lms_erp.lead.entity.ReminderSchedule;
+import com.lms_erp.lead.enums.FollowupStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -331,31 +333,31 @@ public interface ReminderScheduleRepository
     //
     // Scheduler needs reminders whose time has arrived.
     // =====================================================
-
-    @Query("""
-        SELECT DISTINCT r
-        FROM ReminderSchedule r
-
-        JOIN FETCH r.followup f
-        JOIN FETCH f.lead l
-        JOIN FETCH l.person p
-
-        LEFT JOIN FETCH p.contacts pc
-        LEFT JOIN FETCH pc.contactType
-
-        LEFT JOIN FETCH f.employee e
-        LEFT JOIN FETCH e.person
-
-        LEFT JOIN FETCH l.leadStatus
-
-        WHERE r.isCompleted = false
-          AND r.reminderTime <= :now
-
-        ORDER BY r.reminderTime ASC
-    """)
-    List<ReminderSchedule> findAllPendingReminders(
-            @Param("now") LocalDateTime now
-    );
+//
+//    @Query("""
+//        SELECT DISTINCT r
+//        FROM ReminderSchedule r
+//
+//        JOIN FETCH r.followup f
+//        JOIN FETCH f.lead l
+//        JOIN FETCH l.person p
+//
+//        LEFT JOIN FETCH p.contacts pc
+//        LEFT JOIN FETCH pc.contactType
+//
+//        LEFT JOIN FETCH f.employee e
+//        LEFT JOIN FETCH e.person
+//
+//        LEFT JOIN FETCH l.leadStatus
+//
+//        WHERE r.isCompleted = false
+//          AND r.reminderTime <= :now
+//
+//        ORDER BY r.reminderTime ASC
+//    """)
+//    List<ReminderSchedule> findAllPendingReminders(
+//            @Param("now") LocalDateTime now
+//    );
 
     @Query("""
     SELECT DISTINCT r
@@ -522,5 +524,115 @@ public interface ReminderScheduleRepository
 """)
     List<ReminderSchedule> findIncompleteRemindersByLead(
             @Param("personId") Long personId
+    );
+
+
+    // =====================================================
+// PENDING CALLBACKS DUE
+//
+// Callback requested tha aur callback time aa gaya.
+// Isko normal retry se separately process karenge.
+// =====================================================
+
+    @Query("""
+    SELECT DISTINCT f
+    FROM LeadFollowup f
+    JOIN FETCH f.lead l
+    JOIN FETCH l.person p
+    JOIN FETCH f.employee e
+    JOIN FETCH e.person
+
+    LEFT JOIN FETCH l.leadStatus
+
+    WHERE f.followupStatus = :status
+      AND f.actionResult = 'CALLBACK_REQUESTED'
+      AND f.callbackScheduledAt IS NOT NULL
+      AND f.callbackScheduledAt <= :now
+
+    ORDER BY f.callbackScheduledAt ASC
+""")
+    List<LeadFollowup> findPendingCallbacksDue(
+            @Param("status") FollowupStatus status,
+            @Param("now") LocalDateTime now
+    );
+
+    // =====================================================
+// ALL PENDING REMINDERS FOR RETRY SCHEDULER
+//
+// Used by FollowupRetryScheduler.
+//
+// Conditions:
+// 1. Reminder incomplete
+// 2. Reminder time reached
+// 3. Follow-up itself is still PENDING
+// 4. Callback follow-ups are excluded
+// =====================================================
+
+    @Query("""
+    SELECT DISTINCT r
+    FROM ReminderSchedule r
+
+    JOIN FETCH r.followup f
+    JOIN FETCH f.lead l
+    JOIN FETCH l.person p
+
+    LEFT JOIN FETCH p.contacts pc
+    LEFT JOIN FETCH pc.contactType
+
+    LEFT JOIN FETCH f.employee e
+    LEFT JOIN FETCH e.person
+
+    LEFT JOIN FETCH l.leadStatus
+
+    WHERE r.isCompleted = false
+      AND f.followupStatus = :status
+      AND r.reminderTime <= :now
+      AND (
+            f.actionResult IS NULL
+            OR f.actionResult <> 'CALLBACK_REQUESTED'
+          )
+
+    ORDER BY r.reminderTime ASC
+""")
+    List<ReminderSchedule> findAllPendingReminders(
+            @Param("status") FollowupStatus status,
+            @Param("now") LocalDateTime now
+    );
+
+    // =====================================================
+// FIND REMINDERS WITHIN NEXT 5 MINUTES
+// =====================================================
+//
+// Used for:
+// - SMS_REPLIED scheduled follow-up
+// - Normal scheduled follow-up
+// - Any future follow-up reminder
+//
+// Example:
+//
+// Current time  : 14:55
+// Follow-up     : 15:00
+//
+// This reminder will be returned.
+//
+// =====================================================
+
+    @Query("""
+    SELECT DISTINCT r
+    FROM ReminderSchedule r
+    JOIN FETCH r.followup f
+    JOIN FETCH f.lead l
+    JOIN FETCH f.employee e
+    WHERE r.isCompleted = false
+      AND r.fiveMinuteNotificationSent = false
+      AND r.reminderTime > :now
+      AND r.reminderTime <= :fiveMinutesLater
+    ORDER BY r.reminderTime ASC
+""")
+    List<ReminderSchedule> findRemindersWithinFiveMinutes(
+            @Param("now") LocalDateTime now,
+
+            @Param("fiveMinutesLater")
+            LocalDateTime fiveMinutesLater
     );
 }

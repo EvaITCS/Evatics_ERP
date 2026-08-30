@@ -1,13 +1,10 @@
 package com.lms_erp.lead.scheduler;
 
-import com.lms_erp.lead.entity.Lead;
-import com.lms_erp.lead.entity.LeadFollowup;
-import com.lms_erp.lead.entity.ReminderSchedule;
+import com.lms_erp.employee.entity.Employee;
+import com.lms_erp.lead.entity.*;
 import com.lms_erp.lead.enums.FollowupStatus;
-import com.lms_erp.lead.repository.FollowupRepository;
-import com.lms_erp.lead.repository.LeadRepository;
-import com.lms_erp.lead.repository.ReminderScheduleRepository;
-
+import com.lms_erp.lead.enums.NotificationType;
+import com.lms_erp.lead.repository.*;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,11 +22,14 @@ public class FollowupRetryScheduler {
     private final ReminderScheduleRepository reminderRepository;
     private final FollowupRepository followupRepository;
     private final LeadRepository leadRepository;
-
+    private final LeadStatusMasterRepository leadStatusMasterRepository;
+    private final NotificationRepository notificationRepository;
 
     // =====================================================
-    // RUN EVERY 10 SECONDS
+    // RUN EVERY 10 MINUTES
     // =====================================================
+//
+//    @Scheduled(fixedRate = 600000)
 
     @Scheduled(fixedRate = 1800000)
     public void processMissedFollowups() {
@@ -38,22 +38,359 @@ public class FollowupRetryScheduler {
                 "===== FOLLOWUP RETRY SCHEDULER RUNNING ====="
         );
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now =
+                LocalDateTime.now();
 
-        List<ReminderSchedule> reminders =
-                reminderRepository.findAllPendingReminders(now);
+
+        // =================================================
+        // 1. PROCESS CALLBACKS
+        // =================================================
+
+        processMissedCallbacks(now);
+
+
+        // =================================================
+        // 2. PROCESS NORMAL RETRIES
+        // =================================================
+
+        processNormalRetries(now);
+    }
+
+
+    // =====================================================
+    // PROCESS MISSED CALLBACKS
+    // =====================================================
+
+    private void processMissedCallbacks(
+            LocalDateTime now
+    ) {
+
+        List<LeadFollowup> callbacks =
+                followupRepository
+                        .findPendingCallbacksDue(
+                                FollowupStatus.PENDING,
+                                now
+                        );
+
 
         System.out.println(
-                "Missed reminders found : "
+                "Due callbacks found : "
+                        + callbacks.size()
+        );
+
+
+        for (LeadFollowup callback : callbacks) {
+
+            try {
+
+                processMissedCallback(
+                        callback,
+                        now
+                );
+
+            } catch (Exception e) {
+
+                System.err.println(
+                        "Error processing callback : "
+                                + callback.getFollowupId()
+                );
+
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // =====================================================
+// PROCESS SINGLE MISSED CALLBACK
+// =====================================================
+    private void processMissedCallback(
+            LeadFollowup callback,
+            LocalDateTime now
+    ) {
+
+        if (callback == null) {
+            return;
+        }
+
+        // =====================================================
+        // SAFETY CHECK
+        // =====================================================
+
+        if (callback.getFollowupStatus()
+                != FollowupStatus.PENDING) {
+            return;
+        }
+
+        if (callback.getCallbackScheduledAt() == null) {
+            return;
+        }
+
+        if (callback.getCallbackScheduledAt().isAfter(now)) {
+            return;
+        }
+
+
+        // =====================================================
+        // GET LEAD
+        // =====================================================
+
+        Lead lead = callback.getLead();
+
+        if (lead == null) {
+            System.out.println(
+                    "Callback skipped: Lead is null | Followup = "
+                            + callback.getFollowupId()
+            );
+            return;
+        }
+
+
+        // =====================================================
+        // GET EMPLOYEE
+        // =====================================================
+
+        Employee employee = callback.getEmployee();
+
+        if (employee == null) {
+            System.out.println(
+                    "Callback skipped: Employee is null | Followup = "
+                            + callback.getFollowupId()
+            );
+            return;
+        }
+
+
+        System.out.println(
+                "===== MISSED CALLBACK PROCESSING ====="
+        );
+
+        System.out.println(
+                "Followup ID : "
+                        + callback.getFollowupId()
+        );
+
+        System.out.println(
+                "Lead ID : "
+                        + lead.getPersonId()
+        );
+
+        System.out.println(
+                "Callback Time : "
+                        + callback.getCallbackScheduledAt()
+        );
+
+        System.out.println(
+                "Current Time : "
+                        + now
+        );
+
+        System.out.println(
+                "Current Retry : "
+                        + callback.getRetryCount()
+        );
+
+
+        // =====================================================
+        // 1. CALLBACK DUE NOTIFICATION
+        // =====================================================
+
+        boolean dueNotificationExists =
+                notificationRepository
+                        .existsByFollowup_FollowupIdAndNotificationType(
+                                callback.getFollowupId(),
+                                NotificationType.CALLBACK_DUE
+                        );
+
+
+        if (!dueNotificationExists) {
+
+            LeadNotification notification =
+                    LeadNotification.builder()
+
+                            .employee(employee)
+
+                            .lead(lead)
+
+                            .followup(callback)
+
+                            .title(
+                                    "Callback Due"
+                            )
+
+                            .message(
+                                    "Callback is due now. Please contact the lead."
+                            )
+
+                            .notificationType(
+                                    NotificationType.CALLBACK_DUE
+                            )
+
+                            .isRead(false)
+
+                            .build();
+
+            notificationRepository.save(notification);
+
+            System.out.println(
+                    "CALLBACK DUE NOTIFICATION CREATED | Followup = "
+                            + callback.getFollowupId()
+            );
+        }
+
+
+        // =====================================================
+        // 2. CREATE AUTOMATIC RETRY FIRST
+        //
+        // IMPORTANT:
+        // Retry creation is done BEFORE changing old callback.
+        // =====================================================
+
+        System.out.println(
+                "Creating automatic retry..."
+        );
+
+        createAutomaticRetry(
+                callback,
+                lead
+        );
+
+
+        // =====================================================
+        // 3. MARK OLD CALLBACK AS MISSED
+        // =====================================================
+
+        callback.setFollowupStatus(
+                FollowupStatus.COMPLETED
+        );
+
+        callback.setActionResult(
+                "NO_RESPONSE"
+        );
+
+        callback.setActionPerformedAt(
+                now
+        );
+
+        callback.setCompletedAt(
+                now
+        );
+
+        callback.setNextFollowupAt(
+                null
+        );
+
+        followupRepository.save(callback);
+
+
+        // =====================================================
+        // 4. COMPLETE OLD CALLBACK REMINDERS
+        // =====================================================
+
+        List<ReminderSchedule> callbackReminders =
+                reminderRepository
+                        .findByFollowup_FollowupId(
+                                callback.getFollowupId()
+                        );
+
+
+        for (ReminderSchedule reminder :
+                callbackReminders) {
+
+            reminder.setIsCompleted(true);
+
+            reminder.setReminderStatus(
+                    "COMPLETED"
+            );
+
+            reminder.setSentAt(now);
+
+            reminderRepository.save(reminder);
+        }
+
+
+        // =====================================================
+        // 5. UPDATE LEAD STATUS
+        //
+        // IMPORTANT:
+        // NO_RESPONSE missing ho to retry rollback nahi hoga.
+        // =====================================================
+
+        if (lead.getLeadStatus() != null) {
+
+            leadStatusMasterRepository
+                    .findByStatusName("NO_RESPONSE")
+                    .ifPresentOrElse(
+
+                            lead::setLeadStatus,
+
+                            () -> System.out.println(
+                                    "WARNING: NO_RESPONSE status not found. "
+                                            + "Retry already created. "
+                                            + "Lead = "
+                                            + lead.getPersonId()
+                            )
+                    );
+        }
+
+
+        // =====================================================
+        // 6. SAVE LEAD
+        // =====================================================
+
+        leadRepository.save(lead);
+
+
+        System.out.println(
+                "================================================="
+        );
+
+        System.out.println(
+                "CALLBACK MISSED -> AUTO RETRY CREATED"
+        );
+
+        System.out.println(
+                "Lead       : "
+                        + lead.getPersonId()
+        );
+
+        System.out.println(
+                "Old Retry  : "
+                        + callback.getRetryCount()
+        );
+
+        System.out.println(
+                "================================================="
+        );
+    }
+
+    // =====================================================
+    // NORMAL RETRY PROCESSING
+    // =====================================================
+
+    private void processNormalRetries(
+            LocalDateTime now
+    ) {
+
+        List<ReminderSchedule> reminders =
+                reminderRepository
+                        .findAllPendingReminders(
+                                FollowupStatus.PENDING,
+                                now
+                        );
+        System.out.println(
+                "Normal missed reminders found : "
                         + reminders.size()
         );
 
 
-        for (ReminderSchedule reminder : reminders) {
+        for (ReminderSchedule reminder :
+                reminders) {
 
             try {
 
-                processRetry(reminder);
+                processRetry(
+                        reminder
+                );
 
             } catch (Exception e) {
 
@@ -69,7 +406,7 @@ public class FollowupRetryScheduler {
 
 
     // =====================================================
-    // PROCESS MISSED FOLLOW-UP
+    // PROCESS NORMAL MISSED FOLLOW-UP
     // =====================================================
 
     private void processRetry(
@@ -79,7 +416,21 @@ public class FollowupRetryScheduler {
         LeadFollowup currentFollowup =
                 reminder.getFollowup();
 
+
         if (currentFollowup == null) {
+            return;
+        }
+
+
+        // =================================================
+        // CALLBACK REMINDERS ARE HANDLED SEPARATELY
+        // =================================================
+
+        if ("CALLBACK_REQUESTED"
+                .equalsIgnoreCase(
+                        currentFollowup.getActionResult()
+                )) {
+
             return;
         }
 
@@ -87,45 +438,44 @@ public class FollowupRetryScheduler {
         Lead lead =
                 currentFollowup.getLead();
 
+
         if (lead == null) {
             return;
         }
 
 
-        // =====================================================
+        // =================================================
+        // ONLY PENDING FOLLOW-UPS
+        // =================================================
+
+        if (currentFollowup.getFollowupStatus()
+                != FollowupStatus.PENDING) {
+
+            return;
+        }
+
+
+        // =================================================
         // CHECK LEAD STATUS
-        // =====================================================
+        // =================================================
 
         String status =
                 lead.getLeadStatus() != null
-                        ? lead.getLeadStatus().getStatusName()
+                        ? lead.getLeadStatus()
+                        .getStatusName()
                         : "";
 
 
-        // =====================================================
-        // STOP AUTO RETRY FOR CLOSED LEADS
-        // =====================================================
+        // =================================================
+        // STOP RETRY FOR CLOSED LEADS
+        // =================================================
 
         if (
-                "INTERESTED".equals(status)
-                        || "CONVERTED".equals(status)
-                        || "NOT_INTERESTED".equals(status)
-                        || "CLOSED".equals(status)
+                "INTERESTED".equalsIgnoreCase(status)
+                        || "CONVERTED".equalsIgnoreCase(status)
+                        || "NOT_INTERESTED".equalsIgnoreCase(status)
+                        || "CLOSED".equalsIgnoreCase(status)
         ) {
-
-            /*
-             * IMPORTANT:
-             *
-             * DO NOT MARK OLD REMINDER AS COMPLETED.
-             *
-             * User did not complete this reminder.
-             *
-             * Therefore:
-             *
-             * is_completed remains FALSE
-             *
-             * so it can still appear in Overdue history.
-             */
 
             System.out.println(
                     "Retry stopped for Lead "
@@ -138,41 +488,35 @@ public class FollowupRetryScheduler {
         }
 
 
-        // =====================================================
-        // FIND FOLLOWUPS OF THIS LEAD
-        // =====================================================
+        // =================================================
+        // CREATE AUTOMATIC RETRY
+        // =================================================
 
-        Long personId =
-                lead.getPersonId();
-
-        List<LeadFollowup> followups =
-                followupRepository.findLeadFollowups(
-                        personId
-                );
+        createAutomaticRetry(
+                currentFollowup,
+                lead
+        );
+    }
 
 
-        if (followups.isEmpty()) {
-            return;
-        }
+    // =====================================================
+    // CREATE AUTOMATIC RETRY
+    // =====================================================
 
-
-        // =====================================================
-        // GET LATEST FOLLOW-UP
-        // =====================================================
-
-        LeadFollowup latest =
-                followups.get(0);
-
+    private void createAutomaticRetry(
+            LeadFollowup currentFollowup,
+            Lead lead
+    ) {
 
         int retryCount =
-                latest.getRetryCount() == null
+                currentFollowup.getRetryCount() == null
                         ? 0
-                        : latest.getRetryCount();
+                        : currentFollowup.getRetryCount();
 
 
-        // =====================================================
-        // CALCULATE NEXT REMINDER
-        // =====================================================
+        // =================================================
+        // NEXT RETRY TIME
+        // =================================================
 
         LocalDateTime nextReminder =
                 calculateNextReminder(
@@ -180,34 +524,20 @@ public class FollowupRetryScheduler {
                 );
 
 
-        // =====================================================
-        // MAX RETRIES REACHED
-        // =====================================================
+        // =================================================
+        // MAX RETRY REACHED
+        // =================================================
 
         if (nextReminder == null) {
-
-            /*
-             * Archive lead after maximum retries.
-             */
 
             lead.setIsArchived(true);
 
             lead.setNextFollowupDate(null);
 
-            leadRepository.save(lead);
+            leadRepository.save(
+                    lead
+            );
 
-
-            /*
-             * IMPORTANT:
-             *
-             * Do NOT mark current reminder completed.
-             *
-             * It remains:
-             *
-             * is_completed = false
-             *
-             * so that it remains visible as overdue.
-             */
 
             System.out.println(
                     "Maximum retries reached. "
@@ -219,9 +549,9 @@ public class FollowupRetryScheduler {
         }
 
 
-        // =====================================================
-        // DUPLICATE FOLLOW-UP PROTECTION
-        // =====================================================
+        // =================================================
+        // DUPLICATE PROTECTION
+        // =================================================
 
         boolean alreadyExists =
                 followupRepository
@@ -233,12 +563,6 @@ public class FollowupRetryScheduler {
 
         if (alreadyExists) {
 
-            /*
-             * DO NOT COMPLETE OLD REMINDER.
-             *
-             * It is still an incomplete missed reminder.
-             */
-
             System.out.println(
                     "Retry already exists for Lead : "
                             + lead.getPersonId()
@@ -248,57 +572,64 @@ public class FollowupRetryScheduler {
         }
 
 
-        // =====================================================
-        // CREATE NEW AUTO RETRY FOLLOW-UP
-        // =====================================================
+        // =================================================
+        // CREATE RETRY FOLLOW-UP
+        // =================================================
 
         LeadFollowup retryFollowup =
-                new LeadFollowup();
+                LeadFollowup.builder()
 
+                        .lead(
+                                lead
+                        )
 
-        retryFollowup.setLead(
-                lead
-        );
+                        .employee(
+                                currentFollowup.getEmployee()
+                        )
 
+                        .followupType(
+                                currentFollowup
+                                        .getFollowupType()
+                        )
 
-        retryFollowup.setEmployee(
-                currentFollowup.getEmployee()
-        );
+                        .followupStatus(
+                                FollowupStatus.PENDING
+                        )
 
+                        .actionResult(
+                                "NO_RESPONSE"
+                        )
 
-        retryFollowup.setFollowupType(
-                latest.getFollowupType()
-        );
+                        .remarks(
+                                "AUTO RETRY"
+                        )
 
+                        .scheduledAt(
+                                nextReminder
+                        )
 
-        retryFollowup.setFollowupStatus(
-                FollowupStatus.PENDING
-        );
+                        .actionPerformedAt(
+                                null
+                        )
 
+                        .completedAt(
+                                null
+                        )
 
-        retryFollowup.setRemarks(
-                "AUTO RETRY"
-        );
+                        .callbackScheduledAt(
+                                null
+                        )
 
+                        .nextFollowupAt(
+                                nextReminder
+                        )
 
-        retryFollowup.setRetryCount(
-                retryCount + 1
-        );
+                        .retryCount(
+                                retryCount + 1
+                        )
 
+                        .build();
 
-        retryFollowup.setNextFollowupAt(
-                nextReminder
-        );
-
-
-        retryFollowup.setScheduledAt(
-                nextReminder
-        );
-
-
-        // =====================================================
-        // SAVE NEW FOLLOW-UP
-        // =====================================================
 
         LeadFollowup savedRetry =
                 followupRepository.save(
@@ -306,9 +637,9 @@ public class FollowupRetryScheduler {
                 );
 
 
-        // =====================================================
-        // CREATE NEW REMINDER
-        // =====================================================
+        // =================================================
+        // CREATE REMINDER
+        // =================================================
 
         ReminderSchedule newReminder =
                 ReminderSchedule.builder()
@@ -325,11 +656,19 @@ public class FollowupRetryScheduler {
                                 "AUTO_RETRY"
                         )
 
+                        .reminderStatus(
+                                "PENDING"
+                        )
+
                         .isCompleted(
                                 false
                         )
 
                         .notificationSent(
+                                false
+                        )
+
+                        .adminEscalationSent(
                                 false
                         )
 
@@ -341,9 +680,9 @@ public class FollowupRetryScheduler {
         );
 
 
-        // =====================================================
-        // UPDATE LEAD NEXT FOLLOW-UP
-        // =====================================================
+        // =================================================
+        // UPDATE LEAD
+        // =================================================
 
         lead.setNextFollowupDate(
                 nextReminder
@@ -355,29 +694,12 @@ public class FollowupRetryScheduler {
         );
 
 
-        // =====================================================
-        // IMPORTANT
-        // =====================================================
-
-        /*
-         * DO NOT DO THIS:
-         *
-         * reminder.setIsCompleted(true);
-         * reminderRepository.save(reminder);
-         *
-         * Because the old reminder was NOT completed
-         * by the counsellor.
-         *
-         * It must remain overdue.
-         */
-
-
         System.out.println(
-                "Auto Retry Created : Lead "
+                "AUTO RETRY CREATED | Lead = "
                         + lead.getPersonId()
-                        + " | Retry "
+                        + " | Retry = "
                         + (retryCount + 1)
-                        + " | Next Reminder "
+                        + " | Next = "
                         + nextReminder
         );
     }
@@ -387,45 +709,102 @@ public class FollowupRetryScheduler {
     // RETRY PATTERN
     // =====================================================
 
-
-
     private LocalDateTime calculateNextReminder(
-            int retryCount) {
+            int retryCount
+    ) {
 
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now =
+                LocalDateTime.now();
+
 
         return switch (retryCount) {
 
-            // First retry
-            case 0 -> now.plusHours(1);
+            // =============================================
+            // FIRST RETRY
+            // =============================================
 
-            // Second retry
-            case 1 -> now.plusHours(2);
+            case 0 ->
+                    now.plusHours(1);
 
-            // Third retry
-            case 2 -> now.plusHours(4);
 
-            // Fourth retry
-            case 3 -> now.plusHours(8);
+            // =============================================
+            // SECOND RETRY
+            // =============================================
 
-            // Fifth retry
-            case 4 -> now.plusHours(16);
+            case 1 ->
+                    now.plusHours(4);
 
-            // Sixth retry
-            case 5 -> now.plusHours(24);
 
-            // Seventh retry
-            case 6 -> now.plusHours(36);
-            case 7 -> now.plusHours(48);
+            // =============================================
+            // THIRD RETRY
+            // =============================================
 
-            // Eighth retry
-            case 9 -> now.plusWeeks(1);
+            case 2 ->
+                    now.plusHours(8);
 
-            // Ninth retry
-            case 10 -> now.plusWeeks(2);
 
-            // Retry chain finished
-            default -> null;
+            // =============================================
+            // FOURTH RETRY
+            // =============================================
+
+            case 3 ->
+                    now.plusHours(16);
+
+
+            // =============================================
+            // FIFTH RETRY
+            // =============================================
+
+            case 4 ->
+                    now.plusHours(24);
+
+
+            // =============================================
+            // SIXTH RETRY
+            // =============================================
+
+            case 5 ->
+                    now.plusHours(36);
+
+
+            // =============================================
+            // SEVENTH RETRY
+            // =============================================
+
+            case 6 ->
+                    now.plusHours(48);
+
+
+            // =============================================
+            // EIGHTH RETRY
+            // =============================================
+
+            case 7 ->
+                    now.plusHours(56);
+
+
+            // =============================================
+            // NINTH RETRY
+            // =============================================
+
+            case 8 ->
+                    now.plusWeeks(1);
+
+
+            // =============================================
+            // TENTH RETRY
+            // =============================================
+
+            case 9 ->
+                    now.plusWeeks(2);
+
+
+            // =============================================
+            // RETRY CHAIN FINISHED
+            // =============================================
+
+            default ->
+                    null;
         };
     }
 }

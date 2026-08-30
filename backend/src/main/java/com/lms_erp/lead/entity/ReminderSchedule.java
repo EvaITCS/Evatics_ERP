@@ -75,7 +75,7 @@ public class ReminderSchedule {
 
 
     // =====================================================
-    // NOTIFICATION
+    // ACTUAL / DUE-TIME NOTIFICATION
     // =====================================================
 
     @Builder.Default
@@ -84,6 +84,18 @@ public class ReminderSchedule {
             nullable = false
     )
     private Boolean notificationSent = false;
+
+
+    // =====================================================
+    // 5-MINUTE BEFORE NOTIFICATION
+    // =====================================================
+
+    @Builder.Default
+    @Column(
+            name = "five_minute_notification_sent",
+            nullable = false
+    )
+    private Boolean fiveMinuteNotificationSent = false;
 
 
     // =====================================================

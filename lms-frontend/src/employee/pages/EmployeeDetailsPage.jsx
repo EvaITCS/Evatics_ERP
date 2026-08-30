@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import employeeService from "../services/employeeService";
 import PageTitle from "../../shared/components/PageTitle";
 import "../styles/employee.css";
-
+import { useToast } from "../../shared/components/ToastContext";
 function EmployeeDetailsPage() {
     const { personId } = useParams();
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ function EmployeeDetailsPage() {
     const [employee, setEmployee] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-
+    const { showToast } = useToast();
     useEffect(() => {
         const fetchEmployee = async () => {
             try {

@@ -5,7 +5,7 @@ import React, {
 
 import employeeLeaveService
     from "../services/employeeLeaveService";
-
+import { useToast } from "../../shared/components/ToastContext";
 import PageTitle
     from "../../shared/components/PageTitle";
 
@@ -17,7 +17,7 @@ function MyLeavesPage() {
     // =====================================================
     // STATE
     // =====================================================
-
+    const { showToast } = useToast();
     const [
         leaves,
         setLeaves

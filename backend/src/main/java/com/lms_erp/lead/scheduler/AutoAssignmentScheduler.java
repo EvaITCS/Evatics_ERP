@@ -19,7 +19,7 @@ public class AutoAssignmentScheduler {
     /*
      * Every 10 minutes
      */
-    @Scheduled(fixedRate = 600000)
+    @Scheduled(fixedRate = 1800000)
     public void autoAssignLeads() {
 
         List<Lead> unassignedLeads =

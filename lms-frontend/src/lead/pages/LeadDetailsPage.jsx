@@ -5,8 +5,8 @@ import { useParams } from "react-router-dom";
 import { getLeadById } from "../services/leadService";
 import {
   convertLead,
-  insertLead,
-  archiveLeadConversion,
+  // insertLead,
+  // archiveLeadConversion,
 } from "../services/leadConversionService";
 import { createFollowup } from "../services/followupService";
 import { getLeadFollowups } from "../services/followupService";
@@ -174,60 +174,162 @@ function LeadDetailPage() {
   // Any actionResult NOT listed here is treated as "no further
   // action needed" and will not schedule a next followup.
   // =====================================
+  //
+  // const NEXT_FOLLOWUP_HOURS = {
+  //   CALLBACK_REQUESTED: 1,
+  //   NO_RESPONSE: 24,
+  //   EMAIL_OPENED: 24,
+  //   SMS_REPLIED: 4,
+  //   INTERESTED: 24,
+  // };
 
-  const NEXT_FOLLOWUP_HOURS = {
-    CALLBACK_REQUESTED: 1,
-    NO_RESPONSE: 24,
-    EMAIL_OPENED: 24,
-    SMS_REPLIED: 4,
-    INTERESTED: 24,
-  };
+  // =====================================
+// HANDLE FOLLOWUP SUBMIT
+// =====================================
+
+  // =====================================================
+// HANDLE FOLLOWUP SUBMIT
+// =====================================================
 
   const handleFollowupSubmit = async (followupData) => {
+
     try {
 
+      // =================================================
+      // CREATE BACKEND PAYLOAD
+      // =================================================
 
       const payload = {
 
-        personId: Number(lead.personId),
+        // -------------------------------------------------
+        // LEAD
+        // -------------------------------------------------
 
-        employeePersonId: Number(
-            localStorage.getItem("personId")
-        ),
+        personId:
+            Number(lead.personId),
 
-        followupType: followupData.actionType,
+        // -------------------------------------------------
+        // EMPLOYEE
+        // -------------------------------------------------
 
-        actionResult: followupData.actionResult,
+        employeePersonId:
+            Number(
+                localStorage.getItem("personId")
+            ),
 
-        remarks: followupData.note
+        // -------------------------------------------------
+        // FOLLOW-UP TYPE
+        // -------------------------------------------------
+
+        followupType:
+        followupData.actionType,
+
+        // -------------------------------------------------
+        // ACTION RESULT
+        // -------------------------------------------------
+
+        actionResult:
+        followupData.actionResult,
+
+        // -------------------------------------------------
+        // REMARKS
+        // -------------------------------------------------
+
+        remarks:
+        followupData.note,
+
+        // =================================================
+        // CALL CALLBACK
+        // =================================================
+
+        callbackScheduledAt:
+            followupData.actionResult ===
+            "CALLBACK_REQUESTED"
+                ? followupData.callbackScheduledAt
+                : null,
+
+        // =================================================
+        // SMS REPLIED NEXT FOLLOW-UP
+        // =================================================
+
+        nextFollowupAt:
+            followupData.actionResult ===
+            "SMS_REPLIED"
+                ? followupData.nextFollowupAt
+                : null
       };
 
-      await createFollowup(payload);
 
-      // This followup action addresses whatever reminder brought the
-      // lead up in Pending/Today Followups. Close out any reminders for
-      // this lead that are still open, so it drops off those lists.
-      // (If the backend already closes the reminder when a followup is
-      // created, this becomes a harmless no-op and can be removed.)
+      // =================================================
+      // DEBUG
+      // =================================================
 
-      const openReminders = reminders.filter(
-        (reminder) => !reminder.completed,
+      console.log(
+          "FOLLOWUP BACKEND PAYLOAD =",
+          payload
       );
+
+
+      // =================================================
+      // SAVE FOLLOW-UP
+      // =================================================
+
+      await createFollowup(
+          payload
+      );
+
+
+      // =================================================
+      // COMPLETE EXISTING OPEN REMINDERS
+      // =================================================
+
+      const openReminders =
+          reminders.filter(
+              (reminder) =>
+                  !reminder.completed
+          );
+
 
       await Promise.all(
-        openReminders.map((reminder) =>
-          completeReminder(reminder.reminderId).catch((err) =>
-            console.error(
-              "Failed to complete reminder",
-              reminder.reminderId,
-              err,
-            ),
-          ),
-        ),
-      );
-      showToast("Followup Added Successfully", "success");
 
-      setOpenFollowup(false);
+          openReminders.map(
+              (reminder) =>
+                  completeReminder(
+                      reminder.reminderId
+                  ).catch(
+                      (err) => {
+
+                        console.error(
+                            "Failed to complete reminder",
+                            reminder.reminderId,
+                            err
+                        );
+
+                      }
+                  )
+          )
+
+      );
+
+
+      // =================================================
+      // SUCCESS
+      // =================================================
+
+      showToast(
+          "Followup Added Successfully",
+          "success"
+      );
+
+
+      setOpenFollowup(
+          false
+      );
+
+
+      // =================================================
+      // REFRESH DATA
+      // =================================================
 
       await fetchLead();
 
@@ -240,10 +342,20 @@ function LeadDetailPage() {
       await fetchAssignmentHistory();
 
       await fetchReminders();
-    } catch (err) {
-      console.error(err);
 
-      showToast("Failed to save followup", "error");
+
+    } catch (err) {
+
+      console.error(
+          "Failed to save followup:",
+          err
+      );
+
+
+      showToast(
+          "Failed to save followup",
+          "error"
+      );
     }
   };
   // =====================================
@@ -268,31 +380,31 @@ function LeadDetailPage() {
   // INSERT LEAD
   // =====================================
 
-  const handleInsertLead = async () => {
-    try {
-      await insertLead(lead.personId);
-      showToast("Lead Inserted Successfully", "success");
-
-      fetchLead();
-    } catch (error) {
-      console.log(error);
-      showToast("Failed to Insert Lead", "error");
-    }
-  };
-  const handleArchiveLead = async () => {
-    try {
-      await archiveLeadConversion(lead.personId);
-
-      showToast("Lead Archive Successfully", "success");
-
-      fetchLead();
-    } catch (error) {
-      console.log(error);
-
-
-      showToast("Failed to Archive Lead", "error");
-    }
-  };
+  // const handleInsertLead = async () => {
+  //   try {
+  //     await insertLead(lead.personId);
+  //     showToast("Lead Inserted Successfully", "success");
+  //
+  //     fetchLead();
+  //   } catch (error) {
+  //     console.log(error);
+  //     showToast("Failed to Insert Lead", "error");
+  //   }
+  // };
+  // const handleArchiveLead = async () => {
+  //   try {
+  //     await archiveLeadConversion(lead.personId);
+  //
+  //     showToast("Lead Archive Successfully", "success");
+  //
+  //     fetchLead();
+  //   } catch (error) {
+  //     console.log(error);
+  //
+  //
+  //     showToast("Failed to Archive Lead", "error");
+  //   }
+  // };
   const handleAssignLead = async () => {
     if (!selectedCOUNSELLOR) {
       showToast("Select COUNSELLOR", "error");

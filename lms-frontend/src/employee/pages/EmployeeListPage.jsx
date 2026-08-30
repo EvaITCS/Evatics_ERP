@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 // =====================================================
 // SERVICES
 // =====================================================
-
+import { useToast } from "../../shared/components/ToastContext";
 import employeeService from "../services/employeeService";
 
 // =====================================================
@@ -31,7 +31,7 @@ function EmployeeListPage() {
     // =================================================
 
     const [employees, setEmployees] = useState([]);
-
+    const { showToast } = useToast();
     const [filteredEmployees, setFilteredEmployees] =
         useState([]);
 
@@ -134,8 +134,9 @@ function EmployeeListPage() {
             );
 
 
-            alert(
-                "Failed to load employees."
+            showToast(
+                "Failed to load employees.",
+                "error"
             );
 
 
@@ -181,8 +182,9 @@ function EmployeeListPage() {
             );
 
 
-            alert(
-                "Employee deleted successfully."
+            showToast(
+                "Employee deleted successfully.",
+                "success"
             );
 
 
@@ -197,8 +199,9 @@ function EmployeeListPage() {
             );
 
 
-            alert(
-                "Failed to delete employee."
+            showToast(
+                "Failed to delete employee.",
+                "error"
             );
 
         }

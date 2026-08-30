@@ -7,11 +7,12 @@ import leaveTypeService
 from "../services/leaveTypeService";
 import PageTitle from "../../shared/components/PageTitle";
 import "../styles/employee.css";
+import { useToast } from "../../shared/components/ToastContext";
 function LeaveTypesPage() {
 
     const [leaveTypes,
         setLeaveTypes] = useState([]);
-
+    const { showToast } = useToast();
     const [editingId,
         setEditingId] = useState(null);
 
@@ -86,8 +87,9 @@ function LeaveTypesPage() {
                             formData
                         );
 
-                    alert(
-                        "Leave Type Updated Successfully"
+                    showToast(
+                        "Leave Type Updated Successfully",
+                        "success"
                     );
 
                 } else {
@@ -97,8 +99,9 @@ function LeaveTypesPage() {
                             formData
                         );
 
-                    alert(
-                        "Leave Type Created Successfully"
+                    showToast(
+                        "Leave Type Created Successfully",
+                        "success"
                     );
                 }
 
@@ -119,8 +122,9 @@ function LeaveTypesPage() {
 
                 console.error(error);
 
-                alert(
-                    "Operation Failed"
+                showToast(
+                    "Operation Failed",
+                    "error"
                 );
             }
         };
@@ -163,8 +167,9 @@ function LeaveTypesPage() {
                         leaveTypeId
                     );
 
-                alert(
-                    "Leave Type Deleted Successfully"
+                showToast(
+                    "Leave Type Deleted Successfully",
+                    "success"
                 );
 
                 fetchLeaveTypes();
@@ -178,31 +183,21 @@ function LeaveTypesPage() {
     const handleView =
         (leaveType) => {
 
-            alert(
-
+            showToast(
                 "Leave Type Details\n\n" +
-
                 "ID: " +
-
                 leaveType.leaveTypeId +
-
                 "\n\nName: " +
-
                 leaveType.leaveTypeName +
-
                 "\n\nMax Days: " +
-
                 leaveType.maxDaysAllowed +
-
                 "\n\nPaid Leave: " +
-
                 (
                     leaveType.isPaid
-
                         ? "Yes"
-
                         : "No"
-                )
+                ),
+                "info"
             );
         };
 

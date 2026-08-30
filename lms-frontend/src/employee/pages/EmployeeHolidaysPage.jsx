@@ -7,8 +7,9 @@ import holidayService
 from "../services/holidayService";
 import PageTitle from "../../shared/components/PageTitle";
 import "../styles/employee.css";
+import { useToast } from "../../shared/components/ToastContext";
 function EmployeeHolidaysPage() {
-
+    const { showToast } = useToast();
     const [holidays,
         setHolidays] = useState([]);
 

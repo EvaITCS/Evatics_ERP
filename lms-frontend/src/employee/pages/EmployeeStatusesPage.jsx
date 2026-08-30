@@ -2,7 +2,7 @@ import React, {
     useEffect,
     useState
 } from "react";
-
+import { useToast } from "../../shared/components/ToastContext";
 import employeeStatusService
 from "../services/employeeStatusService";
 import PageTitle from "../../shared/components/PageTitle";
@@ -11,7 +11,7 @@ function EmployeeStatusesPage() {
 
     const [statuses,
         setStatuses] = useState([]);
-
+    const { showToast } = useToast();
     const [editingId,
         setEditingId] = useState(null);
 
@@ -71,8 +71,9 @@ function EmployeeStatusesPage() {
                         formData
                     );
 
-                alert(
-                    "Employee Status Updated Successfully"
+                showToast(
+                    "Employee Status Updated Successfully",
+                    "success"
                 );
 
             } else {
@@ -82,8 +83,9 @@ function EmployeeStatusesPage() {
                         formData
                     );
 
-                alert(
-                    "Employee Status Created Successfully"
+                showToast(
+                    "Employee Status Created Successfully",
+                    "success"
                 );
             }
 
@@ -100,9 +102,10 @@ function EmployeeStatusesPage() {
 
             console.error(error);
 
-            alert(
+            showToast(
                 error.response?.data ||
-                "Operation Failed"
+                "Operation Failed",
+                "error"
             );
         }
     };
@@ -127,8 +130,9 @@ function EmployeeStatusesPage() {
                     employeeStatusId
                 );
 
-            alert(
-                "Employee Status Deleted Successfully"
+            showToast(
+                "Employee Status Deleted Successfully",
+                "success"
             );
 
             fetchStatuses();
@@ -158,11 +162,11 @@ function EmployeeStatusesPage() {
         status
     ) => {
 
-        alert(
-
+        showToast(
             `Employee Status ID: ${status.employeeStatusId}
 
-Status Name: ${status.statusName}`
+Status Name: ${status.statusName}`,
+            "info"
         );
     };
 

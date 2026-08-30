@@ -50,10 +50,9 @@ public class FollowupService {
     private final LeadScoreService leadScoreService;
     private final CurrentUserService currentUserService;
 
-
-    // =====================================================
-    // ADD FOLLOW-UP
-    // =====================================================
+// =====================================================
+// ADD FOLLOW-UP
+// =====================================================
 
     @Transactional
     public void addFollowup(FollowupRequest request) {
@@ -62,90 +61,529 @@ public class FollowupService {
         // LOAD LEAD
         // =====================================================
 
-        Lead lead = leadRepository.findById(request.getPersonId())
-                .orElseThrow(() ->
-                        new RuntimeException("Lead not found"));
+        Lead lead =
+                leadRepository.findById(
+                                request.getPersonId()
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Lead not found"
+                                )
+                        );
 
 
         // =====================================================
         // LOAD EMPLOYEE
         // =====================================================
 
-        Employee employee = employeeRepository
-                .findById(request.getEmployeePersonId())
-                .orElseThrow(() ->
-                        new RuntimeException("Employee not found"));
+        Employee employee =
+                employeeRepository.findById(
+                                request.getEmployeePersonId()
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Employee not found"
+                                )
+                        );
 
 
-        int retryCount = followupRepository
-                .findTopByLead_PersonIdAndFollowupStatusOrderByCreatedAtDesc(
-                        lead.getPersonId(),
-                        FollowupStatus.PENDING
-                )
-                .map(previousFollowup ->
-                        previousFollowup.getRetryCount() + 1
-                )
-                .orElse(0);
+        // =====================================================
+        // CURRENT TIME
+        // =====================================================
+
+        LocalDateTime now =
+                LocalDateTime.now();
+
+
+        // =====================================================
+        // CHECK CALLBACK
+        // =====================================================
+
+        boolean isCallbackRequested =
+                "CALLBACK_REQUESTED".equalsIgnoreCase(
+                        request.getActionResult()
+                );
+
+
+        // =====================================================
+        // CHECK SMS REPLIED
+        // =====================================================
+
+        boolean isSmsReplied =
+                "SMS_REPLIED".equalsIgnoreCase(
+                        request.getActionResult()
+                );
+
+
+        // =====================================================
+        // CALLBACK TIME
+        // =====================================================
+
+        LocalDateTime callbackScheduledAt = null;
+
+
+        if (isCallbackRequested) {
+
+            // -------------------------------------------------
+            // CALLBACK DATE/TIME REQUIRED
+            // -------------------------------------------------
+
+            if (request.getCallbackScheduledAt() == null) {
+
+                throw new RuntimeException(
+                        "Callback date and time are required."
+                );
+            }
+
+
+            // -------------------------------------------------
+            // CALLBACK MUST BE FUTURE
+            // -------------------------------------------------
+
+            if (!request.getCallbackScheduledAt()
+                    .isAfter(now)) {
+
+                throw new RuntimeException(
+                        "Callback date and time must be in the future."
+                );
+            }
+
+
+            callbackScheduledAt =
+                    request.getCallbackScheduledAt();
+        }
+
+
+        // =====================================================
+        // SMS REPLIED NEXT FOLLOW-UP TIME
+        // =====================================================
+
+        LocalDateTime nextFollowupAt = null;
+
+
+        if (isSmsReplied) {
+
+            // -------------------------------------------------
+            // TIME IS REQUIRED FOR SCHEDULED SMS REPLY
+            // -------------------------------------------------
+
+            if (request.getNextFollowupAt() == null) {
+
+                throw new RuntimeException(
+                        "Next follow-up date and time are required."
+                );
+            }
+
+
+            // -------------------------------------------------
+            // MUST BE FUTURE
+            // -------------------------------------------------
+
+            if (!request.getNextFollowupAt()
+                    .isAfter(now)) {
+
+                throw new RuntimeException(
+                        "Next follow-up date and time must be in the future."
+                );
+            }
+
+
+            nextFollowupAt =
+                    request.getNextFollowupAt();
+        }
+
+
+        // =====================================================
+        // RETRY COUNT
+        // =====================================================
+
+        int retryCount =
+                followupRepository
+                        .findTopByLead_PersonIdAndFollowupStatusOrderByCreatedAtDesc(
+                                lead.getPersonId(),
+                                FollowupStatus.PENDING
+                        )
+                        .map(previousFollowup ->
+                                previousFollowup.getRetryCount() + 1
+                        )
+                        .orElse(0);
+
+
+        // =====================================================
+        // FOLLOW-UP STATUS
+        // =====================================================
+
+        FollowupStatus followupStatus =
+                getFollowupStatus(
+                        request.getActionResult()
+                );
+
+
+        // =====================================================
+        // SMS REPLIED WITH NEXT FOLLOW-UP
+        // =====================================================
+        //
+        // SMS reply action has happened,
+        // but a new follow-up is scheduled.
+        //
+        // Therefore keep this follow-up PENDING.
+        //
+        // =====================================================
+
+        if (isSmsReplied) {
+
+            followupStatus =
+                    FollowupStatus.PENDING;
+        }
+
+
         // =====================================================
         // CREATE FOLLOW-UP
         // =====================================================
 
-        FollowupStatus followupStatus =
-                getFollowupStatus(request.getActionResult());
-
-        LocalDateTime actionPerformedAt = LocalDateTime.now();
-
         LeadFollowup.LeadFollowupBuilder followupBuilder =
                 LeadFollowup.builder()
-                        .lead(lead)
-                        .employee(employee)
-                        .followupType(request.getFollowupType())
-                        .followupStatus(followupStatus)
-                        .actionResult(request.getActionResult())
-                        .remarks(request.getRemarks())
-                        .scheduledAt(LocalDateTime.now())
-                        .actionPerformedAt(actionPerformedAt)
-                        .retryCount(retryCount);
 
-        if (followupStatus == FollowupStatus.COMPLETED) {
-            followupBuilder.completedAt(actionPerformedAt);
+                        .lead(
+                                lead
+                        )
+
+                        .employee(
+                                employee
+                        )
+
+                        .followupType(
+                                request.getFollowupType()
+                        )
+
+                        .followupStatus(
+                                followupStatus
+                        )
+
+                        .actionResult(
+                                request.getActionResult()
+                        )
+
+                        .remarks(
+                                request.getRemarks()
+                        )
+
+                        // Record creation time
+                        .scheduledAt(
+                                now
+                        )
+
+                        // Callback time
+                        .callbackScheduledAt(
+                                callbackScheduledAt
+                        )
+
+                        // Next scheduled follow-up
+                        .nextFollowupAt(
+                                isSmsReplied
+                                        ? nextFollowupAt
+                                        : null
+                        )
+
+                        .retryCount(
+                                retryCount
+                        );
+
+
+        // =====================================================
+        // CALLBACK REQUESTED
+        // =====================================================
+
+        if (isCallbackRequested) {
+
+            followupBuilder
+
+                    .actionPerformedAt(
+                            null
+                    )
+
+                    .completedAt(
+                            null
+                    )
+
+                    .nextFollowupAt(
+                            callbackScheduledAt
+                    );
         }
 
-        LeadFollowup followup = followupBuilder.build();
 
-        followup = followupRepository.save(followup);
+        // =====================================================
+        // SMS REPLIED
+        // =====================================================
+
+        else if (isSmsReplied) {
+
+            // -------------------------------------------------
+            // SMS reply itself happened NOW
+            // -------------------------------------------------
+
+            followupBuilder
+
+                    .actionPerformedAt(
+                            now
+                    )
+
+                    .completedAt(
+                            null
+                    )
+
+                    .nextFollowupAt(
+                            nextFollowupAt
+                    );
+        }
 
 
         // =====================================================
-        // CREATE REMINDER FOR PENDING FOLLOW-UP
+        // NORMAL FOLLOW-UP
         // =====================================================
 
-        if (followup.getFollowupStatus() == FollowupStatus.PENDING) {
+        else {
+
+            followupBuilder
+                    .actionPerformedAt(
+                            now
+                    );
+
+
+            if (followupStatus ==
+                    FollowupStatus.COMPLETED) {
+
+                followupBuilder
+                        .completedAt(
+                                now
+                        );
+            }
+        }
+
+
+        // =====================================================
+        // BUILD
+        // =====================================================
+
+        LeadFollowup followup =
+                followupBuilder.build();
+
+
+        // =====================================================
+        // SAVE FOLLOW-UP
+        // =====================================================
+
+        followup =
+                followupRepository.save(
+                        followup
+                );
+
+
+        // =====================================================
+        // CALLBACK REMINDER
+        // =====================================================
+
+        if (isCallbackRequested) {
+
+            ReminderSchedule reminder =
+                    ReminderSchedule.builder()
+
+                            .followup(
+                                    followup
+                            )
+
+                            .reminderTime(
+                                    callbackScheduledAt
+                            )
+
+                            .reminderType(
+                                    request.getFollowupType()
+                                            .name()
+                            )
+
+                            .reminderStatus(
+                                    "PENDING"
+                            )
+
+                            .isCompleted(
+                                    false
+                            )
+
+                            .notificationSent(
+                                    false
+                            )
+
+                            .adminEscalationSent(
+                                    false
+                            )
+
+                            .build();
+
+
+            reminderRepository.save(
+                    reminder
+            );
+
+
+            // -------------------------------------------------
+            // UPDATE LEAD NEXT FOLLOW-UP
+            // -------------------------------------------------
+
+            lead.setNextFollowupDate(
+                    callbackScheduledAt
+            );
+        }
+
+
+        // =====================================================
+        // SMS REPLIED SCHEDULED FOLLOW-UP
+        // =====================================================
+
+        else if (
+                isSmsReplied
+                        && nextFollowupAt != null
+        ) {
 
             LocalDateTime reminderTime =
-                    calculateNextReminder(retryCount);
+                    nextFollowupAt;
+
+
+            // -------------------------------------------------
+            // UPDATE FOLLOW-UP
+            // -------------------------------------------------
+
+            followup.setNextFollowupAt(
+                    reminderTime
+            );
+
+            followupRepository.save(
+                    followup
+            );
+
+
+            // -------------------------------------------------
+            // CREATE REMINDER
+            // -------------------------------------------------
+
+            ReminderSchedule reminder =
+                    ReminderSchedule.builder()
+
+                            .followup(
+                                    followup
+                            )
+
+                            .reminderTime(
+                                    reminderTime
+                            )
+
+                            .reminderType(
+                                    request.getFollowupType()
+                                            .name()
+                            )
+
+                            .reminderStatus(
+                                    "PENDING"
+                            )
+
+                            .isCompleted(
+                                    false
+                            )
+
+                            .notificationSent(
+                                    false
+                            )
+
+                            .adminEscalationSent(
+                                    false
+                            )
+
+                            .build();
+
+
+            reminderRepository.save(
+                    reminder
+            );
+
+
+            // -------------------------------------------------
+            // UPDATE LEAD NEXT FOLLOW-UP
+            // -------------------------------------------------
+
+            lead.setNextFollowupDate(
+                    reminderTime
+            );
+        }
+
+
+        // =====================================================
+        // NORMAL PENDING FOLLOW-UP
+        // =====================================================
+
+        else if (
+                followup.getFollowupStatus()
+                        == FollowupStatus.PENDING
+        ) {
+
+            LocalDateTime reminderTime =
+                    calculateNextReminder(
+                            retryCount
+                    );
+
 
             if (reminderTime != null) {
 
-                followup.setNextFollowupAt(reminderTime);
+                followup.setNextFollowupAt(
+                        reminderTime
+                );
 
-                followupRepository.save(followup);
+                followupRepository.save(
+                        followup
+                );
 
 
                 ReminderSchedule reminder =
                         ReminderSchedule.builder()
-                                .followup(followup)
-                                .reminderTime(reminderTime)
-                                .reminderType(
-                                        request.getFollowupType().name()
+
+                                .followup(
+                                        followup
                                 )
-                                .isCompleted(false)
-                                .notificationSent(false)
+
+                                .reminderTime(
+                                        reminderTime
+                                )
+
+                                .reminderType(
+                                        request.getFollowupType()
+                                                .name()
+                                )
+
+                                .reminderStatus(
+                                        "PENDING"
+                                )
+
+                                .isCompleted(
+                                        false
+                                )
+
+                                .notificationSent(
+                                        false
+                                )
+
+                                .adminEscalationSent(
+                                        false
+                                )
+
                                 .build();
 
-                reminderRepository.save(reminder);
 
-                lead.setNextFollowupDate(reminderTime);
+                reminderRepository.save(
+                        reminder
+                );
+
+
+                lead.setNextFollowupDate(
+                        reminderTime
+                );
             }
         }
 
@@ -154,19 +592,36 @@ public class FollowupService {
         // CREATE LEAD ACTIVITY
         // =====================================================
 
-        LeadActivity activity = LeadActivity.builder()
-                .lead(lead)
-                .employee(employee)
-                .communicationType(
-                        request.getFollowupType().name()
-                )
-                .communicationStatus(
-                        request.getActionResult()
-                )
-                .remarks(request.getRemarks())
-                .build();
+        LeadActivity activity =
+                LeadActivity.builder()
 
-        leadActivityRepository.save(activity);
+                        .lead(
+                                lead
+                        )
+
+                        .employee(
+                                employee
+                        )
+
+                        .communicationType(
+                                request.getFollowupType()
+                                        .name()
+                        )
+
+                        .communicationStatus(
+                                request.getActionResult()
+                        )
+
+                        .remarks(
+                                request.getRemarks()
+                        )
+
+                        .build();
+
+
+        leadActivityRepository.save(
+                activity
+        );
 
 
         // =====================================================
@@ -182,25 +637,42 @@ public class FollowupService {
         // =====================================================
 
         LeadStatusMaster newStatus =
-                switch (request.getActionResult()) {
+                switch (
+                        request.getActionResult()
+                        ) {
 
                     case "INTERESTED" ->
-                            getLeadStatus("INTERESTED");
+                            getLeadStatus(
+                                    "INTERESTED"
+                            );
+
 
                     case "CONNECTED",
                          "EMAIL_SENT",
                          "SMS_SENT",
                          "SMS_REPLIED" ->
-                            getLeadStatus("CONTACTED");
+                            getLeadStatus(
+                                    "CONTACTED"
+                            );
+
 
                     case "NOT_INTERESTED" ->
-                            getLeadStatus("NOT_INTERESTED");
+                            getLeadStatus(
+                                    "NOT_INTERESTED"
+                            );
+
 
                     case "CALLBACK_REQUESTED" ->
-                            getLeadStatus("CALLBACK");
+                            getLeadStatus(
+                                    "CALLBACK"
+                            );
+
 
                     case "NO_RESPONSE" ->
-                            getLeadStatus("NO_RESPONSE");
+                            getLeadStatus(
+                                    "NO_RESPONSE"
+                            );
+
 
                     default ->
                             oldStatus;
@@ -214,9 +686,14 @@ public class FollowupService {
         if (oldStatus != null
                 && newStatus != null
                 && !oldStatus.getLeadStatusId()
-                .equals(newStatus.getLeadStatusId())) {
+                .equals(
+                        newStatus.getLeadStatusId()
+                )) {
 
-            lead.setLeadStatus(newStatus);
+            lead.setLeadStatus(
+                    newStatus
+            );
+
 
             saveStatusHistory(
                     lead,
@@ -228,14 +705,16 @@ public class FollowupService {
 
 
         // =====================================================
-// NOT INTERESTED
-// =====================================================
+        // NOT INTERESTED
+        // =====================================================
 
         if ("NOT_INTERESTED".equalsIgnoreCase(
-                request.getActionResult())) {
+                request.getActionResult()
+        )) {
 
             LocalDateTime reEngagementDate =
-                    actionPerformedAt.plusMonths(6);
+                    now.plusMonths(6);
+
 
             handleNotInterestedLead(
                     lead,
@@ -248,7 +727,9 @@ public class FollowupService {
         // SAVE LEAD
         // =====================================================
 
-        leadRepository.save(lead);
+        leadRepository.save(
+                lead
+        );
 
 
         // =====================================================
@@ -264,11 +745,6 @@ public class FollowupService {
                 0
         );
     }
-
-
-    // =====================================================
-    // HANDLE NOT INTERESTED
-    // =====================================================
 // =====================================================
 // HANDLE NOT INTERESTED
 // =====================================================

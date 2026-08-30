@@ -6,9 +6,10 @@ import React, {
 import departmentService
 from "../services/departmentService";
 import PageTitle from "../../shared/components/PageTitle";
+import { useToast } from "../../shared/components/ToastContext";
 import "../styles/employee.css";
 function DepartmentsPage() {
-
+    const { showToast } = useToast();
     const [departments,
         setDepartments] = useState([]);
 
@@ -72,8 +73,9 @@ function DepartmentsPage() {
                         formData
                     );
 
-                alert(
-                    "Department Updated Successfully"
+                showToast(
+                    "Department Updated Successfully",
+                    "success"
                 );
 
             } else {
@@ -83,8 +85,9 @@ function DepartmentsPage() {
                         formData
                     );
 
-                alert(
-                    "Department Created Successfully"
+                showToast(
+                    "Department Created Successfully",
+                    "success"
                 );
             }
 
@@ -102,9 +105,10 @@ function DepartmentsPage() {
 
             console.error(error);
 
-            alert(
+            showToast(
                 error.response?.data ||
-                "Operation Failed"
+                "Operation Failed",
+                "error"
             );
         }
     };
@@ -129,8 +133,9 @@ function DepartmentsPage() {
                     departmentId
                 );
 
-            alert(
-                "Department Deleted Successfully"
+            showToast(
+                "Department Deleted Successfully",
+                "success"
             );
 
             fetchDepartments();
@@ -139,8 +144,9 @@ function DepartmentsPage() {
 
             console.error(error);
 
-            alert(
-                "Failed To Delete Department"
+            showToast(
+                "Failed To Delete Department",
+                "error"
             );
         }
     };
@@ -167,13 +173,13 @@ function DepartmentsPage() {
         department
     ) => {
 
-        alert(
-
+        showToast(
             `Department ID: ${department.departmentId}
 
 Department Name: ${department.departmentName}
 
-Description: ${department.description || "N/A"}`
+Description: ${department.description || "N/A"}`,
+            "info"
         );
     };
 

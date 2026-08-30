@@ -3,6 +3,7 @@ import { useState } from "react";
 import "../styles/lead.css";
 import "../../shared/styles/sidebar.css";
 
+
 function FollowupModal({
                            onSubmit,
                            onClose
@@ -12,16 +13,57 @@ function FollowupModal({
     // STATE
     // =====================================
 
-    const [note, setNote] =
+    const [note,
+        setNote] =
         useState("");
+
 
     const [actionType,
         setActionType] =
         useState("CALL");
 
+
     const [actionResult,
         setActionResult] =
         useState("CONNECTED");
+
+
+    // =====================================
+    // CALL CALLBACK DATE / TIME
+    // =====================================
+
+    const [callbackDate,
+        setCallbackDate] =
+        useState("");
+
+
+    const [callbackTime,
+        setCallbackTime] =
+        useState("");
+
+
+    // =====================================
+    // SMS REPLY FOLLOW-UP DATE / TIME
+    // =====================================
+
+    const [smsFollowupDate,
+        setSmsFollowupDate] =
+        useState("");
+
+
+    const [smsFollowupTime,
+        setSmsFollowupTime] =
+        useState("");
+
+
+    // =====================================
+    // TODAY
+    // =====================================
+
+    const today =
+        new Date()
+            .toISOString()
+            .split("T")[0];
 
 
     // =====================================
@@ -30,7 +72,10 @@ function FollowupModal({
 
     const handleSave = () => {
 
-        // Note validation
+        // ---------------------------------
+        // NOTE VALIDATION
+        // ---------------------------------
+
         if (!note.trim()) {
 
             alert(
@@ -40,25 +85,151 @@ function FollowupModal({
             return;
         }
 
+
+        // =================================
+        // CALL CALLBACK VALIDATION
+        // =================================
+
+        if (
+            actionType === "CALL" &&
+            actionResult === "CALLBACK_REQUESTED"
+        ) {
+
+            if (!callbackDate) {
+
+                alert(
+                    "Please select callback date."
+                );
+
+                return;
+            }
+
+
+            if (!callbackTime) {
+
+                alert(
+                    "Please select callback time."
+                );
+
+                return;
+            }
+        }
+
+
+        // =================================
+        // SMS REPLIED VALIDATION
+        // =================================
+
+        if (
+            actionType === "SMS" &&
+            actionResult === "SMS_REPLIED"
+        ) {
+
+            if (!smsFollowupDate) {
+
+                alert(
+                    "Please select follow-up date."
+                );
+
+                return;
+            }
+
+
+            if (!smsFollowupTime) {
+
+                alert(
+                    "Please select follow-up time."
+                );
+
+                return;
+            }
+        }
+
+
+        // =================================
+        // SCHEDULED DATE/TIME
+        // =================================
+
+        let scheduledAt = null;
+
+
+        // ---------------------------------
+        // CALL CALLBACK
+        // ---------------------------------
+
+        if (
+            actionType === "CALL" &&
+            actionResult === "CALLBACK_REQUESTED" &&
+            callbackDate &&
+            callbackTime
+        ) {
+
+            scheduledAt =
+                `${callbackDate}T${callbackTime}`;
+        }
+
+
+        // ---------------------------------
+        // SMS REPLIED
+        // ---------------------------------
+
+        if (
+            actionType === "SMS" &&
+            actionResult === "SMS_REPLIED" &&
+            smsFollowupDate &&
+            smsFollowupTime
+        ) {
+
+            scheduledAt =
+                `${smsFollowupDate}T${smsFollowupTime}`;
+        }
+// =================================
+// FOLLOW-UP DATA
+// =================================
+
         const followupData = {
 
-            note: note.trim(),
+            note:
+                note.trim(),
 
             actionType,
 
-            actionResult
+            actionResult,
+
+            // CALL → CALLBACK_REQUESTED
+            callbackScheduledAt:
+                actionType === "CALL" &&
+                actionResult === "CALLBACK_REQUESTED"
+                    ? scheduledAt
+                    : null,
+
+            // SMS → SMS_REPLIED
+            nextFollowupAt:
+                actionType === "SMS" &&
+                actionResult === "SMS_REPLIED"
+                    ? scheduledAt
+                    : null
         };
+
+
+// =================================
+// DEBUG
+// =================================
 
         console.log(
             "FOLLOWUP MODAL DATA =",
             followupData
         );
 
+
+// =================================
+// SUBMIT TO PARENT
+// =================================
+
         onSubmit(
             followupData
         );
-    };
-
+    }
 
     // =====================================
     // ACTION TYPE CHANGE
@@ -69,8 +240,13 @@ function FollowupModal({
         const type =
             e.target.value;
 
+
         setActionType(type);
 
+
+        // ---------------------------------
+        // DEFAULT RESULT
+        // ---------------------------------
 
         if (type === "CALL") {
 
@@ -90,6 +266,62 @@ function FollowupModal({
                 "SMS_SENT"
             );
         }
+
+
+        // ---------------------------------
+        // RESET CALL SCHEDULE
+        // ---------------------------------
+
+        setCallbackDate("");
+        setCallbackTime("");
+
+
+        // ---------------------------------
+        // RESET SMS SCHEDULE
+        // ---------------------------------
+
+        setSmsFollowupDate("");
+        setSmsFollowupTime("");
+    };
+
+
+    // =====================================
+    // ACTION RESULT CHANGE
+    // =====================================
+
+    const handleActionResultChange = (e) => {
+
+        const result =
+            e.target.value;
+
+
+        setActionResult(result);
+
+
+        // ---------------------------------
+        // CALLBACK RESULT
+        // ---------------------------------
+
+        if (
+            result !== "CALLBACK_REQUESTED"
+        ) {
+
+            setCallbackDate("");
+            setCallbackTime("");
+        }
+
+
+        // ---------------------------------
+        // SMS REPLIED
+        // ---------------------------------
+
+        if (
+            result !== "SMS_REPLIED"
+        ) {
+
+            setSmsFollowupDate("");
+            setSmsFollowupTime("");
+        }
     };
 
 
@@ -102,6 +334,7 @@ function FollowupModal({
         <div className="modal-overlay">
 
             <div className="modal-box">
+
 
                 <h2>
                     Add Followup
@@ -121,7 +354,9 @@ function FollowupModal({
                     required
 
                     onChange={(e) =>
-                        setNote(e.target.value)
+                        setNote(
+                            e.target.value
+                        )
                     }
 
                 />
@@ -164,15 +399,15 @@ function FollowupModal({
 
                     value={actionResult}
 
-                    onChange={(e) =>
-                        setActionResult(
-                            e.target.value
-                        )
+                    onChange={
+                        handleActionResultChange
                     }
 
                 >
 
-                    {/* CALL */}
+                    {/* =================================
+                        CALL
+                    ================================= */}
 
                     {
                         actionType === "CALL" && (
@@ -205,7 +440,9 @@ function FollowupModal({
                     }
 
 
-                    {/* EMAIL */}
+                    {/* =================================
+                        EMAIL
+                    ================================= */}
 
                     {
                         actionType === "EMAIL" && (
@@ -234,7 +471,9 @@ function FollowupModal({
                     }
 
 
-                    {/* SMS */}
+                    {/* =================================
+                        SMS
+                    ================================= */}
 
                     {
                         actionType === "SMS" && (
@@ -269,11 +508,136 @@ function FollowupModal({
                 </select>
 
 
+                {/* =================================================
+                    CALL CALLBACK DATE & TIME
+                    ================================================= */}
+
+                {
+                    actionType === "CALL" &&
+                    actionResult === "CALLBACK_REQUESTED" &&
+                    (
+
+                        <div className="callback-schedule">
+
+                            <label>
+                                Callback Date
+                            </label>
+
+                            <input
+
+                                type="date"
+
+                                value={
+                                    callbackDate
+                                }
+
+                                min={
+                                    today
+                                }
+
+                                onChange={(e) =>
+                                    setCallbackDate(
+                                        e.target.value
+                                    )
+                                }
+
+                            />
+
+
+                            <label>
+                                Callback Time
+                            </label>
+
+                            <input
+
+                                type="time"
+
+                                value={
+                                    callbackTime
+                                }
+
+                                onChange={(e) =>
+                                    setCallbackTime(
+                                        e.target.value
+                                    )
+                                }
+
+                            />
+
+                        </div>
+
+                    )
+                }
+
+
+                {/* =================================================
+                    SMS REPLIED FOLLOW-UP DATE & TIME
+                    ================================================= */}
+
+                {
+                    actionType === "SMS" &&
+                    actionResult === "SMS_REPLIED" &&
+                    (
+
+                        <div className="callback-schedule">
+
+                            <label>
+                                Follow-up Date
+                            </label>
+
+                            <input
+
+                                type="date"
+
+                                value={
+                                    smsFollowupDate
+                                }
+
+                                min={
+                                    today
+                                }
+
+                                onChange={(e) =>
+                                    setSmsFollowupDate(
+                                        e.target.value
+                                    )
+                                }
+
+                            />
+
+
+                            <label>
+                                Follow-up Time
+                            </label>
+
+                            <input
+
+                                type="time"
+
+                                value={
+                                    smsFollowupTime
+                                }
+
+                                onChange={(e) =>
+                                    setSmsFollowupTime(
+                                        e.target.value
+                                    )
+                                }
+
+                            />
+
+                        </div>
+
+                    )
+                }
+
+
                 {/* =====================================
                     BUTTONS
                 ===================================== */}
 
                 <div className="modal-actions">
+
 
                     <button
 
@@ -281,10 +645,11 @@ function FollowupModal({
 
                         className="secondary-btn"
 
-                        onClick={onClose}
+                        onClick={
+                            onClose
+                        }
 
                     >
-
                         Cancel
 
                     </button>
@@ -296,13 +661,15 @@ function FollowupModal({
 
                         className="primary-btn"
 
-                        onClick={handleSave}
+                        onClick={
+                            handleSave
+                        }
 
                     >
-
                         Save Followup
 
                     </button>
+
 
                 </div>
 
@@ -312,5 +679,6 @@ function FollowupModal({
 
     );
 }
+
 
 export default FollowupModal;

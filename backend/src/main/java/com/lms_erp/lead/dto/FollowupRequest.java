@@ -16,12 +16,14 @@ public class FollowupRequest {
     @NotNull(message = "Person ID is required")
     private Long personId;
 
+
     // =====================================================
     // EMPLOYEE WHO PERFORMED FOLLOW-UP
     // =====================================================
 
     @NotNull(message = "Employee person ID is required")
     private Long employeePersonId;
+
 
     // =====================================================
     // FOLLOW-UP TYPE
@@ -30,6 +32,7 @@ public class FollowupRequest {
     @NotNull(message = "Follow-up type is required")
     private FollowupType followupType;
 
+
     // =====================================================
     // ACTION RESULT
     // =====================================================
@@ -37,15 +40,50 @@ public class FollowupRequest {
     @NotNull(message = "Action result is required")
     private String actionResult;
 
+
     // =====================================================
     // REMARKS
     // =====================================================
 
     private String remarks;
 
+
     // =====================================================
     // RE-ENGAGEMENT DATE
     // =====================================================
 
     private LocalDateTime reEngagementDate;
+
+
+    // =====================================================
+    // CALLBACK SCHEDULE
+    // =====================================================
+    //
+    // Only required when:
+    //
+    // actionResult = CALLBACK_REQUESTED
+    //
+    // Example:
+    //
+    // 2026-08-29 17:00
+    //
+    // =====================================================
+
+    private LocalDateTime callbackScheduledAt;
+
+    // =====================================================
+// NEXT FOLLOW-UP SCHEDULE
+// =====================================================
+//
+// Used when:
+// actionResult = SMS_REPLIED
+//
+// Counsellor can select a future date/time
+// for the next follow-up.
+//
+// Example:
+// 2026-08-30 15:00
+// =====================================================
+
+    private LocalDateTime nextFollowupAt;
 }

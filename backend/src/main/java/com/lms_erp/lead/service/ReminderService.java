@@ -527,7 +527,22 @@ public class ReminderService {
                                             .getIsCompleted()
                             )
 
+                            .callbackScheduledAt(
+                                    highestPriority
+                                            .getFollowup()
+                                            .getCallbackScheduledAt()
+                            )
+                            .actionResult(
+                                    highestPriority
+                                            .getFollowup()
+                                            .getActionResult()
+                            )
 
+                            .nextFollowupAt(
+                                    highestPriority
+                                            .getFollowup()
+                                            .getNextFollowupAt()
+                            )
                             // =================================
                             // PERSON
                             // =================================
@@ -820,7 +835,16 @@ public class ReminderService {
                         reminder.getIsCompleted()
                 )
 
+                .callbackScheduledAt(
+                        followup.getCallbackScheduledAt()
+                )
+                .actionResult(
+                        followup.getActionResult()
+                )
 
+                .nextFollowupAt(
+                        followup.getNextFollowupAt()
+                )
                 // =========================================
                 // PERSON
                 // =========================================

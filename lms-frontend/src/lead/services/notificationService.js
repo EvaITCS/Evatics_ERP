@@ -1,17 +1,17 @@
 import api from "../../api/axios";
 
+
 // =====================================
 // COMPLETE NOTIFICATION PAGE
 // =====================================
 
 export const getNotificationPage = async () => {
     const response = await api.get(
-        "/api/notifications/page"
+        "/api/reminders/notifications"
     );
 
     return response.data;
 };
-
 // =====================================
 // GET MY NOTIFICATIONS
 // =====================================

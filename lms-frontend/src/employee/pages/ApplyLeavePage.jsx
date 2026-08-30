@@ -2,7 +2,7 @@ import React, {
     useEffect,
     useState
 } from "react";
-
+import { useToast } from "../../shared/components/ToastContext";
 import employeeLeaveService
     from "../services/employeeLeaveService";
 
@@ -24,7 +24,7 @@ function ApplyLeavePage() {
     const personId =
         localStorage.getItem("personId");
 
-
+    const { showToast } = useToast();
     // =====================================================
     // STATE
     // =====================================================
@@ -174,8 +174,9 @@ function ApplyLeavePage() {
 
             if (end < start) {
 
-                alert(
-                    "End date cannot be before start date."
+                showToast(
+                    "End date cannot be before start date.",
+                    "error"
                 );
 
                 return false;
@@ -202,8 +203,9 @@ function ApplyLeavePage() {
 
             if (!personId) {
 
-                alert(
-                    "Person ID not found. Please login again."
+                showToast(
+                    "Person ID not found. Please login again.",
+                    "error"
                 );
 
                 return;
@@ -260,10 +262,10 @@ function ApplyLeavePage() {
                     );
 
 
-                alert(
-                    "Leave Applied Successfully"
+                showToast(
+                    "Leave Applied Successfully",
+                    "success"
                 );
-
 
                 // =================================================
                 // RESET FORM
@@ -307,7 +309,10 @@ function ApplyLeavePage() {
                     "Failed To Apply Leave";
 
 
-                alert(message);
+                showToast(
+                    message,
+                    "error"
+                );
 
             } finally {
 

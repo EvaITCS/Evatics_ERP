@@ -4,7 +4,7 @@ import employeeService from "../services/employeeService";
 import PageTitle from "../../shared/components/PageTitle";
 
 import "../styles/employee.css";
-
+import { useToast } from "../../shared/components/ToastContext";
 function MyProfilePage() {
 
     // =====================================================
@@ -12,7 +12,7 @@ function MyProfilePage() {
     // =====================================================
 
     const [employee, setEmployee] = useState(null);
-
+    const { showToast } = useToast();
     const [activeTab, setActiveTab] =
         useState("profile");
 

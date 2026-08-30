@@ -13,7 +13,7 @@ from "../components/EmployeeFilters";
 
 import EmployeeDetailsModal
 from "../components/EmployeeDetailsModal";
-
+import { useToast } from "../../shared/components/ToastContext";
 import employeeService
 from "../services/employeeService";
 
@@ -24,7 +24,7 @@ import "../styles/employee.css";
 function EmployeesPage() {
 
     const [employees, setEmployees] = useState([]);
-
+    const { showToast } = useToast();
     const [filteredEmployees,
         setFilteredEmployees] = useState([]);
 

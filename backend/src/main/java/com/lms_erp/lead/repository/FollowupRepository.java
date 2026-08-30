@@ -165,5 +165,45 @@ public interface FollowupRepository
                     @Param("cutoffTime")
                     LocalDateTime cutoffTime
             );
-}
+
+            @Query("""
+    SELECT DISTINCT f
+    FROM LeadFollowup f
+    JOIN FETCH f.lead l
+    JOIN FETCH f.employee e
+    WHERE f.followupStatus = :status
+      AND f.actionResult = 'CALLBACK_REQUESTED'
+      AND f.callbackScheduledAt IS NOT NULL
+      AND f.callbackScheduledAt <= :now
+    ORDER BY f.callbackScheduledAt ASC
+""")
+            List<LeadFollowup> findPendingCallbacksDue(
+                    @Param("status") FollowupStatus status,
+                    @Param("now") LocalDateTime now
+            );
+
+
+            // =====================================================
+// CALLBACKS WITHIN 5-MINUTE WINDOW
+// =====================================================
+
+            @Query("""
+    SELECT DISTINCT f
+    FROM LeadFollowup f
+    JOIN FETCH f.lead l
+    JOIN FETCH f.employee e
+    WHERE f.followupStatus = :status
+      AND f.actionResult = 'CALLBACK_REQUESTED'
+      AND f.callbackScheduledAt IS NOT NULL
+      AND f.callbackScheduledAt > :from
+      AND f.callbackScheduledAt <= :to
+    ORDER BY f.callbackScheduledAt ASC
+""")
+            List<LeadFollowup> findCallbacksBetween(
+                    @Param("status") FollowupStatus status,
+                    @Param("from") LocalDateTime from,
+                    @Param("to") LocalDateTime to
+            );
+        }
+
 

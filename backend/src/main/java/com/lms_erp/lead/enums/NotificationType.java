@@ -14,5 +14,6 @@ public enum NotificationType {
     LEAD_ARCHIVED,
     FOLLOWUP_ESCALATED,
     CONTRACT_UPLOADED,
-    CONTRACT_SIGNED
+    CONTRACT_SIGNED,
+    CALLBACK_REMINDER // 5 minutes befor
 }

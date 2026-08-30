@@ -30,7 +30,6 @@ public interface NotificationRepository
             Long employeePersonId
     );
 
-
     // =====================================================
     // UNREAD NOTIFICATION COUNT
     // =====================================================
@@ -39,9 +38,10 @@ public interface NotificationRepository
             Long employeePersonId
     );
 
-// =========================================================
+
+    // =====================================================
     // STUDENT NOTIFICATIONS
-    // =========================================================
+    // =====================================================
 
     List<LeadNotification>
     findByStudent_PersonIdOrderByCreatedAtDesc(
@@ -49,9 +49,9 @@ public interface NotificationRepository
     );
 
 
-    // =========================================================
+    // =====================================================
     // STUDENT UNREAD
-    // =========================================================
+    // =====================================================
 
     List<LeadNotification>
     findByStudent_PersonIdAndIsReadFalseOrderByCreatedAtDesc(
@@ -59,13 +59,15 @@ public interface NotificationRepository
     );
 
 
-    // =========================================================
+    // =====================================================
     // STUDENT UNREAD COUNT
-    // =========================================================
+    // =====================================================
 
     long countByStudent_PersonIdAndIsReadFalse(
             Long studentPersonId
     );
+
+
     // =====================================================
     // FIND UNREAD 48-HOUR ESCALATION
     // FOR SPECIFIC LEAD
@@ -78,4 +80,16 @@ public interface NotificationRepository
     );
 
 
+    // =====================================================
+    // CHECK CALLBACK NOTIFICATION
+    // FOR SPECIFIC FOLLOW-UP
+    //
+    // Prevents duplicate notification for the
+    // same callback follow-up.
+    // =====================================================
+
+    boolean existsByFollowup_FollowupIdAndNotificationType(
+            Long followupId,
+            NotificationType notificationType
+    );
 }

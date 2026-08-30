@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
+import { useToast } from "../../shared/components/ToastContext";
 // =====================================================
 // SERVICES
 // =====================================================
@@ -39,7 +39,7 @@ function EmployeeDocumentsPage() {
     const [loading, setLoading] = useState(true);
 
     const [error, setError] = useState("");
-
+    const { showToast } = useToast();
     // =====================================================
     // LOAD EMPLOYEE
     // =====================================================
@@ -141,8 +141,9 @@ function EmployeeDocumentsPage() {
 
         if (!documentId) {
 
-            alert(
-                "Document ID is not available."
+            showToast(
+                "Document ID is not available.",
+                "error"
             );
 
             return;
@@ -220,9 +221,9 @@ function EmployeeDocumentsPage() {
                 error?.response?.status === 401 ||
                 error?.response?.status === 403
             ) {
-
-                alert(
-                    "You are not authorized to view this document."
+                showToast(
+                    "You are not authorized to view this document.",
+                    "error"
                 );
 
                 return;
@@ -236,8 +237,9 @@ function EmployeeDocumentsPage() {
                 error?.response?.status === 404
             ) {
 
-                alert(
-                    "Document file was not found."
+                showToast(
+                    "Document file was not found.",
+                    "error"
                 );
 
                 return;
@@ -247,8 +249,9 @@ function EmployeeDocumentsPage() {
             // OTHER ERROR
             // =================================================
 
-            alert(
-                "Failed to open document."
+            showToast(
+                "Failed to open document.",
+                "error"
             );
         }
     };

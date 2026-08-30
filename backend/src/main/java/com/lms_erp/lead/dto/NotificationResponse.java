@@ -21,9 +21,37 @@ public class NotificationResponse {
 
     private Long leadPersonId;
 
+
+    // =====================================================
+    // FOLLOW-UP
+    // =====================================================
+
+    private Long followupId;
+
     private Long studentPersonId;
 
+
+    // =====================================================
+    // SMS / FOLLOW-UP DETAILS
+    // =====================================================
+
+    private String actionResult;
+
+    private LocalDateTime nextFollowupAt;
+
+    private LocalDateTime callbackScheduledAt;
+
+
+    // =====================================================
+    // READ STATUS
+    // =====================================================
+
     private Boolean isRead;
+
+
+    // =====================================================
+    // CREATED AT
+    // =====================================================
 
     private LocalDateTime createdAt;
 }

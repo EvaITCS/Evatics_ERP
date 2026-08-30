@@ -12,9 +12,9 @@ from "../services/roleService";
 import PageTitle
 from "../../shared/components/PageTitle";
 import "../styles/employee.css";
-
+import { useToast } from "../../shared/components/ToastContext";
 function DesignationsPage() {
-
+    const { showToast } = useToast();
     const [designations,
         setDesignations] =
         useState([]);
@@ -111,8 +111,9 @@ function DesignationsPage() {
                             formData
                         );
 
-                    alert(
-                        "Designation Updated Successfully"
+                    showToast(
+                        "Designation Updated Successfully",
+                        "success"
                     );
 
                 } else {
@@ -122,8 +123,9 @@ function DesignationsPage() {
                             formData
                         );
 
-                    alert(
-                        "Designation Created Successfully"
+                    showToast(
+                        "Designation Created Successfully",
+                        "success"
                     );
                 }
 
@@ -144,8 +146,9 @@ function DesignationsPage() {
 
                 console.error(error);
 
-                alert(
-                    "Operation Failed"
+                showToast(
+                    "Operation Failed",
+                    "error"
                 );
             }
         };
@@ -171,8 +174,9 @@ function DesignationsPage() {
                         designationId
                     );
 
-                alert(
-                    "Designation Deleted Successfully"
+                showToast(
+                    "Designation Deleted Successfully",
+                    "success"
                 );
 
                 fetchDesignations();
@@ -180,9 +184,9 @@ function DesignationsPage() {
             } catch (error) {
 
                 console.error(error);
-
-                alert(
-                    "Failed To Delete Designation"
+                showToast(
+                    "Failed To Delete Designation",
+                    "error"
                 );
             }
         };
@@ -214,15 +218,15 @@ function DesignationsPage() {
             designation
         ) => {
 
-            alert(
-
+            showToast(
                 `Designation ID: ${designation.designationId}
 
 Designation Name: ${designation.designationName}
 
 Designation Level: ${designation.designationLevel || "N/A"}
 
-Role: ${designation.roleName || "N/A"}`
+Role: ${designation.roleName || "N/A"}`,
+                "info"
             );
         };
 

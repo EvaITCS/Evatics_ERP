@@ -60,6 +60,30 @@ public class LeadNotification {
     )
     private Lead lead;
 
+    // =====================================================
+    // FOLLOW-UP RELATED TO NOTIFICATION
+    //
+    // IMPORTANT:
+    //
+    // Specific callback ko notification se link karega.
+    //
+    // Example:
+    //
+    // Followup #101
+    //      |
+    //      +---- CALLBACK_REMINDER
+    //      |
+    //      +---- CALLBACK_DUE
+    //
+    // =====================================================
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "followup_id"
+    )
+    private LeadFollowup followup;
+
+
 
     // =====================================================
     // TITLE

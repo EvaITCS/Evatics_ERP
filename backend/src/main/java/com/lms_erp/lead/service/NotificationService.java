@@ -220,13 +220,16 @@ public class NotificationService {
     // =====================================================
     // MAP DTO
     // =====================================================
-
     private NotificationResponse mapToResponse(
             LeadNotification notification
     ) {
 
         return NotificationResponse
                 .builder()
+
+                // =================================================
+                // BASIC
+                // =================================================
 
                 .notificationId(
                         notification.getNotificationId()
@@ -244,13 +247,10 @@ public class NotificationService {
                         notification.getNotificationType()
                 )
 
-                .isRead(
-                        notification.getIsRead()
-                )
 
-                .createdAt(
-                        notification.getCreatedAt()
-                )
+                // =================================================
+                // LEAD
+                // =================================================
 
                 .leadPersonId(
                         notification.getLead() != null
@@ -260,12 +260,87 @@ public class NotificationService {
                                 : null
                 )
 
+
+                // =================================================
+                // FOLLOW-UP
+                // =================================================
+
+                .followupId(
+                        notification.getFollowup() != null
+                                ? notification
+                                .getFollowup()
+                                .getFollowupId()
+                                : null
+                )
+
+
+                // =================================================
+                // FOLLOW-UP ACTION RESULT
+                // =================================================
+
+                .actionResult(
+                        notification.getFollowup() != null
+                                ? notification
+                                .getFollowup()
+                                .getActionResult()
+                                : null
+                )
+
+
+                // =================================================
+                // NEXT FOLLOW-UP
+                // =================================================
+
+                .nextFollowupAt(
+                        notification.getFollowup() != null
+                                ? notification
+                                .getFollowup()
+                                .getNextFollowupAt()
+                                : null
+                )
+
+
+                // =================================================
+                // CALLBACK
+                // =================================================
+
+                .callbackScheduledAt(
+                        notification.getFollowup() != null
+                                ? notification
+                                .getFollowup()
+                                .getCallbackScheduledAt()
+                                : null
+                )
+
+
+                // =================================================
+                // STUDENT
+                // =================================================
+
                 .studentPersonId(
                         notification.getStudent() != null
                                 ? notification
                                 .getStudent()
                                 .getPersonId()
                                 : null
+                )
+
+
+                // =================================================
+                // READ
+                // =================================================
+
+                .isRead(
+                        notification.getIsRead()
+                )
+
+
+                // =================================================
+                // CREATED
+                // =================================================
+
+                .createdAt(
+                        notification.getCreatedAt()
                 )
 
                 .build();

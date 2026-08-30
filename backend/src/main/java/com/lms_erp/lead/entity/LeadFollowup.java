@@ -72,6 +72,13 @@ public class LeadFollowup {
 
     @Column(name = "scheduled_at", nullable = false)
     private LocalDateTime scheduledAt;
+// =====================================================
+// CALLBACK SCHEDULE
+// =====================================================
+
+    @Column(name = "callback_scheduled_at")
+    private LocalDateTime callbackScheduledAt;
+
 
     @Column(name = "completed_at")
     private LocalDateTime completedAt;

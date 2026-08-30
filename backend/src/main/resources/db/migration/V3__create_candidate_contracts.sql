@@ -92,3 +92,44 @@ ALTER TABLE student_drop_requests
 -- New Col
 ALTER TABLE lead_followups
     ADD COLUMN action_performed_at TIMESTAMP NULL;
+
+ALTER TABLE lead_followups
+    ADD COLUMN callback_scheduled_at DATETIME(6) NULL;
+
+ALTER TABLE notifications
+    ADD COLUMN followup_id BIGINT NULL AFTER lead_person_id;
+
+
+ALTER TABLE notifications
+    ADD CONSTRAINT fk_notifications_followup
+        FOREIGN KEY (followup_id)
+            REFERENCES lead_followups(followup_id)
+            ON DELETE SET NULL
+            ON UPDATE CASCADE;
+
+ALTER TABLE notifications
+    ADD INDEX idx_notifications_followup (followup_id);
+
+
+ALTER TABLE notifications
+    MODIFY COLUMN notification_type ENUM(
+    'FOLLOWUP_PENDING',
+    'CALLBACK_REMINDER',
+    'CALLBACK_DUE',
+    'LEAD_ASSIGNED',
+    'LEAD_REASSIGNED',
+    'LEAD_CONVERTED',
+    'REMINDER',
+    'SYSTEM_ALERT',
+    'FOLLOWUP',
+    'STATUS_CHANGED',
+    'LEAD_ARCHIVED',
+    'FOLLOWUP_ESCALATED',
+    'CONTRACT_UPLOADED',
+    'CONTRACT_SIGNED'
+    ) DEFAULT NULL;
+
+
+ALTER TABLE reminder_schedule
+    ADD COLUMN five_minute_notification_sent
+        BOOLEAN NOT NULL DEFAULT FALSE;

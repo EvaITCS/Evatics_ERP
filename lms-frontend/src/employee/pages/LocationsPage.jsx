@@ -9,9 +9,10 @@ from "../components/LocationForm";
 import locationService
 from "../services/locationService";
 import PageTitle from "../../shared/components/PageTitle";
+import { useToast } from "../../shared/components/ToastContext";
 import "../styles/employee.css";
 function LocationsPage() {
-
+    const { showToast } = useToast();
     const [locations, setLocations] = useState([]);
 
     const [editingId, setEditingId] =
@@ -73,8 +74,9 @@ function LocationsPage() {
                         formData
                     );
 
-                alert(
-                    "Location Updated Successfully"
+                showToast(
+                    "Location Updated Successfully",
+                    "success"
                 );
 
             } else {
@@ -84,8 +86,9 @@ function LocationsPage() {
                         formData
                     );
 
-                alert(
-                    "Location Added Successfully"
+                showToast(
+                    "Location Added Successfully",
+                    "success"
                 );
             }
 
@@ -141,8 +144,9 @@ function LocationsPage() {
                     locationId
                 );
 
-            alert(
-                "Location Deleted Successfully"
+            showToast(
+                "Location Deleted Successfully",
+                "success"
             );
 
             fetchLocations();
