@@ -22,6 +22,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -247,6 +248,8 @@ public class AdminStudentApplicationController {
         // -----------------------------------------------------
 
         app.setApplicationStage(enrolledStage);
+
+        app.setAdmissionDate(LocalDate.now());
 
         repository.save(app);
 
