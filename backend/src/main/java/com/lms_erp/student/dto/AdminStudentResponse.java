@@ -2,6 +2,8 @@ package com.lms_erp.student.dto;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class AdminStudentResponse {
 
@@ -16,4 +18,6 @@ public class AdminStudentResponse {
     private Long applicationStageId;
 
     private String applicationStage;
+
+    private LocalDate admissionDate;
 }
