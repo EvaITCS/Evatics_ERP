@@ -72,6 +72,10 @@ public class AdminStudentService {
                                         .getApplicationStage()
                                         .getApplicationStageName()
                         );
+
+                        dto.setAdmissionDate(
+                                application.getAdmissionDate()
+                        );
                     }
 
                     // =================================================
